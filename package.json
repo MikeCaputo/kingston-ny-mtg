@@ -1,0 +1,17 @@
+{
+  "name": "mtg-random-legend-script",
+  "version": "1.0.0",
+  "description": "Quick script to generate a random, uncommon legend.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "Your Name",
+  "license": "ISC",
+  "dependencies": {
+    "mtgsdk": "^1.0.1"
+  },
+  "devDependencies": {
+    "browserify": "^17.0.0"
+  }
+}
