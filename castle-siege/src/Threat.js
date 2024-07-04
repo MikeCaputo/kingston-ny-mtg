@@ -2,9 +2,9 @@ import './App.css';
 // import _, { map, random } from 'underscore';
 import _ from 'underscore';
 import React, { useState, useEffect } from 'react'; // I forget, does this need to be imported into each component, or only at the top?
+// const mtgSdk = require('mtgsdk'); // https://docs.magicthegathering.io/
 
 const Threat = (props) => {
-// function Threat({name}) {
 
   // Many TODOs, I'm just getting a few things scaffolded for now.
   // 1. I'll start with a simple set of HARD CODED threats, and a few HARD CODED spells.
@@ -17,8 +17,9 @@ const Threat = (props) => {
   const [damageToDealToThreat, setDamageToDealToThreat] = useState(0);
   const [threatLifeTotal, setThreatLifeTotal] = useState(props.lifeTotal);
   const [isThreatAlive, setIsThreatAlive] = useState(true);
+  const [cardToDisplay, setCardToDisplay] = useState(null); // todo: need to slegantly handle no card vs a card display
 
-  const creatureTypes = [ // this is just a library of creatures, NOT now many will be used
+  const creatureTypes = [
     {
       key: 'carnivore',
       text: '3/1 Carnivore'
@@ -42,33 +43,6 @@ const Threat = (props) => {
     {
       key: 'ogre',
       text: '3/3 Ogre'
-    }
-  ];
-
-  const rewards = [
-    {
-      key: 'clue',
-      text: 'Clue Token'
-    },
-    {
-      key: 'food',
-      text: 'Food Token'
-    },
-    {
-      key: 'goblin',
-      text: '1/1 Goblin Token'
-    },
-    {
-      key: 'junk',
-      text: 'Junk Token'
-    },
-    {
-      key: 'map',
-      text: 'Map Token'
-    },
-    {
-      key: 'treasure',
-      text: 'Treasure Token'
     }
   ];
 
@@ -103,9 +77,35 @@ const Threat = (props) => {
       text: 'Destructive Force',
       targetsPlayer: false
     }
-  ]
+  ];
 
-  // function randomSpell() {
+  const rewardTypes = [
+    {
+      key: 'clue',
+      text: 'Clue Token'
+    },
+    {
+      key: 'food',
+      text: 'Food Token'
+    },
+    {
+      key: 'goblin',
+      text: '1/1 Goblin Token'
+    },
+    {
+      key: 'junk',
+      text: 'Junk Token'
+    },
+    {
+      key: 'map',
+      text: 'Map Token'
+    },
+    {
+      key: 'treasure',
+      text: 'Treasure Token'
+    }
+  ];
+
   const randomSpell = () => {
     const randomSpellKey = usesSpells[_.random(0, usesSpells.length - 1)];
     const whichSpellType = spellTypes.find(spellType => spellType.key === randomSpellKey);
@@ -137,14 +137,42 @@ const Threat = (props) => {
     setIsThreatAlive(false);
 
     if(props.isBoss) {
-      alert(`Hurrah, hurrah forever! ${props.name} has been defeated! Your team has vanquished this terrible foe. Now, only the fates know what is in store for this leaderless land...`);
+      alert(`Hurrah, hurrah forever! ${props.name} has been defeated! Your team has vanquished this terrible foe. Now, only the fates know how long it will be until a new leader arises to take their place...`);
     } else {
       const whichRewardType = yieldsReward[_.random(0, yieldsReward.length - 1)];
-      const whichRewardTypeName = rewards.find(rewardType => rewardType.key === whichRewardType.key).text;
+      const whichRewardTypeName = rewardTypes.find(rewardType => rewardType.key === whichRewardType.key).text;
       const howMany = [_.random(whichRewardType.quantityRange[0], whichRewardType.quantityRange[1])];
       alert(`${props.name} has been defeated! You gain ${howMany} ${whichRewardTypeName}.`);
     }
 
+  }
+
+  const generateCardImage = async (cardName) => { // name wip
+
+    try {
+      // todo: may need more advanced handling for tokens
+      // const cardToDisplay = await mtgSdk.card.where({
+      //   name: cardName
+      // });
+
+      // console.log(`cardToDisplay.name is: ${cardToDisplay.name}`)
+      // console.log(`cardToDisplay.imageUrl is: ${cardToDisplay.imageUrl}`)
+  
+      // It seems that some of these fail to have images. In that case, I'll display the text...
+      if(cardToDisplay.imageUrl) {
+        // document.getElementById('commander-data').innerHTML = `
+        //   <hr />  
+        //   <img src="${cardToDisplay.imageUrl}" alt="${cardToDisplay.name}" title="${cardToDisplay.name}"/>
+        //   <p>Now, go forth: build a fun deck and show the world what ${cardToDisplay.name} can do!</p>
+        //   <hr />  
+        // `;
+      } else {
+        // todo: handle lack of image....
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+    
   }
 
   return (
@@ -172,6 +200,10 @@ const Threat = (props) => {
           <button onClick={dealDamangeToThreat}>Deal damage to this Threat</button>
         </>
       }
+
+      <div className="currentAttackCard">
+        
+      </div>
 
     </div>
   );

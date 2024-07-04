@@ -1,11 +1,7 @@
 import './App.css';
-// import _, { map, random } from 'underscore';
-import _ from 'underscore';
 import Threat from './Threat.js';
 
 function App() {
-
-
 
   return (
     <div className="App">
