@@ -20,28 +20,68 @@ function App() {
         name={'Lowland Tribes'}
         isBoss={false}
         lifeTotal={20}
-        attacksWith={['goblin', 'ogre','giant']}
+        attacksWith={
+          [
+            {
+              key: 'goblin',
+              quantityRange: [3,6]
+            },
+            {
+              key: 'ogre',
+              quantityRange: [2,4]
+            },
+            {
+              key: 'giant',
+              quantityRange: [1,2]
+            }
+          ]
+        }
       />
 
       <Threat
-        name={'The Drake Nests'}
+        name={'The Carnivore Nests'}
         isBoss={false}
         lifeTotal={30}
-        attacksWith={['drake']}
+        attacksWith={
+          [
+            {
+              key: 'carnivore',
+              quantityRange: [4,6]
+            }
+          ]
+        }
       />
       
       <Threat
         name={'Elemental Pools'}
         isBoss={false}
         lifeTotal={50}
-        attacksWith={['elemental']}
+        attacksWith={
+          [
+            {
+              key: 'elemental',
+              quantityRange: [6,8]
+            }
+          ]
+        }
       />
       
       <Threat
         name={'Mons\' Castle'}
         isBoss={true}
         lifeTotal={200}
-        attacksWith={['dragon']}
+        attacksWith={
+          [
+            {
+              key: 'dragon',
+              quantityRange: [3,6]
+            },
+            {
+              key: 'goblin',
+              quantityRange: [12,20]
+            }
+          ]
+        }
         // todo: I'd like to parameterize the quantity of attackers. So, Mons might attach with 20 goblins....
       />
 

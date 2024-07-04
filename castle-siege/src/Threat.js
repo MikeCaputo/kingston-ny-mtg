@@ -10,11 +10,33 @@ const Threat = (props) => {
   // 1. I'll start with a simple set of HARD CODED threats, and a few HARD CODED spells.
   // 2. I'll want to tie these to the MtG API, so I can show the images of the cards.
 
+  const attacksWith = props.attacksWith;
+
   const [damageToDealToThreat, setDamageToDealToThreat] = useState(0);
   const [threatLifeTotal, setThreatLifeTotal] = useState(props.lifeTotal);
   const [isThreatAlive, setIsThreatAlive] = useState(true);
 
-  const creatureTypes = [
+  const creatureTypes = [ // this is just a library of creatures, NOT now many will be used
+    {
+      key: 'carnivore',
+      text: '3/1 Carnivore',
+      quantityRange: [3,6]
+    },
+    {
+      key: 'dragon',
+      text: '4/4 Dragon with flying',
+      quantityRange: [3,6]
+    },
+    {
+      key: 'elemental',
+      text: '3/1 Elemental',
+      quantityRange: [3,6]
+    },
+    {
+      key: 'giant',
+      text: '4/4 Giant',
+      quantityRange: [1,3] // TODO: deprecate this here. Use the props.
+    },
     {
       key: 'goblin',
       text: '1/1 Goblin',
@@ -22,13 +44,8 @@ const Threat = (props) => {
     },
     {
       key: 'ogre',
-      text: '2/2 Ogre with menace',
+      text: '3/3 Ogre',
       quantityRange: [2,4]
-    },
-    {
-      key: 'giant',
-      text: '3/3 Giant with trample',
-      quantityRange: [1,3]
     }
   ];
 
@@ -71,19 +88,15 @@ const Threat = (props) => {
 
     const randomSpellName = spellNamesTargetsPlayer[_.random(0, spellNamesTargetsPlayer.length - 1)];
 
-    // alert(`The enemy casts ${randomSpellName} on you!`)
     alert(`${props.name} casts ${randomSpellName} on you!`)
   };
 
   const randomAttack = () => {
     // todo: handle singular / plural
     // todo: for further reduction of cognitive load, it would be best to use standard tokens for these, too!
-    // I'll keep expanding this as a global library. Then it will be called like, "give me a random attack of goblin, ogre, or giant", or "give me a random attack of elemental or dragon"
-
-    const whichCreatureType = creatureTypes[_.random(0, creatureTypes.length - 1)];
-    const whichCreatureTypeName = whichCreatureType.text;
-    const howMany = [_.random(whichCreatureType.quantityRange[0], whichCreatureType.quantityRange[1])]; 
-
+    const whichCreatureType = attacksWith[_.random(0, attacksWith.length - 1)];
+    const whichCreatureTypeName = creatureTypes.find(creatureType => creatureType.key === whichCreatureType.key).text;
+    const howMany = [_.random(whichCreatureType.quantityRange[0], whichCreatureType.quantityRange[1])];
     alert(`${props.name} attacks you with ${howMany} ${whichCreatureTypeName}!`)
   };
 
