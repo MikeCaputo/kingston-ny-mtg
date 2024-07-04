@@ -11,6 +11,7 @@ const Threat = (props) => {
   // 2. I'll want to tie these to the MtG API, so I can show the images of the cards.
 
   const attacksWith = props.attacksWith;
+  const usesSpells = props.usesSpells;
 
   const [damageToDealToThreat, setDamageToDealToThreat] = useState(0);
   const [threatLifeTotal, setThreatLifeTotal] = useState(props.lifeTotal);
@@ -19,33 +20,27 @@ const Threat = (props) => {
   const creatureTypes = [ // this is just a library of creatures, NOT now many will be used
     {
       key: 'carnivore',
-      text: '3/1 Carnivore',
-      quantityRange: [3,6]
+      text: '3/1 Carnivore'
     },
     {
       key: 'dragon',
-      text: '4/4 Dragon with flying',
-      quantityRange: [3,6]
+      text: '4/4 Dragon with flying'
     },
     {
       key: 'elemental',
-      text: '3/1 Elemental',
-      quantityRange: [3,6]
+      text: '3/1 Elemental'
     },
     {
       key: 'giant',
-      text: '4/4 Giant',
-      quantityRange: [1,3] // TODO: deprecate this here. Use the props.
+      text: '4/4 Giant'
     },
     {
       key: 'goblin',
-      text: '1/1 Goblin',
-      quantityRange: [3,6]
+      text: '1/1 Goblin'
     },
     {
       key: 'ogre',
-      text: '3/3 Ogre',
-      quantityRange: [2,4]
+      text: '3/3 Ogre'
     }
   ];
 
@@ -78,17 +73,34 @@ const Threat = (props) => {
     'Shock'
   ];
 
+  const spellTypes = [
+    {
+      key: 'lightningBolt',
+      text: 'Lightning Bolt',
+      targetsPlayer: true
+    },
+    {
+      key: 'lavaAxe',
+      text: 'Lava Axe',
+      targetsPlayer: true
+    },
+    {
+      key: 'pyroclasm',
+      text: 'Pyroclasm',
+      targetsPlayer: false
+    },
+    {
+      key: 'shock',
+      text: 'Shock',
+      targetsPlayer: true
+    }
+  ]
+
   // function randomSpell() {
   const randomSpell = () => {
-
-    // todo: will set up different modes of cating spells.
-    const spellNamesGlobal = [
-      'Pyroclasm'
-    ];
-
-    const randomSpellName = spellNamesTargetsPlayer[_.random(0, spellNamesTargetsPlayer.length - 1)];
-
-    alert(`${props.name} casts ${randomSpellName} on you!`)
+    const randomSpellKey = usesSpells[_.random(0, usesSpells.length - 1)];
+    const whichSpellType = spellTypes.find(spellType => spellType.key === randomSpellKey);
+    alert(`${props.name} casts ${whichSpellType.text}${whichSpellType.targetsPlayer ? ' on you' : ''}!`)
   };
 
   const randomAttack = () => {

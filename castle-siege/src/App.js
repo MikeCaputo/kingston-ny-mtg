@@ -36,6 +36,9 @@ function App() {
             }
           ]
         }
+        usesSpells={
+          ['lightningBolt', 'shock']
+        }
       />
 
       <Threat
@@ -50,6 +53,9 @@ function App() {
             }
           ]
         }
+        usesSpells={
+          ['lightningBolt', 'shock']
+        }
       />
       
       <Threat
@@ -63,6 +69,9 @@ function App() {
               quantityRange: [6,8]
             }
           ]
+        }
+        usesSpells={
+          ['lavaAxe', 'lightningBolt']
         }
       />
       
@@ -82,7 +91,9 @@ function App() {
             }
           ]
         }
-        // todo: I'd like to parameterize the quantity of attackers. So, Mons might attach with 20 goblins....
+        usesSpells={
+          ['lavaAxe', 'pyroclasm']
+        }
       />
 
     </div>
