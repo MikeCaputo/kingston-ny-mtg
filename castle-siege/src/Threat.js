@@ -12,6 +12,7 @@ const Threat = (props) => {
 
   const attacksWith = props.attacksWith;
   const usesSpells = props.usesSpells;
+  const yieldsReward = props.rewards;
 
   const [damageToDealToThreat, setDamageToDealToThreat] = useState(0);
   const [threatLifeTotal, setThreatLifeTotal] = useState(props.lifeTotal);
@@ -46,31 +47,29 @@ const Threat = (props) => {
 
   const rewards = [
     {
-      key: 'treasure',
-      text: 'Treasure Token',
-      quantityRange: [3,6]
-    },
-    {
-      key: 'map',
-      text: 'Map Token',
-      quantityRange: [2,4]
+      key: 'clue',
+      text: 'Clue Token'
     },
     {
       key: 'food',
-      text: 'Food Token',
-      quantityRange: [1,3]
+      text: 'Food Token'
     },
     {
-      key: 'clue',
-      text: 'Clue Token',
-      quantityRange: [1,3]
+      key: 'goblin',
+      text: '1/1 Goblin Token'
+    },
+    {
+      key: 'junk',
+      text: 'Junk Token'
+    },
+    {
+      key: 'map',
+      text: 'Map Token'
+    },
+    {
+      key: 'treasure',
+      text: 'Treasure Token'
     }
-  ];
-
-  const spellNamesTargetsPlayer = [
-    'Lightning Bolt',
-    'Lava Axe',
-    'Shock'
   ];
 
   const spellTypes = [
@@ -93,6 +92,16 @@ const Threat = (props) => {
       key: 'shock',
       text: 'Shock',
       targetsPlayer: true
+    },
+    {
+      key: 'shatterStorm',
+      text: 'Shatter Storm',
+      targetsPlayer: false
+    },
+    {
+      key: 'destructiveForce',
+      text: 'Destructive Force',
+      targetsPlayer: false
     }
   ]
 
@@ -125,15 +134,14 @@ const Threat = (props) => {
 
   const threatIsDefeated = () => {
 
-    const whichRewardType = rewards[_.random(0, rewards.length - 1)];
-    const whichRewardTypeName = whichRewardType.text;
-    const howMany = [_.random(whichRewardType.quantityRange[0], whichRewardType.quantityRange[1])];
-
     setIsThreatAlive(false);
 
     if(props.isBoss) {
       alert(`Hurrah, hurrah forever! ${props.name} has been defeated! Your team has vanquished this terrible foe. Now, only the fates know what is in store for this leaderless land...`);
     } else {
+      const whichRewardType = yieldsReward[_.random(0, yieldsReward.length - 1)];
+      const whichRewardTypeName = rewards.find(rewardType => rewardType.key === whichRewardType.key).text;
+      const howMany = [_.random(whichRewardType.quantityRange[0], whichRewardType.quantityRange[1])];
       alert(`${props.name} has been defeated! You gain ${howMany} ${whichRewardTypeName}.`);
     }
 

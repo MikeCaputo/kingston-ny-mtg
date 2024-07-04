@@ -16,6 +16,8 @@ function App() {
 
       <hr />
 
+      {/* Long-term, this will import a JSON data set which will be rendered into any number of playables maps! */}
+
       <Threat
         name={'Lowland Tribes'}
         isBoss={false}
@@ -29,32 +31,56 @@ function App() {
             {
               key: 'ogre',
               quantityRange: [2,4]
-            },
-            {
-              key: 'giant',
-              quantityRange: [1,2]
             }
           ]
         }
         usesSpells={
           ['lightningBolt', 'shock']
         }
+        rewards={
+          [
+            {
+              key: 'goblin',
+              quantityRange: [2,3]
+            },
+            {
+              key: 'map',
+              quantityRange: [1,2]
+            },
+            {
+              key: 'junk',
+              quantityRange: [1,2]
+            }
+          ]
+        }
       />
 
       <Threat
-        name={'The Carnivore Nests'}
+        name={'Highland Tribes'}
         isBoss={false}
         lifeTotal={30}
         attacksWith={
           [
             {
-              key: 'carnivore',
+              key: 'giant',
               quantityRange: [4,6]
             }
           ]
         }
         usesSpells={
           ['lightningBolt', 'shock']
+        }
+        rewards={
+          [
+            {
+              key: 'treasure',
+              quantityRange: [1,2]
+            },
+            {
+              key: 'food',
+              quantityRange: [1,2]
+            }
+          ]
         }
       />
       
@@ -71,7 +97,19 @@ function App() {
           ]
         }
         usesSpells={
-          ['lavaAxe', 'lightningBolt']
+          ['lavaAxe', 'shatterStorm']
+        }
+        rewards={
+          [
+            {
+              key: 'treasure',
+              quantityRange: [4,5]
+            },
+            {
+              key: 'map',
+              quantityRange: [3,4]
+            }
+          ]
         }
       />
       
@@ -92,7 +130,7 @@ function App() {
           ]
         }
         usesSpells={
-          ['lavaAxe', 'pyroclasm']
+          ['lavaAxe', 'destructiveForce']
         }
       />
 
