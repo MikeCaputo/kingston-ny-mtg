@@ -3,6 +3,7 @@ import './App.css';
 import _ from 'underscore';
 import React, { useState, useEffect } from 'react'; // I forget, does this need to be imported into each component, or only at the top?
 // const mtgSdk = require('mtgsdk'); // https://docs.magicthegathering.io/
+// import mtgSdk from 'mtgsdk'; // https://docs.magicthegathering.io/
 
 const Threat = (props) => {
 
