@@ -31,7 +31,18 @@ function App() {
           ]
         }
         usesSpells={
-          ['lightningBolt', 'shock']
+          // These will pull from Scryfall API. Just use the spell name exactly and it will fetch and display the cards.
+          // If they have a global effect or should target the player, indicate that here as well.
+          [
+            {
+              name: 'Lightning Bolt',
+              targetsPlayer: true
+            },
+            {
+              name: 'Shock',
+              targetsPlayer: true
+            }
+          ]
         }
         rewards={
           [
@@ -64,7 +75,16 @@ function App() {
           ]
         }
         usesSpells={
-          ['lightningBolt', 'shock']
+          [
+            {
+              name: 'Lightning Bolt',
+              targetsPlayer: true
+            },
+            {
+              name: 'Shock',
+              targetsPlayer: true
+            }
+          ]
         }
         rewards={
           [
@@ -93,7 +113,20 @@ function App() {
           ]
         }
         usesSpells={
-          ['lavaAxe', 'shatterStorm']
+          [
+            {
+              name: 'Lava Axe',
+              targetsPlayer: true
+            },
+            {
+              name: 'Shatterstorm',
+              targetsPlayer: false
+            },
+            {
+              name: 'Pyroclasm',
+              targetsPlayer: false
+            }
+          ]
         }
         rewards={
           [
@@ -126,7 +159,16 @@ function App() {
           ]
         }
         usesSpells={
-          ['lavaAxe', 'destructiveForce']
+          [
+            {
+              name: 'Lava Axe',
+              targetsPlayer: true
+            },
+            {
+              name: 'Destructive Force',
+              targetsPlayer: false
+            }
+          ]
         }
       />
 

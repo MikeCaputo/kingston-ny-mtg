@@ -2,8 +2,21 @@ import './App.css';
 // import _, { map, random } from 'underscore';
 import _ from 'underscore';
 import React, { useState, useEffect } from 'react'; // I forget, does this need to be imported into each component, or only at the top?
-// const mtgSdk = require('mtgsdk'); // https://docs.magicthegathering.io/
-// import mtgSdk from 'mtgsdk'; // https://docs.magicthegathering.io/
+import axios from 'axios';
+
+const fetchCard = async (cardName) => {
+  // TODO: before hitting the API, we need to check if we've already fetched and stored it locally. That will save greatly on API hits.
+
+  try {
+    const response = await axios.get(`https://api.scryfall.com/cards/named?fuzzy=${cardName}`);
+    return response.data;
+    // handle some load state, etc
+  } catch (error) {
+    // handle some load state, etc
+    console.error(error); // Log the error or handle it as needed
+    return null; // Return null or handle it appropriately
+  }
+}
 
 const Threat = (props) => {
 
@@ -18,8 +31,9 @@ const Threat = (props) => {
   const [damageToDealToThreat, setDamageToDealToThreat] = useState(0);
   const [threatLifeTotal, setThreatLifeTotal] = useState(props.lifeTotal);
   const [isThreatAlive, setIsThreatAlive] = useState(true);
-  const [cardToDisplay, setCardToDisplay] = useState(null); // todo: need to slegantly handle no card vs a card display
+  const [cardToDisplay, setCardToDisplay] = useState(null); // todo: need to elegantly handle no card vs a card display
 
+  //~ TODO: this should actually be unecessary! Once I have the API hooked up, I can just pass in the card names
   const creatureTypes = [
     {
       key: 'carnivore',
@@ -47,39 +61,7 @@ const Threat = (props) => {
     }
   ];
 
-  const spellTypes = [
-    {
-      key: 'lightningBolt',
-      text: 'Lightning Bolt',
-      targetsPlayer: true
-    },
-    {
-      key: 'lavaAxe',
-      text: 'Lava Axe',
-      targetsPlayer: true
-    },
-    {
-      key: 'pyroclasm',
-      text: 'Pyroclasm',
-      targetsPlayer: false
-    },
-    {
-      key: 'shock',
-      text: 'Shock',
-      targetsPlayer: true
-    },
-    {
-      key: 'shatterStorm',
-      text: 'Shatter Storm',
-      targetsPlayer: false
-    },
-    {
-      key: 'destructiveForce',
-      text: 'Destructive Force',
-      targetsPlayer: false
-    }
-  ];
-
+  //~ TODO: this should actually be unecessary! Once I have the API hooked up, I can just pass in the card names
   const rewardTypes = [
     {
       key: 'clue',
@@ -107,10 +89,19 @@ const Threat = (props) => {
     }
   ];
 
-  const randomSpell = () => {
-    const randomSpellKey = usesSpells[_.random(0, usesSpells.length - 1)];
-    const whichSpellType = spellTypes.find(spellType => spellType.key === randomSpellKey);
-    alert(`${props.name} casts ${whichSpellType.text}${whichSpellType.targetsPlayer ? ' on you' : ''}!`)
+  const randomSpell = async () => {
+    // TODO:
+    // Once these are fetched for the first time, we should store the image in the object.
+    // Subsequently it will be obtained locally.
+    // This will save on API hits...
+    
+    const randomSpell = usesSpells[_.random(0, usesSpells.length - 1)];
+    // const randomSpellKey = usesSpells[_.random(0, usesSpells.length - 1)];
+    // const whichSpellType = spellTypes.find(spellType => spellType.key === randomSpellKey);
+    
+    const cardApiData = await fetchCard(randomSpell.name);
+    setCardToDisplay(cardApiData.image_uris.border_crop)
+    alert(`${props.name} casts ${randomSpell.name}${randomSpell.targetsPlayer ? ' on you' : ''}!`)
   };
 
   const randomAttack = () => {
@@ -148,34 +139,6 @@ const Threat = (props) => {
 
   }
 
-  const generateCardImage = async (cardName) => { // name wip
-
-    try {
-      // todo: may need more advanced handling for tokens
-      // const cardToDisplay = await mtgSdk.card.where({
-      //   name: cardName
-      // });
-
-      // console.log(`cardToDisplay.name is: ${cardToDisplay.name}`)
-      // console.log(`cardToDisplay.imageUrl is: ${cardToDisplay.imageUrl}`)
-  
-      // It seems that some of these fail to have images. In that case, I'll display the text...
-      if(cardToDisplay.imageUrl) {
-        // document.getElementById('commander-data').innerHTML = `
-        //   <hr />  
-        //   <img src="${cardToDisplay.imageUrl}" alt="${cardToDisplay.name}" title="${cardToDisplay.name}"/>
-        //   <p>Now, go forth: build a fun deck and show the world what ${cardToDisplay.name} can do!</p>
-        //   <hr />  
-        // `;
-      } else {
-        // todo: handle lack of image....
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-    
-  }
-
   return (
     <div className={`Threat ${isThreatAlive ? '' : 'defeated'}`}>
 
@@ -203,7 +166,9 @@ const Threat = (props) => {
       }
 
       <div className="currentAttackCard">
-        
+        {cardToDisplay &&
+          <img src={cardToDisplay} alt="todo, add name here" title="todo, add name here" />
+        }
       </div>
 
     </div>
