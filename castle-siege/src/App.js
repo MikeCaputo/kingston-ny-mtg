@@ -47,15 +47,15 @@ function App() {
         rewards={
           [
             {
-              key: 'goblin',
+              name: 'Goblin', // todo: Need to specify that type of goblin token. There are many.
               quantityRange: [2,3]
             },
             {
-              key: 'map',
+              name: 'Map',
               quantityRange: [1,2]
             },
             {
-              key: 'junk',
+              name: 'Junk',
               quantityRange: [1,2]
             }
           ]
@@ -89,11 +89,11 @@ function App() {
         rewards={
           [
             {
-              key: 'treasure',
+              name: 'Treasure',
               quantityRange: [1,2]
             },
             {
-              key: 'food',
+              name: 'Food',
               quantityRange: [1,2]
             }
           ]
@@ -131,11 +131,11 @@ function App() {
         rewards={
           [
             {
-              key: 'treasure',
+              name: 'Treasure',
               quantityRange: [4,5]
             },
             {
-              key: 'map',
+              name: 'Map',
               quantityRange: [3,4]
             }
           ]

@@ -1,15 +1,21 @@
 import './App.css';
 // import _, { map, random } from 'underscore';
 import _ from 'underscore';
-import React, { useState, useEffect } from 'react'; // I forget, does this need to be imported into each component, or only at the top?
+// import React, { useState, useEffect } from 'react'; // I forget, does this need to be imported into each component, or only at the top?
+import React, { useState } from 'react'; // I forget, does this need to be imported into each component, or only at the top?
 import axios from 'axios';
 
-const fetchCard = async (cardName) => {
+const fetchCard = async (cardName, isToken = false) => {
   // TODO: before hitting the API, we need to check if we've already fetched and stored it locally. That will save greatly on API hits.
-
   try {
     const response = await axios.get(`https://api.scryfall.com/cards/named?fuzzy=${cardName}`);
-    return response.data;
+    // If it's a token, we have to do a little extra logic to dig up the correct card face, since a token has two sides.
+    if(isToken) {
+      const requestedTokenFace = response.data.card_faces.find(cardFace => cardFace.name === cardName); // todo: possibly handle lowercase situations
+      return requestedTokenFace;
+    } else {
+      return response.data; // todo: I'll just add the entire payload ot a local JSON library, and will fetch from that, to save API hits. But that's future state if this turns out to be fun.
+    }
     // handle some load state, etc
   } catch (error) {
     // handle some load state, etc
@@ -22,7 +28,6 @@ const Threat = (props) => {
 
   // Many TODOs, I'm just getting a few things scaffolded for now.
   // 1. I'll start with a simple set of HARD CODED threats, and a few HARD CODED spells.
-  // 2. I'll want to tie these to the MtG API, so I can show the images of the cards.
 
   const attacksWith = props.attacksWith;
   const usesSpells = props.usesSpells;
@@ -61,34 +66,6 @@ const Threat = (props) => {
     }
   ];
 
-  //~ TODO: this should actually be unecessary! Once I have the API hooked up, I can just pass in the card names
-  const rewardTypes = [
-    {
-      key: 'clue',
-      text: 'Clue Token'
-    },
-    {
-      key: 'food',
-      text: 'Food Token'
-    },
-    {
-      key: 'goblin',
-      text: '1/1 Goblin Token'
-    },
-    {
-      key: 'junk',
-      text: 'Junk Token'
-    },
-    {
-      key: 'map',
-      text: 'Map Token'
-    },
-    {
-      key: 'treasure',
-      text: 'Treasure Token'
-    }
-  ];
-
   const randomSpell = async () => {
     // TODO:
     // Once these are fetched for the first time, we should store the image in the object.
@@ -100,8 +77,8 @@ const Threat = (props) => {
     // const whichSpellType = spellTypes.find(spellType => spellType.key === randomSpellKey);
     
     const cardApiData = await fetchCard(randomSpell.name);
-    setCardToDisplay(cardApiData.image_uris.border_crop)
-    alert(`${props.name} casts ${randomSpell.name}${randomSpell.targetsPlayer ? ' on you' : ''}!`)
+    setCardToDisplay(cardApiData.image_uris.border_crop);
+    alert(`${props.name} casts ${randomSpell.name}${randomSpell.targetsPlayer ? ' on you' : ''}!`);
   };
 
   const randomAttack = () => {
@@ -109,7 +86,7 @@ const Threat = (props) => {
     // todo: for further reduction of cognitive load, it would be best to use standard tokens for these, too!
     const whichCreatureType = attacksWith[_.random(0, attacksWith.length - 1)];
     const whichCreatureTypeName = creatureTypes.find(creatureType => creatureType.key === whichCreatureType.key).text;
-    const howMany = [_.random(whichCreatureType.quantityRange[0], whichCreatureType.quantityRange[1])];
+    const howMany = _.random(whichCreatureType.quantityRange[0], whichCreatureType.quantityRange[1]);
     alert(`${props.name} attacks you with ${howMany} ${whichCreatureTypeName}!`)
   };
 
@@ -124,17 +101,21 @@ const Threat = (props) => {
 
   }
 
-  const threatIsDefeated = () => {
+  const threatIsDefeated = async () => {
 
     setIsThreatAlive(false);
 
     if(props.isBoss) {
       alert(`Hurrah, hurrah forever! ${props.name} has been defeated! Your team has vanquished this terrible foe. Now, only the fates know how long it will be until a new leader arises to take their place...`);
     } else {
+
+      
       const whichRewardType = yieldsReward[_.random(0, yieldsReward.length - 1)];
-      const whichRewardTypeName = rewardTypes.find(rewardType => rewardType.key === whichRewardType.key).text;
+      const cardApiData = await fetchCard(whichRewardType.name, true);
+      setCardToDisplay(cardApiData?.image_uris?.border_crop);
+      // const whichRewardTypeName = rewardTypes.find(rewardType => rewardType.key === whichRewardType.key).text;
       const howMany = [_.random(whichRewardType.quantityRange[0], whichRewardType.quantityRange[1])];
-      alert(`${props.name} has been defeated! You gain ${howMany} ${whichRewardTypeName}.`);
+      alert(`${props.name} has been defeated! You gain ${howMany} ${whichRewardType.name} Token${howMany > 1 && 's'}.`);
     }
 
   }
