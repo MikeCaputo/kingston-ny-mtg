@@ -95,6 +95,10 @@ function App() {
             {
               name: 'Food',
               quantityRange: [1,2]
+            },
+            {
+              name: 'Blood',
+              quantityRange: [1,2]
             }
           ]
         }

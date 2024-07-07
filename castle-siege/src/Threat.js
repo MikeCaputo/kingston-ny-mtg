@@ -1,16 +1,15 @@
 import './App.css';
-// import _, { map, random } from 'underscore';
 import _ from 'underscore';
-// import React, { useState, useEffect } from 'react'; // I forget, does this need to be imported into each component, or only at the top?
-import React, { useState } from 'react'; // I forget, does this need to be imported into each component, or only at the top?
+// import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 const fetchCard = async (cardName, isToken = false) => {
   // TODO: before hitting the API, we need to check if we've already fetched and stored it locally. That will save greatly on API hits.
   try {
     const response = await axios.get(`https://api.scryfall.com/cards/named?fuzzy=${cardName}`);
-    // If it's a token, we have to do a little extra logic to dig up the correct card face, since a token has two sides.
-    if(isToken) {
+    // If it's a token, we have to do a little extra logic to dig up the correct card face, since a token can have two sides.
+    if(isToken && response.data.card_faces) {
       const requestedTokenFace = response.data.card_faces.find(cardFace => cardFace.name === cardName); // todo: possibly handle lowercase situations
       return requestedTokenFace;
     } else {
@@ -71,11 +70,7 @@ const Threat = (props) => {
     // Once these are fetched for the first time, we should store the image in the object.
     // Subsequently it will be obtained locally.
     // This will save on API hits...
-    
     const randomSpell = usesSpells[_.random(0, usesSpells.length - 1)];
-    // const randomSpellKey = usesSpells[_.random(0, usesSpells.length - 1)];
-    // const whichSpellType = spellTypes.find(spellType => spellType.key === randomSpellKey);
-    
     const cardApiData = await fetchCard(randomSpell.name);
     setCardToDisplay(cardApiData.image_uris.border_crop);
     alert(`${props.name} casts ${randomSpell.name}${randomSpell.targetsPlayer ? ' on you' : ''}!`);
@@ -83,7 +78,6 @@ const Threat = (props) => {
 
   const randomAttack = () => {
     // todo: handle singular / plural
-    // todo: for further reduction of cognitive load, it would be best to use standard tokens for these, too!
     const whichCreatureType = attacksWith[_.random(0, attacksWith.length - 1)];
     const whichCreatureTypeName = creatureTypes.find(creatureType => creatureType.key === whichCreatureType.key).text;
     const howMany = _.random(whichCreatureType.quantityRange[0], whichCreatureType.quantityRange[1]);
@@ -108,14 +102,11 @@ const Threat = (props) => {
     if(props.isBoss) {
       alert(`Hurrah, hurrah forever! ${props.name} has been defeated! Your team has vanquished this terrible foe. Now, only the fates know how long it will be until a new leader arises to take their place...`);
     } else {
-
-      
       const whichRewardType = yieldsReward[_.random(0, yieldsReward.length - 1)];
       const cardApiData = await fetchCard(whichRewardType.name, true);
       setCardToDisplay(cardApiData?.image_uris?.border_crop);
-      // const whichRewardTypeName = rewardTypes.find(rewardType => rewardType.key === whichRewardType.key).text;
       const howMany = [_.random(whichRewardType.quantityRange[0], whichRewardType.quantityRange[1])];
-      alert(`${props.name} has been defeated! You gain ${howMany} ${whichRewardType.name} Token${howMany > 1 && 's'}.`);
+      alert(`${props.name} has been defeated! You gain ${howMany} ${whichRewardType.name} Token${howMany > 1 ? 's' : ''}.`);
     }
 
   }
@@ -148,7 +139,7 @@ const Threat = (props) => {
 
       <div className="currentAttackCard">
         {cardToDisplay &&
-          <img src={cardToDisplay} alt="todo, add name here" title="todo, add name here" />
+          <img src={cardToDisplay} alt={cardToDisplay.name} title={cardToDisplay.name} />
         }
       </div>
 
