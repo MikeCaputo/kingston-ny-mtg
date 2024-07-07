@@ -4,17 +4,27 @@ import _ from 'underscore';
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const fetchCard = async (cardName, isToken = false) => {
+const fetchCard = async (cardName, isToken = false, color = '') => {
   // TODO: before hitting the API, we need to check if we've already fetched and stored it locally. That will save greatly on API hits.
+  // > For both exact and fuzzy, card names are case-insensitive and punctuation is optional (you can drop apostrophes and periods etc). For example: fIReBALL is the same as Fireball and smugglers copter is the same as Smuggler's Copter. - https://scryfall.com/docs/api/cards/named
   try {
-    const response = await axios.get(`https://api.scryfall.com/cards/named?fuzzy=${cardName}`);
-    // If it's a token, we have to do a little extra logic to dig up the correct card face, since a token can have two sides.
-    if(isToken && response.data.card_faces) {
-      const requestedTokenFace = response.data.card_faces.find(cardFace => cardFace.name === cardName); // todo: possibly handle lowercase situations
-      return requestedTokenFace;
-    } else {
-      return response.data; // todo: I'll just add the entire payload ot a local JSON library, and will fetch from that, to save API hits. But that's future state if this turns out to be fun.
-    }
+    // const response = await axios.get(`https://api.scryfall.com/cards/named?fuzzy=${cardName}`);
+    //~ Second pass on this: using `/search` instead of `/named` gives me more parameters, specifically the ability to search for tokens. This seems to be the more robust way.
+    // Adding the `color` parameter, so we can specify to get the correct color creatures (red giant instead of green). In the future, this section would need to be more robust, but this is a good v1.
+
+    //~ Discoveries: a query such as "Shock" will get ALL cards with the name `shock` in them. Then they will be returned alphabetically. So, searching for "Shock", just grabbing the first will result in "Aether Shockwave" which is not what we want.
+    //~ So, it looks like I'll need to locally do a `find` by the name to get the exact match.
+    //~ Very inefficient right now, pulling down all of that extra data. Hopefully I can get better queries in place eventually.
+    // TODO: I should be able to pass in `+oracle:' '` to have no rules text, but that isn't quite working yet.
+    const scryfallQuery = `https://api.scryfall.com/cards/search?q=name:${cardName}${isToken ? '+layout:token' : ''}${color ? '+color:' + color : ''}`;
+    // Can also test queries using the normal Scryfall API: https://scryfall.com/search?q=layout%3Atoken+name%3Agiant+color%3Ar&unique=cards&as=grid&order=name
+
+    console.log(`scryfallQuery is: ${scryfallQuery}`)
+    const response = await axios.get(scryfallQuery);
+
+    const cardWithExactNameMatch = response.data?.data.find(card => card.name === cardName);
+    console.log(`cardWithExactNameMatch: ${cardWithExactNameMatch}`);
+    return cardWithExactNameMatch;
     // handle some load state, etc
   } catch (error) {
     // handle some load state, etc
@@ -37,34 +47,6 @@ const Threat = (props) => {
   const [threatLifeTotal, setThreatLifeTotal] = useState(props.lifeTotal);
   const [isThreatAlive, setIsThreatAlive] = useState(true);
 
-  //~ TODO: this should actually be unecessary! Once I have the API hooked up, I can just pass in the card names
-  const creatureTypes = [
-    {
-      key: 'carnivore',
-      text: '3/1 Carnivore'
-    },
-    {
-      key: 'dragon',
-      text: '4/4 Dragon with flying'
-    },
-    {
-      key: 'elemental',
-      text: '3/1 Elemental'
-    },
-    {
-      key: 'giant',
-      text: '4/4 Giant'
-    },
-    {
-      key: 'goblin',
-      text: '1/1 Goblin'
-    },
-    {
-      key: 'ogre',
-      text: '3/3 Ogre'
-    }
-  ];
-
   const randomSpell = async () => {
     // TODO:
     // Once these are fetched for the first time, we should store the image in the object.
@@ -74,13 +56,12 @@ const Threat = (props) => {
     const cardApiData = await fetchCard(randomSpell.name);
     populateModal(cardApiData, `${props.name} casts ${randomSpell.name}${randomSpell.targetsPlayer ? ' on you' : ''}!`)
   };
-
-  const randomAttack = () => {
-    // todo: handle singular / plural
+  
+  const randomAttack = async () => {
     const whichCreatureType = attacksWith[_.random(0, attacksWith.length - 1)];
-    const whichCreatureTypeName = creatureTypes.find(creatureType => creatureType.key === whichCreatureType.key).text;
     const howMany = _.random(whichCreatureType.quantityRange[0], whichCreatureType.quantityRange[1]);
-    alert(`${props.name} attacks you with ${howMany} ${whichCreatureTypeName}!`)
+    const cardApiData = await fetchCard(whichCreatureType.name, true, 'red');
+    populateModal(cardApiData, `${props.name} attacks you with ${howMany} ${whichCreatureType.name}${howMany > 1 ? 's' : ''}!`);
   };
 
   const dealDamangeToThreat = () => {

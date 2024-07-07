@@ -37,12 +37,12 @@ const App = () => {
         attacksWith={
           [
             {
-              key: 'goblin',
+              name: 'Goblin',
               quantityRange: [3,6]
             },
             {
-              key: 'ogre',
-              quantityRange: [2,4]
+              name: 'Ogre',
+              quantityRange: [1,2]
             }
           ]
         }
@@ -63,7 +63,7 @@ const App = () => {
         rewards={
           [
             {
-              name: 'Goblin', // todo: Need to specify that type of goblin token. There are many.
+              name: 'Goblin', // todo: Need to specify that type of goblin token. There are many. But for now, the API results _seem_ to sort the most basic ones to the top, so we'll see...
               quantityRange: [2,3]
             },
             {
@@ -86,7 +86,7 @@ const App = () => {
         attacksWith={
           [
             {
-              key: 'giant',
+              name: 'Giant',
               quantityRange: [4,6]
             }
           ]
@@ -129,7 +129,7 @@ const App = () => {
         attacksWith={
           [
             {
-              key: 'elemental',
+              name: 'Elemental',
               quantityRange: [6,8]
             }
           ]
@@ -172,11 +172,11 @@ const App = () => {
         attacksWith={
           [
             {
-              key: 'dragon',
+              name: 'Dragon',
               quantityRange: [3,6]
             },
             {
-              key: 'goblin',
+              name: 'Goblin',
               quantityRange: [12,20]
             }
           ]
