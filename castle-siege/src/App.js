@@ -1,7 +1,22 @@
+import React, { useState } from 'react';
 import './App.css';
 import Threat from './Threat.js';
 
-function App() {
+const App = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [cardToDisplay, setCardToDisplay] = useState(null);
+  const [modalText, setModalText] = useState(null);
+
+  const populateModal = (cardData, modalText) => {
+    setCardToDisplay(cardData);
+    setModalText(modalText);
+    setIsModalOpen(true);
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <div className="App">
@@ -18,6 +33,7 @@ function App() {
         name={'Lowland Tribes'}
         isBoss={false}
         lifeTotal={20}
+        populateModal={populateModal}
         attacksWith={
           [
             {
@@ -66,6 +82,7 @@ function App() {
         name={'Highland Tribes'}
         isBoss={false}
         lifeTotal={30}
+        populateModal={populateModal}
         attacksWith={
           [
             {
@@ -89,7 +106,7 @@ function App() {
         rewards={
           [
             {
-              name: 'Treasure',
+              name: 'Junk',
               quantityRange: [1,2]
             },
             {
@@ -103,11 +120,12 @@ function App() {
           ]
         }
       />
-      
+
       <Threat
         name={'Elemental Pools'}
         isBoss={false}
         lifeTotal={50}
+        populateModal={populateModal}
         attacksWith={
           [
             {
@@ -145,11 +163,12 @@ function App() {
           ]
         }
       />
-      
+
       <Threat
         name={'Mons\' Castle'}
         isBoss={true}
         lifeTotal={200}
+        populateModal={populateModal}
         attacksWith={
           [
             {
@@ -175,6 +194,24 @@ function App() {
           ]
         }
       />
+
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <button className="close-button" onClick={closeModal}>
+              &times;
+            </button>
+            <div className="modal-content">
+              {modalText &&
+                <p>{modalText}</p>
+              }
+              {cardToDisplay &&
+                <img src={cardToDisplay?.image_uris?.border_crop} alt={cardToDisplay.name} title={cardToDisplay.name} />
+              }
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

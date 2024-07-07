@@ -31,11 +31,11 @@ const Threat = (props) => {
   const attacksWith = props.attacksWith;
   const usesSpells = props.usesSpells;
   const yieldsReward = props.rewards;
+  const populateModal = props.populateModal;
 
   const [damageToDealToThreat, setDamageToDealToThreat] = useState(0);
   const [threatLifeTotal, setThreatLifeTotal] = useState(props.lifeTotal);
   const [isThreatAlive, setIsThreatAlive] = useState(true);
-  const [cardToDisplay, setCardToDisplay] = useState(null); // todo: need to elegantly handle no card vs a card display
 
   //~ TODO: this should actually be unecessary! Once I have the API hooked up, I can just pass in the card names
   const creatureTypes = [
@@ -72,8 +72,7 @@ const Threat = (props) => {
     // This will save on API hits...
     const randomSpell = usesSpells[_.random(0, usesSpells.length - 1)];
     const cardApiData = await fetchCard(randomSpell.name);
-    setCardToDisplay(cardApiData.image_uris.border_crop);
-    alert(`${props.name} casts ${randomSpell.name}${randomSpell.targetsPlayer ? ' on you' : ''}!`);
+    populateModal(cardApiData, `${props.name} casts ${randomSpell.name}${randomSpell.targetsPlayer ? ' on you' : ''}!`)
   };
 
   const randomAttack = () => {
@@ -104,9 +103,8 @@ const Threat = (props) => {
     } else {
       const whichRewardType = yieldsReward[_.random(0, yieldsReward.length - 1)];
       const cardApiData = await fetchCard(whichRewardType.name, true);
-      setCardToDisplay(cardApiData?.image_uris?.border_crop);
       const howMany = [_.random(whichRewardType.quantityRange[0], whichRewardType.quantityRange[1])];
-      alert(`${props.name} has been defeated! You gain ${howMany} ${whichRewardType.name} Token${howMany > 1 ? 's' : ''}.`);
+      populateModal(cardApiData, `${props.name} has been defeated! You gain ${howMany} ${whichRewardType.name} Token${howMany > 1 ? 's' : ''}.`)
     }
 
   }
@@ -136,12 +134,6 @@ const Threat = (props) => {
           <button onClick={dealDamangeToThreat}>Deal damage to this Threat</button>
         </>
       }
-
-      <div className="currentAttackCard">
-        {cardToDisplay &&
-          <img src={cardToDisplay} alt={cardToDisplay.name} title={cardToDisplay.name} />
-        }
-      </div>
 
     </div>
   );
