@@ -8,10 +8,25 @@ const App = () => {
   const [cardToDisplay, setCardToDisplay] = useState(null);
   const [modalText, setModalText] = useState(null);
 
-  const populateModal = (cardData, modalText) => {
+  const [modalButtonText, setModalButtonText] = useState('zeep,test');
+  const [modalButtonFunction, setModalButtonFunction] = useState(null); // wip
+
+  const populateModal = (cardData, modalText, modalButtonOptions) => {
     setCardToDisplay(cardData);
     setModalText(modalText);
+
+    console.log(`modalButtonOptions is: ${modalButtonOptions}`)
+    console.log(`modalButtonOptions.text is: ${modalButtonOptions.text}`)
+    console.log(`modalButtonOptions.function is: ${modalButtonOptions.function}`)
+
+    // Populate the modal button. This will allow the modal to control multiple attacks per threat.
+    // setModalButtonText('hard-coded CLOSE');
+    setModalButtonText(modalButtonOptions.text); // wip!
+    // setModalButtonFunction(closeModal); // wip!
     setIsModalOpen(true);
+    // setModalButtonFunction(closeModal); // wip!
+    // setModalButtonFunction(modalButtonOptions.function); // wip!
+
   }
 
   const closeModal = () => {
@@ -23,7 +38,7 @@ const App = () => {
 
       <h1>Castle Siege</h1>
 
-      <h2><em>A new format of Magic the Gathering, being developed by Mike Caputo</em></h2>
+      <h2><em>A new format of Magic the Gathering, being developed by Mike Caputo of Calamity Bay Games</em></h2>
 
       <hr />
 
@@ -34,6 +49,10 @@ const App = () => {
         isBoss={false}
         lifeTotal={20}
         populateModal={populateModal}
+        closeModal={closeModal}
+        turnOrder={
+          ['attack']
+        }
         attacksWith={
           [
             {
@@ -43,20 +62,6 @@ const App = () => {
             {
               name: 'Ogre',
               quantityRange: [1,2]
-            }
-          ]
-        }
-        usesSpells={
-          // These will pull from Scryfall API. Just use the spell name exactly and it will fetch and display the cards.
-          // If they have a global effect or should target the player, indicate that here as well.
-          [
-            {
-              name: 'Lightning Bolt',
-              targetsPlayer: true
-            },
-            {
-              name: 'Shock',
-              targetsPlayer: true
             }
           ]
         }
@@ -83,11 +88,15 @@ const App = () => {
         isBoss={false}
         lifeTotal={30}
         populateModal={populateModal}
+        closeModal={closeModal}
+        turnOrder={
+          ['castSpell', 'attack']
+        }
         attacksWith={
           [
             {
               name: 'Giant',
-              quantityRange: [4,6]
+              quantityRange: [3,4]
             }
           ]
         }
@@ -126,6 +135,10 @@ const App = () => {
         isBoss={false}
         lifeTotal={50}
         populateModal={populateModal}
+        closeModal={closeModal}
+        turnOrder={
+          ['castSpell', 'attack']
+        }
         attacksWith={
           [
             {
@@ -169,10 +182,14 @@ const App = () => {
         isBoss={true}
         lifeTotal={200}
         populateModal={populateModal}
+        closeModal={closeModal}
+        turnOrder={
+          ['castSpell', 'attack']
+        }
         attacksWith={
           [
             {
-              name: 'Dragon',
+              name: 'Dragon', // TODO: this prop might need to be more robust, basically an object that would contain as much of a query as needed to get the card/token we want.
               quantityRange: [3,6]
             },
             {
@@ -195,18 +212,21 @@ const App = () => {
         }
       />
 
+      {/* July 9: thinking about trimming this down, no longer using it for Threat-specific purposes. */}
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal">
-            <button className="close-button" onClick={closeModal}>
-              &times;
-            </button>
             <div className="modal-content">
               {modalText &&
                 <p>{modalText}</p>
               }
               {cardToDisplay &&
-                <img src={cardToDisplay?.image_uris?.border_crop} alt={cardToDisplay.name} title={cardToDisplay.name} />
+                <>
+                  <img src={cardToDisplay?.image_uris?.border_crop} alt={cardToDisplay.name} title={cardToDisplay.name} />
+                  <button className="close-button" onClick={closeModal}>
+                    {modalButtonText}
+                  </button>
+                </>
               }
             </div>
           </div>

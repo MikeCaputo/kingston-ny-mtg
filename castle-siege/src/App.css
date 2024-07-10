@@ -60,13 +60,18 @@
 }
 
 .close-button {
-  position: absolute;
+  /* For an upper-right "x" treatment: */
+  /* position: absolute;
   top: 10px;
   right: 10px;
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 20px; */
   cursor: pointer;
+  display: block;
+  margin: 0 auto 0 auto;
+  min-width: 50px;
+  min-height: 30px;
 }
 
 .modal-content {
