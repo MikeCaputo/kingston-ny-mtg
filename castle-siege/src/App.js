@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import Threat from './Threat.js';
 
@@ -8,13 +8,17 @@ const App = () => {
   const [cardToDisplay, setCardToDisplay] = useState(null);
   const [modalText, setModalText] = useState(null);
 
-  const [modalButtonText, setModalButtonText] = useState('zeep,test');
+  const [modalButtonText, setModalButtonText] = useState('');
   const [modalButtonFunction, setModalButtonFunction] = useState(null); // wip
+  const [shouldModalBeOpen, setShouldModalBeOpen] = useState(null); // wip
 
   const populateModal = (cardData, modalText, modalButtonOptions) => {
     setCardToDisplay(cardData);
     setModalText(modalText);
 
+    // console.log(`modalButtonOptions is: ${JSON.stringify(modalButtonOptions)}`)
+    console.log(`cardData is: ${cardData}`)
+    console.log(`modalText is: ${modalText}`)
     console.log(`modalButtonOptions is: ${modalButtonOptions}`)
     console.log(`modalButtonOptions.text is: ${modalButtonOptions.text}`)
     console.log(`modalButtonOptions.function is: ${modalButtonOptions.function}`)
@@ -23,15 +27,23 @@ const App = () => {
     // setModalButtonText('hard-coded CLOSE');
     setModalButtonText(modalButtonOptions.text); // wip!
     // setModalButtonFunction(closeModal); // wip!
-    setIsModalOpen(true);
+    setIsModalOpen(true); // hard-coded for now, need to get back to baseline.
     // setModalButtonFunction(closeModal); // wip!
-    // setModalButtonFunction(modalButtonOptions.function); // wip!
+    // setModalButtonFunction(modalButtonOptions.function); // THIS causes the modal to not work correctly. ** I think it's because: if it passes in `closeModal`, it is for some reason running immediately. Maybe because I'm passing it in without prefacing it with `() => function` ?? 
 
   }
 
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  // shouldModalBeOpen
+  // useEffect(() => {
+  //   setShouldModalBeOpen(shouldModalBeOpen);
+  // }, [shouldModalBeOpen]);
+
+
+
 
   return (
     <div className="App">
@@ -50,6 +62,7 @@ const App = () => {
         lifeTotal={20}
         populateModal={populateModal}
         closeModal={closeModal}
+        setIsModalOpen={setIsModalOpen}
         turnOrder={
           ['attack']
         }
@@ -62,6 +75,14 @@ const App = () => {
             {
               name: 'Ogre',
               quantityRange: [1,2]
+            }
+          ]
+        }
+        usesSpells={
+          [
+            {
+              name: 'Shock',
+              targetsPlayer: true
             }
           ]
         }
@@ -89,6 +110,7 @@ const App = () => {
         lifeTotal={30}
         populateModal={populateModal}
         closeModal={closeModal}
+        setIsModalOpen={setIsModalOpen}
         turnOrder={
           ['castSpell', 'attack']
         }
@@ -136,6 +158,7 @@ const App = () => {
         lifeTotal={50}
         populateModal={populateModal}
         closeModal={closeModal}
+        setIsModalOpen={setIsModalOpen}
         turnOrder={
           ['castSpell', 'attack']
         }
@@ -183,6 +206,7 @@ const App = () => {
         lifeTotal={200}
         populateModal={populateModal}
         closeModal={closeModal}
+        setIsModalOpen={setIsModalOpen}
         turnOrder={
           ['castSpell', 'attack']
         }

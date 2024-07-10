@@ -40,13 +40,17 @@ const Threat = (props) => {
   const [isThreatAlive, setIsThreatAlive] = useState(true);
   
   const [hasCompletedTurn, setHasCompletedTurn] = useState(true);
-  const [actionsForThisTurn, setActionsForThisTurn] = useState(props.turnOrder); // wip...
-  const [currentTurnText, setCurrentTurnText] = useState(''); // wip...
-  const [currentTurnCardToDisplay, setCurrentTurnCardToDisplay] = useState(null); // wip...
+  const [actionsForThisTurn, setActionsForThisTurn] = useState(props.turnOrder); // July 9, 8:30pm. I think I want to deprecate this: I should just use a simple INTEGER that is a counter; 0, 1, 2... and when it reaches the length of the turnOrder, then the modal should be closed and it should go back to zero. Something like that... I'm jumping around on this...
+  const [currentActionIndex, setCurrentActionIndex] = useState(0); // july 10
   const [currentTurnButtonText, setCurrentTurnButtonText] = useState(''); // wip...
   const [currentTurnButtonAction, setCurrentTurnButtonAction] = useState(null); // wip... TODO: I don't think this is needed. I think it should always called `commenceAttack`...
+  // const [currentTurnButtonAction, setCurrentTurnButtonAction] = useState(() => assignCurrentAction()); // wip... TODO: I don't think this is needed. I think it should always called `commenceAttack`...
+
+  // going to use these to control the modal. Jul 10
+  const [isTurnUnderway, setIsTurnUnderway] = useState(false);
+  const [isViewingReward, setIsViewingReward] = useState(false);
   
-  const turnOrder = props.turnOrder; // wip: this will NOT be mutated. Once the current actions are completed, we will set them back to this.
+  const turnOrder = props.turnOrder; // this will NOT be mutated. Once the current actions are completed, we will set them back to this.
 
   const attacksWith = props.attacksWith;
   const usesSpells = props.usesSpells;
@@ -55,89 +59,98 @@ const Threat = (props) => {
   // Modal controls:
   const closeModal = props.closeModal;
   const populateModal = props.populateModal;
+  const setIsModalOpen = props.setIsModalOpen;
 
-  const commenceTurn = async () => { // todo: this might ALWAYS be called. 
-  // does it need to be async? Because it calls another async method...
-  // const commenceTurn = () => {
+  // const commenceTurn = async () => { // todo: this might ALWAYS be called. 
+  // // does it need to be async? Because it calls another async method...
 
-    console.log(`actionsForThisTurn: ${actionsForThisTurn}`)
+  //   console.log(`actionsForThisTurn: ${actionsForThisTurn}`)
+  //   setIsTurnUnderway(true);
     
-    // WIP: this will take the turn, in order.
-    // Working on parameterizing it: can attack or cast a spell, in any order. Can cast multiple spells, and I suppose can perform multiple attacks as well. (This could enable a "Relentless assault" type Threat); or a spell-slinger threat that casts multiple spells, no attacks.
+  //   // WIP: this will take the turn, in order.
+  //   // Working on parameterizing it: can attack or cast a spell, in any order. Can cast multiple spells, and I suppose can perform multiple attacks as well. (This could enable a "Relentless assault" type Threat); or a spell-slinger threat that casts multiple spells, no attacks.
     
-    // TODO: not sure HOW much I need to build a controller or a State Machine here.
-    if(actionsForThisTurn.length) {
-      switch(actionsForThisTurn[0]) {
-        case 'castSpell':
-          console.log(`should be casting a spell`)
-          await randomSpell();
-          setActionsForThisTurn(actionsForThisTurn.slice(1)); // feeling possibly suspicious of this today. I need to consider where should the source of truth lie for all of this? The Threat, or the Modal? I would think the Threat... so I'll have to get that sorted out once the prototype is running...
-          break;
+  //   // Seems kinda wonky, I bet there's a more elegant way.
+  //   // if(!currentTurnButtonAction) {
+  //   //   assignCurrentAction();
+  //   // }
 
-        case 'attack':
-          console.log(`should be performing an attack`)
-          await randomAttack();
-          setActionsForThisTurn(actionsForThisTurn.slice(1));
-        break;
-      }
-    }
+  //   console.log(`currentTurnButtonAction is: ${currentTurnButtonAction}`)
+    
+  //   // crude ceck here.... I am being so ignorant with this.
+  //   if(currentTurnButtonAction) {
+  //     await currentTurnButtonAction();
+  //   }
+  //   setActionsForThisTurn(actionsForThisTurn.slice(1)); // feeling possibly suspicious of this today. I need to consider where should the source of truth lie for all of this? The Threat, or the Modal? I would think the Threat... so I'll have to get that sorted out once the prototype is running...
+  //   setCurrentActionIndex(currentActionIndex++);
+    
+    
+  //   // if(actionsForThisTurn.length) {
+  //   //   switch(actionsForThisTurn[0]) {
+  //   //     case 'castSpell':
+  //   //       console.log(`should be casting a spell`)
+  //   //       await randomSpell();
+  //   //       setActionsForThisTurn(actionsForThisTurn.slice(1)); // feeling possibly suspicious of this today. I need to consider where should the source of truth lie for all of this? The Threat, or the Modal? I would think the Threat... so I'll have to get that sorted out once the prototype is running...
+  //   //       break;
 
-    // This hasn't updated yet, that's why. Let me confirm...
-    console.log(`actionsForThisTurn.length: ${actionsForThisTurn.length}`)
-    // setHasCompletedTurn(actionsForThisTurn.length === 0); // todo: should make this a computed function; do not manually assign it like this.
+  //   //     case 'attack':
+  //   //       console.log(`should be performing an attack`)
+  //   //       await randomAttack();
+  //   //       setActionsForThisTurn(actionsForThisTurn.slice(1));
+  //   //     break;
+  //   //   }
+  //   // }
 
-    // Once finished, set `setHasCompletedTurn(true)`. This will control modal button states.
+  //   // This hasn't updated yet, that's why. Let me confirm...
+  //   // console.log(`actionsForThisTurn.length: ${actionsForThisTurn.length}`)
+  //   // setHasCompletedTurn(actionsForThisTurn.length === 0); // todo: should make this a computed function; do not manually assign it like this.
 
-  };
+  //   // Once finished, set `setHasCompletedTurn(true)`. This will control modal button states.
 
-  // need this as a wrapper function, so that randomSpell and randomAttack can be called using await -- needed to prevent an infinite loop of zaniness.
-  const runCurrentTurnButtonAction = async () => {
-    if(actionsForThisTurn.length == 0) {
-      setCurrentTurnCardToDisplay(null);
-      setCurrentTurnText('');
-      // reset for the next use
-      setActionsForThisTurn(turnOrder);
-    } else {
-      await commenceTurn();
-    }
-    // if(currentTurnButtonAction) {
-    //   await currentTurnButtonAction();
-    // }
-  }
+  // };
 
-  // const closeCurrentTurnArea = () => {
-  const closeCurrentTurnArea = useCallback(async () => {
-    console.log('hide the "attack" area ~ ~ ')
-    // This could be set imperatively, but.... I can come back to that.
-    setCurrentTurnCardToDisplay(null);
-    setCurrentTurnText('');
-  });
+  // const concludeTurn = () => {
+  //   setIsTurnUnderway(false);
+  // };
 
-  useEffect(() => {
-    // action on update of specified state changes
-    // Here is a good learning resource for this: https://daveceddia.com/useeffect-hook-examples/
-    if(actionsForThisTurn.length === 0) {
-      setCurrentTurnButtonText('Finish');
-      // setCurrentTurnButtonAction(() => closeCurrentTurnArea);
-      // setCurrentTurnButtonAction(() => closeCurrentTurnArea);
-      console.log(`the button action should be: ${closeCurrentTurnArea}`)
-    } else if(actionsForThisTurn[0] == 'castSpell') {
-      setCurrentTurnButtonText('Next');
-      // setCurrentTurnButtonAction(() => randomSpell);
-    } else if(actionsForThisTurn[0] == 'attack') {
-      setCurrentTurnButtonText('Next');
-      // setCurrentTurnButtonAction(() => randomAttack);
-    }
+  // const concludeReward = () => {
+  //   setIsViewingReward(false);
+  // };
 
-    setHasCompletedTurn(actionsForThisTurn.length === 0)
 
-    // if(actionsForThisTurn.length === 0) {
-    //   console.log('getting here, right? I have an n+1 error with my counter...')
-    //   setCurrentTurnCardToDisplay(null);
-    //   setCurrentTurnText('');
-    // }
+  // useEffect(() => {
+  //   if(currentActionIndex === turnOrder.length) {
+  //     setCurrentActionIndex(0); // would this cause an infinite number of renders? ***********
+  //   }
+  // }, [currentActionIndex]);
 
-  }, [actionsForThisTurn]);
+  // wip: controlling modal in a more React-like way
+  // useEffect(() => {
+  //   setIsModalOpen(isTurnUnderway || isViewingReward);
+  // }, [isTurnUnderway, isViewingReward]);
+
+  // const assignCurrentAction = () => {
+  //   if(actionsForThisTurn.length === 0) {
+  //     setCurrentTurnButtonText('Finish');
+  //     // setCurrentTurnButtonAction(() => closeModal);
+  //     setCurrentTurnButtonAction(() => concludeTurn);
+  //     // setCurrentTurnButtonAction(() => closeCurrentTurnArea);
+  //     // console.log(`the button action should be: ${closeCurrentTurnArea}`)
+  //   } else if(actionsForThisTurn[0] == 'castSpell') {
+  //     setCurrentTurnButtonText('Next');
+  //     setCurrentTurnButtonAction(() => randomSpell);
+  //   } else if(actionsForThisTurn[0] == 'attack') {
+  //     setCurrentTurnButtonText('Next');
+  //     setCurrentTurnButtonAction(() => randomAttack);
+  //   }
+
+  //   setHasCompletedTurn(actionsForThisTurn.length === 0);
+    
+  // };
+
+  // useEffect(() => {
+  //   assignCurrentAction();
+  // }, [actionsForThisTurn]);
 
   // const randomSpell = async () => {
   const randomSpell = useCallback(async () => {
@@ -149,17 +162,15 @@ const Threat = (props) => {
     const cardApiData = await fetchCard(randomSpell.name);
     // New idea, July 9th: maybe this all should NOT bubble up to the parent commponent modal. What purpose does that serve...? Maybe each Threat should handle displaying its own attacks and such??
 
-    // wip; this can be consolidated later, I'm freewheeling atm....
-    setCurrentTurnCardToDisplay(cardApiData);
-    setCurrentTurnText(`${props.name} casts ${randomSpell.name}${randomSpell.targetsPlayer ? ' on you' : ''}!`);
-    // generateModalButtonOptions();
+    // console.log(`random spell... inspecting params: ${{'text': currentTurnButtonText, 'function': commenceTurn}}`)
 
 
-    // populateModal(
-    //   cardApiData,
-    //   `${props.name} casts ${randomSpell.name}${randomSpell.targetsPlayer ? ' on you' : ''}!`,
-    //   generateModalButtonOptions()
-    // )
+    populateModal(
+      cardApiData,
+      `${props.name} casts ${randomSpell.name}${randomSpell.targetsPlayer ? ' on you' : ''}!`,
+      // {'text': currentTurnButtonText, 'function': commenceTurn}
+      {'text': currentTurnButtonText, 'function': closeModal}
+    )
   }, [usesSpells, props.name]);
   
   // const randomAttack = async () => {
@@ -168,16 +179,15 @@ const Threat = (props) => {
     const howMany = _.random(whichCreatureType.quantityRange[0], whichCreatureType.quantityRange[1]);
     const cardApiData = await fetchCard(whichCreatureType.name, true, 'red');
     
-    // wip; this can be consolidated later, I'm freewheeling atm....
-    setCurrentTurnCardToDisplay(cardApiData);
-    setCurrentTurnText(`${props.name} attacks you with ${howMany} ${whichCreatureType.name}${howMany > 1 ? 's' : ''}!`);
-    // generateModalButtonOptions();
-    
-    // populateModal(
-    //   cardApiData,
-    //   `${props.name} attacks you with ${howMany} ${whichCreatureType.name}${howMany > 1 ? 's' : ''}!`,
-    //   generateModalButtonOptions()
-    // );
+
+    populateModal(
+      cardApiData,
+      `${props.name} attacks you with ${howMany} ${whichCreatureType.name}${howMany > 1 ? 's' : ''}!`,
+      // {text: currentTurnButtonText, function: currentTurnButtonAction}
+      // {'text': currentTurnButtonText, 'function': commenceTurn}
+      // {'text': currentTurnButtonText, 'function': closeModal}
+      {text: currentTurnButtonText, function: closeModal}
+    )
   }, [attacksWith, props.name]);
 
   const dealDamangeToThreat = () => {
@@ -189,7 +199,7 @@ const Threat = (props) => {
       threatIsDefeated();
     }
 
-  }
+  };
 
   const threatIsDefeated = async () => {
 
@@ -201,7 +211,13 @@ const Threat = (props) => {
       const whichRewardType = yieldsReward[_.random(0, yieldsReward.length - 1)];
       const cardApiData = await fetchCard(whichRewardType.name, true);
       const howMany = [_.random(whichRewardType.quantityRange[0], whichRewardType.quantityRange[1])];
-      populateModal(cardApiData, `${props.name} has been defeated! You gain ${howMany} ${whichRewardType.name} Token${howMany > 1 ? 's' : ''}.`)
+      setIsViewingReward(true);
+      populateModal(
+        cardApiData,
+        `${props.name} has been defeated! You gain ${howMany} ${whichRewardType.name} Token${howMany > 1 ? 's' : ''}.`,
+        {text: 'Close', function: closeModal}
+        // {text: 'Close', function: concludeReward}
+      );
     }
 
   }
@@ -214,9 +230,9 @@ const Threat = (props) => {
       {isThreatAlive &&
         <>
           {/* <button onClick={commenceTurn} disabled={!hasCompletedTurn}>Commence {props.name}'s turn</button> */}
-          <button onClick={commenceTurn}>Commence {props.name}'s turn</button>
-          <button onClick={randomSpell}>Cast from among the pre-set spells</button>
-          <button onClick={randomAttack}>Have the enemy perform an attack</button>
+          {/* <button onClick={commenceTurn}>Commence {props.name}'s turn</button> */}
+          <button onClick={randomSpell}>Cast from among the pre-set spells (to deprecate)</button>
+          <button onClick={randomAttack}>Have the enemy perform an attack (to deprecate)</button>
         </>
       }
 
@@ -231,20 +247,6 @@ const Threat = (props) => {
             onChange={e => setDamageToDealToThreat(e.target.value)}  
           />
           <button onClick={dealDamangeToThreat}>Deal damage to this Threat</button>
-        </>
-      }
-
-      {/* WIP: current attack area */}
-      {currentTurnText &&
-        <p>{currentTurnText}</p>
-      }
-      {currentTurnCardToDisplay &&
-        <>
-          <img src={currentTurnCardToDisplay?.image_uris?.border_crop} alt={currentTurnCardToDisplay.name} title={currentTurnCardToDisplay.name} />
-          {/* <button className="close-button" onClick={currentTurnButtonAction}> */}
-          <button className="close-button" onClick={runCurrentTurnButtonAction}>
-            {currentTurnButtonText}
-          </button>
         </>
       }
 
