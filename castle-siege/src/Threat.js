@@ -227,7 +227,7 @@ const Threat = (props) => {
       }
 
       const hasAdditionalStepsInTurn = turnOrder.length > currentActionIndex + 1;
-      setCurrentTurnButtonText(hasAdditionalStepsInTurn ? 'Next' : 'Finish');
+      setCurrentTurnButtonText(hasAdditionalStepsInTurn ? 'Next' : 'End Turn');
     }
 
     setIsTurnUnderway(currentActionIndex > -1); // just a computed handy variable
@@ -327,9 +327,9 @@ const Threat = (props) => {
         <>
           {/* <button onClick={commenceTurn} disabled={!hasCompletedTurn}>Commence {props.name}'s turn</button> */}
           {/* <button onClick={commenceTurn}>Commence {props.name}'s turn</button> */}
-          <button onClick={randomSpell}>Cast from among the pre-set spells (to deprecate)</button>
+          {/* <button onClick={randomSpell}>Cast from among the pre-set spells (to deprecate)</button>
           <button onClick={randomAttack}>Have the enemy perform an attack (to deprecate)</button>
-          <button onClick={rotateThroughTurn}>Rotate through the turn (just console for now)</button>
+          <button onClick={rotateThroughTurn}>Rotate through the turn (just console for now)</button> */}
         </>
       }
 
@@ -355,12 +355,18 @@ const Threat = (props) => {
               <img src={currentCardToDisplay?.image_uris?.border_crop} alt={currentCardToDisplay.name} title={currentCardToDisplay.name} />
               {/* <button className="close-button" onClick={currentTurnButtonAction}> */}
               {/* <button className="close-button" onClick={runCurrentTurnButtonAction}> */}
-              <button className="close-button" onClick={() => console.log('pressed button.')}>
-              {currentTurnButtonText}
+              {/* <button className="close-button" onClick={() => console.log('pressed button.')}> */}
+              <button className="close-button" onClick={rotateThroughTurn}>
+                {currentTurnButtonText}
               </button>
               </>
             }
           </>
+        }
+        {!isTurnUnderway &&
+          <button className="close-button" onClick={rotateThroughTurn}>
+            {'Begin Turn'}
+          </button>
         }
         
         
