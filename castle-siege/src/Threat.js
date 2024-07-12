@@ -41,10 +41,11 @@ const Threat = (props) => {
   
   const [hasCompletedTurn, setHasCompletedTurn] = useState(true);
   const [actionsForThisTurn, setActionsForThisTurn] = useState(props.turnOrder); // July 9, 8:30pm. I think I want to deprecate this: I should just use a simple INTEGER that is a counter; 0, 1, 2... and when it reaches the length of the turnOrder, then the modal should be closed and it should go back to zero. Something like that... I'm jumping around on this...
-  const [currentActionIndex, setCurrentActionIndex] = useState(0); // july 10
+  
+  const [currentCardToDisplay, setCurrentCardToDisplay] = useState();
   const [currentTurnButtonText, setCurrentTurnButtonText] = useState(''); // wip...
   const [currentTurnButtonAction, setCurrentTurnButtonAction] = useState(null); // wip... TODO: I don't think this is needed. I think it should always called `commenceAttack`...
-  // const [currentTurnButtonAction, setCurrentTurnButtonAction] = useState(() => assignCurrentAction()); // wip... TODO: I don't think this is needed. I think it should always called `commenceAttack`...
+  const [cardAreaText, setCardAreaText] = useState('');
 
   // going to use these to control the modal. Jul 10
   const [isTurnUnderway, setIsTurnUnderway] = useState(false);
@@ -152,43 +153,105 @@ const Threat = (props) => {
   //   assignCurrentAction();
   // }, [actionsForThisTurn]);
 
+
+
+
+
+  // This is a pattern tha can resolve the asynchronous, "update isn't reflected yet" nature of React bundling updates.
+  // useEffect(() => {
+  //   // I think this is just to kick the application into updating immediately.
+  //   if (currentTurnButtonText) {
+  //     console.log('Button text updated:', currentTurnButtonText);
+  //     // Perform any actions based on the updated state here
+  //   }
+  // }, [currentTurnButtonText]);
+
+  // const updateButtonText = () => {
+  //   setCurrentTurnButtonText('Next');
+  //   // currentTurnButtonText will still be the old value here
+  // };
+
+
+
+
+  // ==============================================
+  // July 10:
+  // Okay, I have a little baseline here. This is what I needed to do the first time around, no craziness. Just build out from here, slowly and incrementally.
+  const [currentActionIndex, setCurrentActionIndex] = useState(0); // july 10
+  const rotateThroughTurn = () => {
+    console.log(`currentActionIndex: ${currentActionIndex}`)
+    console.log(`current turn is: ${turnOrder[currentActionIndex]}`)
+    console.log(`modal text should reflect: ${turnOrder[currentActionIndex]}`)
+    console.log(`turnOrder.length: ${turnOrder.length}`)
+    console.log(`currentActionIndex + 1: ${currentActionIndex + 1}`)
+    console.log(`turnOrder.length > currentActionIndex + 1: ${turnOrder.length > currentActionIndex + 1}`)
+
+    // Need to add one to account for the length
+    const hasAdditionalStepsInTurn = turnOrder.length > currentActionIndex + 1;
+    setCurrentTurnButtonText(hasAdditionalStepsInTurn ? 'Next' : 'Finish');
+    // updateButtonText(hasAdditionalStepsInTurn ? 'Next' : 'Finish');
+    setCurrentActionIndex(hasAdditionalStepsInTurn ? currentActionIndex + 1 : 0);
+    // console.log(`And the button text should read: ${turnOrder.length > currentActionIndex + 1 ? 'Next' : 'Finish'}`);
+    // if(turnOrder.length > currentActionIndex + 1) {
+    //   setCurrentActionIndex(currentActionIndex + 1);
+    // } else {
+    //   setCurrentActionIndex(0);
+    // }
+  };
+  // ==============================================
+
+
   // const randomSpell = async () => {
   const randomSpell = useCallback(async () => {
+
+    rotateThroughTurn(); // wip, should this be called imperatively?
+
     // TODO:
     // Once these are fetched for the first time, we should store the image in the object.
     // Subsequently it will be obtained locally.
     // This will save on API hits...
     const randomSpell = usesSpells[_.random(0, usesSpells.length - 1)];
     const cardApiData = await fetchCard(randomSpell.name);
+    const thisText = `${props.name} casts ${randomSpell.name}${randomSpell.targetsPlayer ? ' on you' : ''}!`;
+    setCurrentCardToDisplay(cardApiData);
+    setCardAreaText(thisText);
     // New idea, July 9th: maybe this all should NOT bubble up to the parent commponent modal. What purpose does that serve...? Maybe each Threat should handle displaying its own attacks and such??
 
     // console.log(`random spell... inspecting params: ${{'text': currentTurnButtonText, 'function': commenceTurn}}`)
 
 
-    populateModal(
-      cardApiData,
-      `${props.name} casts ${randomSpell.name}${randomSpell.targetsPlayer ? ' on you' : ''}!`,
-      // {'text': currentTurnButtonText, 'function': commenceTurn}
-      {'text': currentTurnButtonText, 'function': closeModal}
-    )
-  }, [usesSpells, props.name]);
+    // populateModal(
+    //   cardApiData,
+    //   thisText,
+    //   // {'text': currentTurnButtonText, 'function': commenceTurn}
+    //   {'text': currentTurnButtonText, 'function': closeModal}
+    // )
+  // }, [usesSpells, props.name]);
+  });
   
   // const randomAttack = async () => {
   const randomAttack = useCallback(async () => {
+
+    rotateThroughTurn(); // wip, should this be called imperatively?
+
     const whichCreatureType = attacksWith[_.random(0, attacksWith.length - 1)];
     const howMany = _.random(whichCreatureType.quantityRange[0], whichCreatureType.quantityRange[1]);
     const cardApiData = await fetchCard(whichCreatureType.name, true, 'red');
+    const thisText = `${props.name} attacks you with ${howMany} ${whichCreatureType.name}${howMany > 1 ? 's' : ''}!`;
+    setCurrentCardToDisplay(cardApiData);
+    setCardAreaText(thisText);
     
 
-    populateModal(
-      cardApiData,
-      `${props.name} attacks you with ${howMany} ${whichCreatureType.name}${howMany > 1 ? 's' : ''}!`,
-      // {text: currentTurnButtonText, function: currentTurnButtonAction}
-      // {'text': currentTurnButtonText, 'function': commenceTurn}
-      // {'text': currentTurnButtonText, 'function': closeModal}
-      {text: currentTurnButtonText, function: closeModal}
-    )
-  }, [attacksWith, props.name]);
+    // populateModal(
+    //   cardApiData,
+    //   thisText,
+    //   // {text: currentTurnButtonText, function: currentTurnButtonAction}
+    //   // {'text': currentTurnButtonText, 'function': commenceTurn}
+    //   // {'text': currentTurnButtonText, 'function': closeModal}
+    //   {text: currentTurnButtonText, function: closeModal}
+    // )
+  });
+  // }, [attacksWith, props.name]);
 
   const dealDamangeToThreat = () => {
     const newLifeTotal = Math.max(0, threatLifeTotal - damageToDealToThreat);
@@ -233,6 +296,7 @@ const Threat = (props) => {
           {/* <button onClick={commenceTurn}>Commence {props.name}'s turn</button> */}
           <button onClick={randomSpell}>Cast from among the pre-set spells (to deprecate)</button>
           <button onClick={randomAttack}>Have the enemy perform an attack (to deprecate)</button>
+          <button onClick={rotateThroughTurn}>Rotate through the turn (just console for now)</button>
         </>
       }
 
@@ -247,6 +311,24 @@ const Threat = (props) => {
             onChange={e => setDamageToDealToThreat(e.target.value)}  
           />
           <button onClick={dealDamangeToThreat}>Deal damage to this Threat</button>
+        
+        
+          {cardAreaText &&
+            <p>{cardAreaText}</p>
+          }
+          {currentCardToDisplay &&
+            <>
+              <img src={currentCardToDisplay?.image_uris?.border_crop} alt={currentCardToDisplay.name} title={currentCardToDisplay.name} />
+              {/* <button className="close-button" onClick={currentTurnButtonAction}> */}
+              {/* <button className="close-button" onClick={runCurrentTurnButtonAction}> */}
+              <button className="close-button" onClick={() => console.log('pressed button.')}>
+                {currentTurnButtonText}
+              </button>
+            </>
+          }
+        
+        
+        
         </>
       }
 
