@@ -165,7 +165,7 @@ const Threat = (props) => {
   //     // Perform any actions based on the updated state here
   //   }
   // }, [currentTurnButtonText]);
-
+  
   // const updateButtonText = () => {
   //   setCurrentTurnButtonText('Next');
   //   // currentTurnButtonText will still be the old value here
@@ -177,34 +177,67 @@ const Threat = (props) => {
   // ==============================================
   // July 10:
   // Okay, I have a little baseline here. This is what I needed to do the first time around, no craziness. Just build out from here, slowly and incrementally.
-  const [currentActionIndex, setCurrentActionIndex] = useState(0); // july 10
+  // const [currentActionIndex, setCurrentActionIndex] = useState(0); // july 10
+  const [currentActionIndex, setCurrentActionIndex] = useState(-1); // july 12
   const rotateThroughTurn = () => {
-    console.log(`currentActionIndex: ${currentActionIndex}`)
-    console.log(`current turn is: ${turnOrder[currentActionIndex]}`)
-    console.log(`modal text should reflect: ${turnOrder[currentActionIndex]}`)
-    console.log(`turnOrder.length: ${turnOrder.length}`)
-    console.log(`currentActionIndex + 1: ${currentActionIndex + 1}`)
-    console.log(`turnOrder.length > currentActionIndex + 1: ${turnOrder.length > currentActionIndex + 1}`)
+    // console.log(`currentActionIndex: ${currentActionIndex}`)
+    // console.log(`current turn is: ${turnOrder[currentActionIndex]}`)
+    // console.log(`modal text should reflect: ${turnOrder[currentActionIndex]}`)
+    // console.log(`turnOrder.length: ${turnOrder.length}`)
+    // console.log(`currentActionIndex + 1: ${currentActionIndex + 1}`)
+    // console.log(`turnOrder.length > currentActionIndex + 1: ${turnOrder.length > currentActionIndex + 1}`)
+
+
+    /// NEW IDEA *********************************************
+    // This function should do nothing but rotate the index from 0-n, then -1.
+    // 0-n , it runs the current turn
+    // -1 means the turn isnt active
+    // then everything just computed off that... 
 
     // Need to add one to account for the length
     const hasAdditionalStepsInTurn = turnOrder.length > currentActionIndex + 1;
-    setCurrentTurnButtonText(hasAdditionalStepsInTurn ? 'Next' : 'Finish');
-    // updateButtonText(hasAdditionalStepsInTurn ? 'Next' : 'Finish');
-    setCurrentActionIndex(hasAdditionalStepsInTurn ? currentActionIndex + 1 : 0);
-    // console.log(`And the button text should read: ${turnOrder.length > currentActionIndex + 1 ? 'Next' : 'Finish'}`);
-    // if(turnOrder.length > currentActionIndex + 1) {
-    //   setCurrentActionIndex(currentActionIndex + 1);
-    // } else {
-    //   setCurrentActionIndex(0);
-    // }
+    setCurrentActionIndex(hasAdditionalStepsInTurn ? currentActionIndex + 1 : -1);//TODO: make this -1
   };
-  // ==============================================
+      // ==============================================
+      
+    // useEffect(async () => {
+    useEffect(() => {
+
+      console.log(`in the useEffect; currentActionIndex is ${currentActionIndex}`)
 
 
-  // const randomSpell = async () => {
+      if(currentActionIndex > -1) {
+
+        if(actionsForThisTurn.length) {
+          switch(actionsForThisTurn[currentActionIndex]) {
+            case 'castSpell':
+              console.log(`should be casting a spell`)
+              // await randomSpell();
+              randomSpell();
+              // setActionsForThisTurn(actionsForThisTurn.slice(1)); // feeling possibly suspicious of this today. I need to consider where should the source of truth lie for all of this? The Threat, or the Modal? I would think the Threat... so I'll have to get that sorted out once the prototype is running...
+              break;
+  
+          case 'attack':
+            console.log(`should be performing an attack`)
+            // await randomAttack();
+            randomAttack();
+            // setActionsForThisTurn(actionsForThisTurn.slice(1));
+            break;
+        }
+      }
+
+      const hasAdditionalStepsInTurn = turnOrder.length > currentActionIndex + 1;
+      setCurrentTurnButtonText(hasAdditionalStepsInTurn ? 'Next' : 'Finish');
+    }
+
+    setIsTurnUnderway(currentActionIndex > -1); // just a computed handy variable
+
+  }, [currentActionIndex]);
+    
+      // const randomSpell = async () => {
   const randomSpell = useCallback(async () => {
 
-    rotateThroughTurn(); // wip, should this be called imperatively?
+    // rotateThroughTurn(); // wip, should this be called imperatively?
 
     // TODO:
     // Once these are fetched for the first time, we should store the image in the object.
@@ -232,7 +265,7 @@ const Threat = (props) => {
   // const randomAttack = async () => {
   const randomAttack = useCallback(async () => {
 
-    rotateThroughTurn(); // wip, should this be called imperatively?
+    // rotateThroughTurn(); // wip, should this be called imperatively?
 
     const whichCreatureType = attacksWith[_.random(0, attacksWith.length - 1)];
     const howMany = _.random(whichCreatureType.quantityRange[0], whichCreatureType.quantityRange[1]);
@@ -311,21 +344,24 @@ const Threat = (props) => {
             onChange={e => setDamageToDealToThreat(e.target.value)}  
           />
           <button onClick={dealDamangeToThreat}>Deal damage to this Threat</button>
-        
-        
-          {cardAreaText &&
-            <p>{cardAreaText}</p>
-          }
-          {currentCardToDisplay &&
-            <>
+
+        {isTurnUnderway && 
+           <>
+            {cardAreaText &&
+              <p>{cardAreaText}</p>
+            }
+            {currentCardToDisplay &&
+              <>
               <img src={currentCardToDisplay?.image_uris?.border_crop} alt={currentCardToDisplay.name} title={currentCardToDisplay.name} />
               {/* <button className="close-button" onClick={currentTurnButtonAction}> */}
               {/* <button className="close-button" onClick={runCurrentTurnButtonAction}> */}
               <button className="close-button" onClick={() => console.log('pressed button.')}>
-                {currentTurnButtonText}
+              {currentTurnButtonText}
               </button>
-            </>
-          }
+              </>
+            }
+          </>
+        }
         
         
         
