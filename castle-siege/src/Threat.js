@@ -1,4 +1,4 @@
-import './App.css';
+import './css/App.scss';
 import _, { random } from 'underscore';
 // import React, { useState, useEffect } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -68,20 +68,28 @@ const Threat = (props) => {
     // Need to add one to account for the length
     const hasAdditionalStepsInTurn = turnOrder.length > currentActionIndex + 1;
     setCurrentActionIndex(hasAdditionalStepsInTurn ? currentActionIndex + 1 : -1);
+
+    // If the turn has ended, clear out this data so it will not display momentarily when a new turn begins.
+    if(!hasAdditionalStepsInTurn) {
+      console.log('clearing out....')
+      setCurrentCardToDisplay(null);
+      setCardAreaText('');
+    }
   };
 
-    useEffect(() => {
-      console.log(`in the useEffect; currentActionIndex is ${currentActionIndex}`)
-      if(currentActionIndex > -1) {
+  // This reacts to `currentActionIndex`, determining the rendering of the turn order.
+  useEffect(() => {
+    console.log(`in the useEffect; currentActionIndex is ${currentActionIndex}`)
+    if(currentActionIndex > -1) {
 
-        if(turnOrder.length) {
-          switch(turnOrder[currentActionIndex]) {
-            case 'castSpell':
-              console.log(`should be casting a spell`)
-              // await randomSpell();
-              randomSpell();
-              break;
-  
+      if(turnOrder.length) {
+        switch(turnOrder[currentActionIndex]) {
+          case 'castSpell':
+            console.log(`should be casting a spell`)
+            // await randomSpell();
+            randomSpell();
+            break;
+
           case 'attack':
             console.log(`should be performing an attack`)
             // await randomAttack();
@@ -89,7 +97,6 @@ const Threat = (props) => {
             break;
         }
       }
-
       const hasAdditionalStepsInTurn = turnOrder.length > currentActionIndex + 1;
       setCurrentTurnButtonText(hasAdditionalStepsInTurn ? 'Next' : 'End Turn');
     }
@@ -164,7 +171,8 @@ const Threat = (props) => {
           <input
             type="number"
             value={damageToDealToThreat}
-            onChange={e => setDamageToDealToThreat(e.target.value)}  
+            onChange={e => setDamageToDealToThreat(e.target.value)}
+            onFocus={(e) => e.target.select()}
           />
           <button onClick={dealDamangeToThreat}>Deal damage to this Threat</button>
 
@@ -175,16 +183,16 @@ const Threat = (props) => {
               }
               {currentCardToDisplay &&
                 <>
-                <img src={currentCardToDisplay?.image_uris?.border_crop} alt={currentCardToDisplay.name} title={currentCardToDisplay.name} />
-                <button className="close-button" onClick={rotateThroughTurn}>
-                  {currentTurnButtonText}
-                </button>
+                  <img src={currentCardToDisplay?.image_uris?.border_crop} alt={currentCardToDisplay.name} title={currentCardToDisplay.name} />
+                  <button onClick={rotateThroughTurn}>
+                    {currentTurnButtonText}
+                  </button>
                 </>
               }
             </>
           }
           {!isTurnUnderway &&
-            <button className="close-button" onClick={rotateThroughTurn}>
+            <button onClick={rotateThroughTurn}>
               {'Begin Turn'}
             </button>
           }

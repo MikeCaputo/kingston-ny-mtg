@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './App.css';
+import './css/App.scss';
 import Threat from './Threat.js';
 
 const App = () => {
@@ -50,7 +50,7 @@ const App = () => {
 
       <h1>Castle Siege</h1>
 
-      <h2><em>A new format of Magic the Gathering, being developed by Mike Caputo of Calamity Bay Games</em></h2>
+      <h4>A new format of Magic the Gathering, being developed by Mike Caputo of Calamity Bay Games</h4>
 
       <hr />
 
@@ -203,7 +203,7 @@ const App = () => {
       <Threat
         name={'Mons\' Castle'}
         isBoss={true}
-        lifeTotal={200}
+        lifeTotal={100}
         populateModal={populateModal}
         closeModal={closeModal}
         setIsModalOpen={setIsModalOpen}

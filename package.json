@@ -12,6 +12,7 @@
     "mtgsdk": "^1.0.1"
   },
   "devDependencies": {
-    "browserify": "^17.0.0"
+    "browserify": "^17.0.0",
+    "sass": "^1.77.8"
   }
 }
