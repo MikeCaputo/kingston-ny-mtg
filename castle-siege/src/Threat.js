@@ -3,6 +3,7 @@ import _, { random } from 'underscore';
 // import React, { useState, useEffect } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
+import mtgBack from './images/card-back.jpg'; // wip
 
 const fetchCard = async (cardName, isToken = false, color = '') => {
   // TODO: before hitting the API, we need to check if we've already fetched and stored it locally. That will save greatly on API hits.
@@ -41,7 +42,7 @@ const Threat = (props) => {
   const [isThreatAlive, setIsThreatAlive] = useState(true);
 
   // Turn-specific display elements
-  const [currentCardToDisplay, setCurrentCardToDisplay] = useState();
+  const [currentCardToDisplay, setCurrentCardToDisplay] = useState(null);
   const [currentTurnButtonText, setCurrentTurnButtonText] = useState('');
   const [cardAreaText, setCardAreaText] = useState('');
 
@@ -79,29 +80,34 @@ const Threat = (props) => {
 
   // This reacts to `currentActionIndex`, determining the rendering of the turn order.
   useEffect(() => {
-    console.log(`in the useEffect; currentActionIndex is ${currentActionIndex}`)
-    if(currentActionIndex > -1) {
+    // console.log(`in the useEffect; currentActionIndex is ${currentActionIndex}`)
+    // wip: set a 1-second timeout to allow for css transitions
+    const timeoutId = setTimeout(() => {
+      if(currentActionIndex > -1) {
+        if(turnOrder.length) {
+          switch(turnOrder[currentActionIndex]) {
+            case 'castSpell':
+              // console.log(`should be casting a spell`)
+              // await randomSpell();
+              randomSpell();
+              break;
 
-      if(turnOrder.length) {
-        switch(turnOrder[currentActionIndex]) {
-          case 'castSpell':
-            console.log(`should be casting a spell`)
-            // await randomSpell();
-            randomSpell();
-            break;
-
-          case 'attack':
-            console.log(`should be performing an attack`)
-            // await randomAttack();
-            randomAttack();
-            break;
+            case 'attack':
+              // console.log(`should be performing an attack`)
+              // await randomAttack();
+              randomAttack();
+              break;
+          }
         }
+        const hasAdditionalStepsInTurn = turnOrder.length > currentActionIndex + 1;
+        setCurrentTurnButtonText(hasAdditionalStepsInTurn ? 'Next' : 'End Turn');
       }
-      const hasAdditionalStepsInTurn = turnOrder.length > currentActionIndex + 1;
-      setCurrentTurnButtonText(hasAdditionalStepsInTurn ? 'Next' : 'End Turn');
-    }
+    }, 1000);
 
     setIsTurnUnderway(currentActionIndex > -1); // just a computed handy variable
+
+    // Cleanup function to clear the timeout if the component unmounts
+    return () => clearTimeout(timeoutId);
 
   }, [currentActionIndex]);
 
@@ -144,7 +150,15 @@ const Threat = (props) => {
     setIsThreatAlive(false);
 
     if(props.isBoss) {
-      alert(`Hurrah, hurrah forever! ${props.name} has been defeated! Your team has vanquished this terrible foe. Now, only the fates know how long it will be until a new leader arises to take their place...`);
+      populateModal(
+        null,
+        `Hurrah, hurrah forever! ${props.name} has been defeated! Your team has vanquished this terrible foe. Now, only the fates know how long it will be until a new leader arises to take their place...`,
+        {text: 'A Well-Earned Victory', function: setIsModalOpen(false)}
+      );
+
+      // todo: would be fun to have a "game summary screen", showing which players are alive, who dealt or took the most damage, etc... fun stats for WAY later in this project, if ever.
+      // Could even do an AI-generated summary using all of that data, made narrative with the commander names... that would be really fun.
+
     } else {
       const whichRewardType = yieldsReward[_.random(0, yieldsReward.length - 1)];
       const cardApiData = await fetchCard(whichRewardType.name, true);
@@ -158,8 +172,15 @@ const Threat = (props) => {
 
   }
 
+  const fadeInCardBack = () => {
+
+  }
+
   return (
-    <div className={`Threat ${isThreatAlive ? '' : 'defeated'}`}>
+    <div
+      className={`Threat ${isThreatAlive ? '' : 'defeated'} ${isTurnUnderway? 'turn-underway' : ''}`}
+
+    >
 
       <h3>{props.name}</h3>
 
@@ -183,7 +204,12 @@ const Threat = (props) => {
               }
               {currentCardToDisplay &&
                 <>
-                  <img src={currentCardToDisplay?.image_uris?.border_crop} alt={currentCardToDisplay.name} title={currentCardToDisplay.name} />
+                  <img
+                    src={currentCardToDisplay?.image_uris?.border_crop}
+                    alt={currentCardToDisplay.name}
+                    title={currentCardToDisplay.name}
+                    className='card-display'
+                  />
                   <button onClick={rotateThroughTurn}>
                     {currentTurnButtonText}
                   </button>
@@ -196,6 +222,11 @@ const Threat = (props) => {
               {'Begin Turn'}
             </button>
           }
+
+          {/* WIP*/}
+          <button onClick={fadeInCardBack}>
+            dev wip: Fade in card back
+          </button> 
         </>
       }
 

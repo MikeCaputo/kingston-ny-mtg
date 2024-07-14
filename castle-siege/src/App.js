@@ -245,13 +245,11 @@ const App = () => {
                 <p>{modalText}</p>
               }
               {cardToDisplay &&
-                <>
-                  <img src={cardToDisplay?.image_uris?.border_crop} alt={cardToDisplay.name} title={cardToDisplay.name} />
-                  <button className="close-button" onClick={closeModal}>
-                    {modalButtonText}
-                  </button>
-                </>
+                <img src={cardToDisplay?.image_uris?.border_crop} alt={cardToDisplay.name} title={cardToDisplay.name} />
               }
+              <button className="close-button" onClick={closeModal}>
+                {modalButtonText}
+              </button>
             </div>
           </div>
         </div>
