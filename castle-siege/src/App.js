@@ -193,8 +193,83 @@ const App = () => {
               quantityRange: [4,5]
             },
             {
+              name: 'Clue',
+              quantityRange: [2,3]
+            }
+          ]
+        }
+      />
+
+      <Threat
+        name={'Pirate Cove'}
+        isBoss={false}
+        lifeTotal={70}
+        populateModal={populateModal}
+        closeModal={closeModal}
+        setIsModalOpen={setIsModalOpen}
+        turnOrder={
+          ['castSpell', 'attack']
+        }
+        attacksWith={
+          [
+            {
+              name: 'Pirate',
+              quantityRange: [3,5]
+            }
+          ]
+        }
+        usesSpells={
+          [
+            {
+              name: 'Fiery Cannonade',
+              targetsPlayer: true
+            }
+          ]
+        }
+        rewards={
+          [
+            {
+              name: 'Treasure',
+              quantityRange: [4,5]
+            },
+            {
               name: 'Map',
-              quantityRange: [3,4]
+              quantityRange: [2,4]
+            }
+          ]
+        }
+      />
+
+      <Threat
+        name={'Wizard Tower'}
+        isBoss={false}
+        lifeTotal={70}
+        populateModal={populateModal}
+        closeModal={closeModal}
+        setIsModalOpen={setIsModalOpen}
+        turnOrder={
+          ['castSpell', 'castSpell']
+        }
+        attacksWith={
+          []
+        }
+        usesSpells={
+          [
+            {
+              name: 'Lava Axe',
+              targetsPlayer: true
+            },
+            {
+              name: 'Lightning Bolt',
+              targetsPlayer: true
+            }
+          ]
+        }
+        rewards={
+          [
+            {
+              name: 'Clue',
+              quantityRange: [4,5]
             }
           ]
         }

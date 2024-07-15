@@ -5,35 +5,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import mtgBack from './images/card-back.jpg'; // wip
 
-const fetchCard = async (cardName, isToken = false, color = '') => {
-  // TODO: before hitting the API, we need to check if we've already fetched and stored it locally. That will save greatly on API hits.
-  // > For both exact and fuzzy, card names are case-insensitive and punctuation is optional (you can drop apostrophes and periods etc). For example: fIReBALL is the same as Fireball and smugglers copter is the same as Smuggler's Copter. - https://scryfall.com/docs/api/cards/named
-  try {
-    // const response = await axios.get(`https://api.scryfall.com/cards/named?fuzzy=${cardName}`);
-    //~ Second pass on this: using `/search` instead of `/named` gives me more parameters, specifically the ability to search for tokens. This seems to be the more robust way.
-    // Adding the `color` parameter, so we can specify to get the correct color creatures (red giant instead of green). In the future, this section would need to be more robust, but this is a good v1.
-
-    //~ Discoveries: a query such as "Shock" will get ALL cards with the name `shock` in them. Then they will be returned alphabetically. So, searching for "Shock", just grabbing the first will result in "Aether Shockwave" which is not what we want.
-    //~ So, it looks like I'll need to locally do a `find` by the name to get the exact match.
-    //~ Very inefficient right now, pulling down all of that extra data. Hopefully I can get better queries in place eventually.
-    // TODO: I should be able to pass in `+oracle:' '` to have no rules text, but that isn't quite working yet.
-    const scryfallQuery = `https://api.scryfall.com/cards/search?q=name:${cardName}${isToken ? '+layout:token' : ''}${color ? '+color:' + color : ''}`;
-    // Can also test queries using the normal Scryfall API: https://scryfall.com/search?q=layout%3Atoken+name%3Agiant+color%3Ar&unique=cards&as=grid&order=name
-
-    console.log(`scryfallQuery is: ${scryfallQuery}`)
-    const response = await axios.get(scryfallQuery);
-
-    const cardWithExactNameMatch = response.data?.data.find(card => card.name === cardName);
-    // console.log(`cardWithExactNameMatch: ${cardWithExactNameMatch}`);
-    return cardWithExactNameMatch;
-    // handle some load state, etc
-  } catch (error) {
-    // handle some load state, etc
-    console.error(error); // Log the error or handle it as needed
-    return null; // Return null or handle it appropriately
-  }
-}
-
 const Threat = (props) => {
 
   // Damage / life total
@@ -45,6 +16,7 @@ const Threat = (props) => {
   const [currentCardToDisplay, setCurrentCardToDisplay] = useState(null);
   const [currentTurnButtonText, setCurrentTurnButtonText] = useState('');
   const [cardAreaText, setCardAreaText] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   // When true, the current turn actions will be shown.
   const [isTurnUnderway, setIsTurnUnderway] = useState(false);
@@ -58,6 +30,40 @@ const Threat = (props) => {
   // Modal controls:
   const populateModal = props.populateModal;
   const setIsModalOpen = props.setIsModalOpen;
+
+  const fetchCard = async (cardName, isToken = false, color = '') => {
+    // TODO: before hitting the API, we need to check if we've already fetched and stored it locally. That will save greatly on API hits.
+    // > For both exact and fuzzy, card names are case-insensitive and punctuation is optional (you can drop apostrophes and periods etc). For example: fIReBALL is the same as Fireball and smugglers copter is the same as Smuggler's Copter. - https://scryfall.com/docs/api/cards/named
+    try {
+      // setIsLoading(true);
+      // console.log(`isLoading? ${isLoading}`) // baby is crying, come back to this. I think it deals with the 1-second timeout
+      // const response = await axios.get(`https://api.scryfall.com/cards/named?fuzzy=${cardName}`);
+      //~ Second pass on this: using `/search` instead of `/named` gives me more parameters, specifically the ability to search for tokens. This seems to be the more robust way.
+      // Adding the `color` parameter, so we can specify to get the correct color creatures (red giant instead of green). In the future, this section would need to be more robust, but this is a good v1.
+  
+      //~ Discoveries: a query such as "Shock" will get ALL cards with the name `shock` in them. Then they will be returned alphabetically. So, searching for "Shock", just grabbing the first will result in "Aether Shockwave" which is not what we want.
+      //~ So, it looks like I'll need to locally do a `find` by the name to get the exact match.
+      //~ Very inefficient right now, pulling down all of that extra data. Hopefully I can get better queries in place eventually.
+      // TODO: I should be able to pass in `+oracle:' '` to have no rules text, but that isn't quite working yet.
+      const scryfallQuery = `https://api.scryfall.com/cards/search?q=name:${cardName}${isToken ? '+layout:token' : ''}${color ? '+color:' + color : ''}`;
+      // Can also test queries using the normal Scryfall API: https://scryfall.com/search?q=layout%3Atoken+name%3Agiant+color%3Ar&unique=cards&as=grid&order=name
+  
+      console.log(`scryfallQuery is: ${scryfallQuery}`)
+      const response = await axios.get(scryfallQuery);
+  
+      const cardWithExactNameMatch = response.data?.data.find(card => card.name === cardName);
+      // console.log(`cardWithExactNameMatch: ${cardWithExactNameMatch}`);
+      setIsLoading(false);
+      console.log(`isLoading? ${isLoading}`)
+      return cardWithExactNameMatch;
+      // handle some load state, etc
+    } catch (error) {
+      // handle some load state, etc
+      console.error(error); // Log the error or handle it as needed
+      setIsLoading(false);
+      return null; // Return null or handle it appropriately
+    }
+  }
 
   // `currentActionIndex` controls the flow of a turn. The component reacts to its value.
   const [currentActionIndex, setCurrentActionIndex] = useState(-1);
@@ -82,32 +88,34 @@ const Threat = (props) => {
   useEffect(() => {
     // console.log(`in the useEffect; currentActionIndex is ${currentActionIndex}`)
     // wip: set a 1-second timeout to allow for css transitions
-    const timeoutId = setTimeout(() => {
-      if(currentActionIndex > -1) {
-        if(turnOrder.length) {
-          switch(turnOrder[currentActionIndex]) {
-            case 'castSpell':
-              // console.log(`should be casting a spell`)
-              // await randomSpell();
-              randomSpell();
-              break;
+    if(currentActionIndex > -1) {
+      if(turnOrder.length) {
+          // const timeoutId = setTimeout(() => {
+          setIsLoading(true); // wip; need to be careful with getting and setting this. Don't want it to get stuck
+          setTimeout(() => {
+            switch(turnOrder[currentActionIndex]) {
+              case 'castSpell':
+                // console.log(`should be casting a spell`)
+                // await randomSpell();
+                randomSpell();
+                break;
 
-            case 'attack':
-              // console.log(`should be performing an attack`)
-              // await randomAttack();
-              randomAttack();
-              break;
-          }
+              case 'attack':
+                // console.log(`should be performing an attack`)
+                // await randomAttack();
+                randomAttack();
+                break;
+            }
+          }, 1000);
         }
         const hasAdditionalStepsInTurn = turnOrder.length > currentActionIndex + 1;
         setCurrentTurnButtonText(hasAdditionalStepsInTurn ? 'Next' : 'End Turn');
       }
-    }, 1000);
 
     setIsTurnUnderway(currentActionIndex > -1); // just a computed handy variable
 
     // Cleanup function to clear the timeout if the component unmounts
-    return () => clearTimeout(timeoutId);
+    // return () => clearTimeout(timeoutId);
 
   }, [currentActionIndex]);
 
@@ -210,8 +218,8 @@ const Threat = (props) => {
                     title={currentCardToDisplay.name}
                     className='card-display'
                   />
-                  <button onClick={rotateThroughTurn}>
-                    {currentTurnButtonText}
+                  <button onClick={rotateThroughTurn} disabled={isLoading}>
+                    {isLoading ? 'Loading...' : currentTurnButtonText}
                   </button>
                 </>
               }
