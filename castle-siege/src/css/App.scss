@@ -1,0 +1,115 @@
+@font-face {
+  font-family: 'beleren-bold';
+  src: url('../fonts/beleren-bold.woff') format('woff'),
+       url('../fonts/beleren-bold.woff2') format('woff2'),
+       url('../fonts/beleren-bold.ttf')  format('truetype')
+}
+
+$dark-gray: #333333;
+
+body{
+  // background: url('../images/gray-patterned-bg.jpg');
+  background: url('../images/mountain-piotr-dura.jpg'); // Future: can parameterize this by using a Scryfall query and using the art-only option.
+  background-size: 100% auto;
+  font-family: 'beleren-bold', Georgia, serif;
+  color: #ffffff;
+}
+
+h1{
+  font-size: 60px;
+  margin-bottom: 20px;
+}
+
+.App {
+  text-align: center;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Modal: */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  color: $dark-gray;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  position: relative;
+  max-width: 40%;
+}
+
+button {
+  background: #787878;
+  border-radius: 10px;
+  cursor: pointer;
+  display: block;
+  margin: 5px auto 5px auto;
+  min-width: 80px;
+  min-height: 50px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #efefef;
+  // Testing removing focus here, because when you advance a turn and it turns to "next" or "finish", it will remain in the active state even if you blur / mouse off.
+  &:hover, &:active{
+    background: $dark-gray;
+  }
+}
+
+.modal-content {
+  margin-top: 20px;
+}
+
+/* Future: threats will have their MtG color(s) as props, and will get an appropriate (multi)colored background like this: https://blog.prototypr.io/css-only-multi-color-backgrounds-4d96a5569a20 */
+.Threat {
+  color: $dark-gray;
+  // background-color: #efefef;
+  background-color: rgba(255,255,255,.85);
+  border-radius: 15px;
+  display: block;
+  width: 50%;
+  max-width: 700px;
+  min-height: 220px;
+  height: auto;
+  // height: 220px;
+  transition: min-height 1s linear; // wip
+  padding: 30px;
+  margin: 20px auto 20px auto;
+  border: 2px solid transparent;
+  &.card-display{
+    // todo: have this fade in, and work well with the height transition.
+  }
+  &:hover, &:focus, &:active{
+    &:not(.defeated) {
+      border: 2px solid #cc0000;
+      box-shadow: #cccccc 10px 10px 10px;
+    }
+  }
+  &.turn-underway{
+    min-height: 800px;
+  }
+  &.defeated {
+    // background-color: #cccccc;
+    min-height: unset;
+    h3 {
+      text-decoration: line-through;
+    }
+  }
+}
