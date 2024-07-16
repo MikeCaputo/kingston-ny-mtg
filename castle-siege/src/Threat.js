@@ -31,7 +31,7 @@ const Threat = (props) => {
   const populateModal = props.populateModal;
   const setIsModalOpen = props.setIsModalOpen;
 
-  const fetchCard = async (cardName, isToken = false, color = '') => {
+  const fetchCard = async (cardName, isToken = false, queryParameters = {}) => {
     // TODO: before hitting the API, we need to check if we've already fetched and stored it locally. That will save greatly on API hits.
     // > For both exact and fuzzy, card names are case-insensitive and punctuation is optional (you can drop apostrophes and periods etc). For example: fIReBALL is the same as Fireball and smugglers copter is the same as Smuggler's Copter. - https://scryfall.com/docs/api/cards/named
     try {
@@ -45,10 +45,16 @@ const Threat = (props) => {
       //~ So, it looks like I'll need to locally do a `find` by the name to get the exact match.
       //~ Very inefficient right now, pulling down all of that extra data. Hopefully I can get better queries in place eventually.
       // TODO: I should be able to pass in `+oracle:' '` to have no rules text, but that isn't quite working yet.
-      const scryfallQuery = `https://api.scryfall.com/cards/search?q=name:${cardName}${isToken ? '+layout:token' : ''}${color ? '+color:' + color : ''}`;
+
+      // Start with the name, and whether or not it is a token. Then, loop through any additional queryParameters and append those to the query.
+      let scryfallQuery = `https://api.scryfall.com/cards/search?q=name:${cardName}${isToken ? '+layout:token' : ''}`;
+      for (const property in queryParameters) {
+        scryfallQuery = scryfallQuery.concat(`+${property}:${queryParameters[property]}`);
+      }
+
       // Can also test queries using the normal Scryfall API: https://scryfall.com/search?q=layout%3Atoken+name%3Agiant+color%3Ar&unique=cards&as=grid&order=name
   
-      console.log(`scryfallQuery is: ${scryfallQuery}`)
+      // console.log(`scryfallQuery is: ${scryfallQuery}`)
       const response = await axios.get(scryfallQuery);
   
       const cardWithExactNameMatch = response.data?.data.find(card => card.name === cardName);
@@ -136,7 +142,7 @@ const Threat = (props) => {
   const randomAttack = useCallback(async () => {
     const whichCreatureType = attacksWith[_.random(0, attacksWith.length - 1)];
     const howMany = _.random(whichCreatureType.quantityRange[0], whichCreatureType.quantityRange[1]);
-    const cardApiData = await fetchCard(whichCreatureType.name, true, 'red');
+    const cardApiData = await fetchCard(whichCreatureType.name, true, whichCreatureType.queryParameters);
     const thisText = `${props.name} attacks you with ${howMany} ${whichCreatureType.name}${howMany > 1 ? 's' : ''}!`;
     setCurrentCardToDisplay(cardApiData);
     setCardAreaText(thisText);

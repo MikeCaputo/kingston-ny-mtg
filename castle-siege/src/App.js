@@ -70,10 +70,20 @@ const App = () => {
           [
             {
               name: 'Goblin',
+              queryParameters: {
+                color: 'red',
+                power: 1,
+                toughness: 1,
+              },
               quantityRange: [3,6]
             },
             {
               name: 'Ogre',
+              queryParameters: {
+                color: 'red',
+                power: 3,
+                toughness: 3,
+              },
               quantityRange: [1,2]
             }
           ]
@@ -90,6 +100,11 @@ const App = () => {
           [
             {
               name: 'Goblin', // todo: Need to specify that type of goblin token. There are many. But for now, the API results _seem_ to sort the most basic ones to the top, so we'll see...
+              queryParameters: {
+                color: 'red',
+                power: 1,
+                toughness: 1
+              },
               quantityRange: [2,3]
             },
             {
@@ -118,6 +133,11 @@ const App = () => {
           [
             {
               name: 'Giant',
+              queryParameters: {
+                color: 'red',
+                power: 4,
+                toughness: 4,
+              },
               quantityRange: [3,4]
             }
           ]
@@ -166,6 +186,11 @@ const App = () => {
           [
             {
               name: 'Elemental',
+              queryParameters: {
+                color: 'red',
+                power: 3,
+                toughness: 1,
+              },
               quantityRange: [6,8]
             }
           ]
@@ -214,6 +239,11 @@ const App = () => {
           [
             {
               name: 'Pirate',
+              queryParameters: {
+                color: 'red',
+                power: 4,
+                toughness: 2,
+              },
               quantityRange: [3,5]
             }
           ]
@@ -288,11 +318,21 @@ const App = () => {
         attacksWith={
           [
             {
-              name: 'Dragon', // TODO: this prop might need to be more robust, basically an object that would contain as much of a query as needed to get the card/token we want.
+              name: 'Dragon',
+              queryParameters: {
+                color: 'red',
+                power: 4,
+                toughness: 4,
+              },
               quantityRange: [3,6]
             },
             {
               name: 'Goblin',
+              queryParameters: {
+                color: 'red',
+                power: 1,
+                toughness: 1,
+              },
               quantityRange: [12,20]
             }
           ]
