@@ -57,7 +57,7 @@ const App = () => {
       {/* Long-term, this will import a JSON data set which will be rendered into any number of playables maps! */}
 
       <Threat
-        name={'Lowland Tribes'}
+        name={'Lowland Tribes 1'}
         isBoss={false}
         lifeTotal={20}
         populateModal={populateModal}
@@ -89,17 +89,12 @@ const App = () => {
           ]
         }
         usesSpells={
-          [
-            {
-              name: 'Shock',
-              targetsPlayer: true
-            }
-          ]
+          []
         }
         rewards={
           [
             {
-              name: 'Goblin', // todo: Need to specify that type of goblin token. There are many. But for now, the API results _seem_ to sort the most basic ones to the top, so we'll see...
+              name: 'Goblin',
               queryParameters: {
                 color: 'red',
                 power: 1,
@@ -120,7 +115,181 @@ const App = () => {
       />
 
       <Threat
-        name={'Highland Tribes'}
+        name={'Lowland Tribes 2'}
+        isBoss={false}
+        lifeTotal={20}
+        populateModal={populateModal}
+        closeModal={closeModal}
+        setIsModalOpen={setIsModalOpen}
+        turnOrder={
+          ['attack']
+        }
+        attacksWith={
+          [
+            {
+              name: 'Goblin',
+              queryParameters: {
+                color: 'red',
+                power: 1,
+                toughness: 1,
+              },
+              quantityRange: [3,6]
+            },
+            {
+              name: 'Ogre',
+              queryParameters: {
+                color: 'red',
+                power: 3,
+                toughness: 3,
+              },
+              quantityRange: [1,2]
+            }
+          ]
+        }
+        usesSpells={
+          []
+        }
+        rewards={
+          [
+            {
+              name: 'Goblin',
+              queryParameters: {
+                color: 'red',
+                power: 1,
+                toughness: 1
+              },
+              quantityRange: [2,3]
+            },
+            {
+              name: 'Map',
+              quantityRange: [1,2]
+            },
+            {
+              name: 'Junk',
+              quantityRange: [1,2]
+            }
+          ]
+        }
+      />
+
+      <Threat
+        name={'Lowland Tribes 3'}
+        isBoss={false}
+        lifeTotal={20}
+        populateModal={populateModal}
+        closeModal={closeModal}
+        setIsModalOpen={setIsModalOpen}
+        turnOrder={
+          ['attack']
+        }
+        attacksWith={
+          [
+            {
+              name: 'Goblin',
+              queryParameters: {
+                color: 'red',
+                power: 1,
+                toughness: 1,
+              },
+              quantityRange: [3,6]
+            },
+            {
+              name: 'Ogre',
+              queryParameters: {
+                color: 'red',
+                power: 3,
+                toughness: 3,
+              },
+              quantityRange: [1,2]
+            }
+          ]
+        }
+        usesSpells={
+          []
+        }
+        rewards={
+          [
+            {
+              name: 'Goblin',
+              queryParameters: {
+                color: 'red',
+                power: 1,
+                toughness: 1
+              },
+              quantityRange: [2,3]
+            },
+            {
+              name: 'Map',
+              quantityRange: [1,2]
+            },
+            {
+              name: 'Junk',
+              quantityRange: [1,2]
+            }
+          ]
+        }
+      />
+
+      <Threat
+        name={'Lowland Tribes 4'}
+        isBoss={false}
+        lifeTotal={20}
+        populateModal={populateModal}
+        closeModal={closeModal}
+        setIsModalOpen={setIsModalOpen}
+        turnOrder={
+          ['attack']
+        }
+        attacksWith={
+          [
+            {
+              name: 'Goblin',
+              queryParameters: {
+                color: 'red',
+                power: 1,
+                toughness: 1,
+              },
+              quantityRange: [3,6]
+            },
+            {
+              name: 'Ogre',
+              queryParameters: {
+                color: 'red',
+                power: 3,
+                toughness: 3,
+              },
+              quantityRange: [1,2]
+            }
+          ]
+        }
+        usesSpells={
+          []
+        }
+        rewards={
+          [
+            {
+              name: 'Goblin',
+              queryParameters: {
+                color: 'red',
+                power: 1,
+                toughness: 1
+              },
+              quantityRange: [2,3]
+            },
+            {
+              name: 'Map',
+              quantityRange: [1,2]
+            },
+            {
+              name: 'Junk',
+              quantityRange: [1,2]
+            }
+          ]
+        }
+      />
+
+      <Threat
+        name={'Highland Tribes 1'}
         isBoss={false}
         lifeTotal={30}
         populateModal={populateModal}
@@ -173,6 +342,165 @@ const App = () => {
       />
 
       <Threat
+        name={'Highland Tribes 2'}
+        isBoss={false}
+        lifeTotal={30}
+        populateModal={populateModal}
+        closeModal={closeModal}
+        setIsModalOpen={setIsModalOpen}
+        turnOrder={
+          ['castSpell', 'attack']
+        }
+        attacksWith={
+          [
+            {
+              name: 'Giant',
+              queryParameters: {
+                color: 'red',
+                power: 4,
+                toughness: 4,
+              },
+              quantityRange: [3,4]
+            }
+          ]
+        }
+        usesSpells={
+          [
+            {
+              name: 'Lightning Bolt',
+              targetsPlayer: true
+            },
+            {
+              name: 'Shock',
+              targetsPlayer: true
+            }
+          ]
+        }
+        rewards={
+          [
+            {
+              name: 'Junk',
+              quantityRange: [1,2]
+            },
+            {
+              name: 'Food',
+              quantityRange: [1,2]
+            },
+            {
+              name: 'Blood',
+              quantityRange: [1,2]
+            }
+          ]
+        }
+      />
+
+      <Threat
+        name={'Highland Tribes 3'}
+        isBoss={false}
+        lifeTotal={30}
+        populateModal={populateModal}
+        closeModal={closeModal}
+        setIsModalOpen={setIsModalOpen}
+        turnOrder={
+          ['castSpell', 'attack']
+        }
+        attacksWith={
+          [
+            {
+              name: 'Giant',
+              queryParameters: {
+                color: 'red',
+                power: 4,
+                toughness: 4,
+              },
+              quantityRange: [3,4]
+            }
+          ]
+        }
+        usesSpells={
+          [
+            {
+              name: 'Lightning Bolt',
+              targetsPlayer: true
+            },
+            {
+              name: 'Shock',
+              targetsPlayer: true
+            }
+          ]
+        }
+        rewards={
+          [
+            {
+              name: 'Junk',
+              quantityRange: [1,2]
+            },
+            {
+              name: 'Food',
+              quantityRange: [1,2]
+            },
+            {
+              name: 'Blood',
+              quantityRange: [1,2]
+            }
+          ]
+        }
+      />
+
+      <Threat
+        name={'Highland Tribes 4'}
+        isBoss={false}
+        lifeTotal={30}
+        populateModal={populateModal}
+        closeModal={closeModal}
+        setIsModalOpen={setIsModalOpen}
+        turnOrder={
+          ['castSpell', 'attack']
+        }
+        attacksWith={
+          [
+            {
+              name: 'Giant',
+              queryParameters: {
+                color: 'red',
+                power: 4,
+                toughness: 4,
+              },
+              quantityRange: [3,4]
+            }
+          ]
+        }
+        usesSpells={
+          [
+            {
+              name: 'Lightning Bolt',
+              targetsPlayer: true
+            },
+            {
+              name: 'Shock',
+              targetsPlayer: true
+            }
+          ]
+        }
+        rewards={
+          [
+            {
+              name: 'Junk',
+              quantityRange: [1,2]
+            },
+            {
+              name: 'Food',
+              quantityRange: [1,2]
+            },
+            {
+              name: 'Blood',
+              quantityRange: [1,2]
+            }
+          ]
+        }
+      />
+
+      {/* <Threat
         name={'Elemental Pools'}
         isBoss={false}
         lifeTotal={50}
@@ -223,7 +551,7 @@ const App = () => {
             }
           ]
         }
-      />
+      /> */}
 
       <Threat
         name={'Pirate Cove'}
@@ -252,7 +580,7 @@ const App = () => {
           [
             {
               name: 'Fiery Cannonade',
-              targetsPlayer: true
+              targetsPlayer: false
             }
           ]
         }
@@ -278,7 +606,7 @@ const App = () => {
         closeModal={closeModal}
         setIsModalOpen={setIsModalOpen}
         turnOrder={
-          ['castSpell', 'castSpell']
+          ['castSpell', 'castSpell', 'castSpell']
         }
         attacksWith={
           []
@@ -290,7 +618,7 @@ const App = () => {
               targetsPlayer: true
             },
             {
-              name: 'Lightning Bolt',
+              name: 'Structural Collapse',
               targetsPlayer: true
             }
           ]
@@ -306,9 +634,9 @@ const App = () => {
       />
 
       <Threat
-        name={'Mons\' Castle'}
+        name={'Mons\' Fortress'}
         isBoss={true}
-        lifeTotal={100}
+        lifeTotal={200}
         populateModal={populateModal}
         closeModal={closeModal}
         setIsModalOpen={setIsModalOpen}
@@ -333,7 +661,7 @@ const App = () => {
                 power: 1,
                 toughness: 1,
               },
-              quantityRange: [12,20]
+              quantityRange: [14,20]
             }
           ]
         }

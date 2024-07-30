@@ -187,13 +187,11 @@ const Threat = (props) => {
   }
 
   const fadeInCardBack = () => {
-
   }
 
   return (
     <div
       className={`Threat ${isThreatAlive ? '' : 'defeated'} ${isTurnUnderway? 'turn-underway' : ''}`}
-
     >
 
       <h3>{props.name}</h3>
@@ -238,9 +236,9 @@ const Threat = (props) => {
           }
 
           {/* WIP*/}
-          <button onClick={fadeInCardBack}>
+          {/* <button onClick={fadeInCardBack}>
             dev wip: Fade in card back
-          </button> 
+          </button> */}
         </>
       }
 
