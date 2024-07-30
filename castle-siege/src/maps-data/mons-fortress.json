@@ -1,0 +1,217 @@
+{
+  "name": "Mons, the Tyrant King",
+  "backgroundImage": "mountain-piotr-dura.jpg",
+  "enemyBases": [
+    {
+      "name": "Barren Lowlands",
+      "quantity": 4,
+      "isBoss": false,
+      "lifeTotal": 20,
+      "borderColor": ["red"],
+      "turnOrder": [
+        "attack"
+      ],
+      "attacksWith": [
+        {
+          "name": "Goblin",
+          "isToken": true,
+          "queryParameters": {
+            "color": "red",
+            "power": 1,
+            "toughness": 1
+          },
+          "quantityRange": [3,6]
+        },
+        {
+          "name": "Ogre",
+          "isToken": true,
+          "queryParameters": {
+            "color": "red",
+            "power": 3,
+            "toughness": 3
+          },
+          "quantityRange": [1,2]
+        }
+      ],
+      "usesSpells": [],
+      "rewards": [
+        {
+          "name": "Goblin",
+          "queryParameters": {
+            "color": "red",
+            "power": 1,
+            "toughness": 1
+          },
+          "quantityRange": [2,3]
+        },
+        {
+          "name": "Map",
+          "quantityRange": [1,2]
+        },
+        {
+          "name": "Junk",
+          "quantityRange": [1,2]
+        }
+      ]
+    },
+    {
+      "name": "Craggy Highlands",
+      "quantity": 4,
+      "isBoss": false,
+      "lifeTotal": 30,
+      "borderColor": ["red"],
+      "turnOrder": [
+        "castSpell",
+        "attack"
+      ],
+      "attacksWith": [
+        {
+          "name": "Giant",
+          "isToken": true,
+          "queryParameters": {
+            "color": "red",
+            "power": 4,
+            "toughness": 4
+          },
+          "quantityRange": [3,4]
+        }
+      ],
+      "usesSpells": [
+        {
+          "name": "Lightning Bolt",
+          "targetsPlayer": true
+        },
+        {
+          "name": "Shock",
+          "targetsPlayer": true
+        }
+      ],
+      "rewards": [
+        {
+          "name": "Junk",
+          "quantityRange": [1,2]
+        },
+        {
+          "name": "Food",
+          "quantityRange": [1,2]
+        },
+        {
+          "name": "Blood",
+          "quantityRange": [1,2]
+        }
+      ]
+    },
+    {
+      "name": "Pirate Cove",
+      "quantity": 1,
+      "isBoss": false,
+      "lifeTotal": 70,
+      "borderColor": ["red"],
+      "turnOrder": [
+        "castSpell",
+        "attack"
+      ],
+      "attacksWith": [
+        {
+          "name": "Pirate",
+          "isToken": true,
+          "queryParameters": {
+            "color": "red",
+            "power": 4,
+            "toughness": 2
+          },
+          "quantityRange": [4,6]
+        }
+      ],
+      "usesSpells": [
+        {
+          "name": "Fiery Cannonade",
+          "targetsPlayer": false
+        }
+      ],
+      "rewards": [
+        {
+          "name": "Treasure",
+          "quantityRange": [4,5]
+        },
+        {
+          "name": "Map",
+          "quantityRange": [2,4]
+        }
+      ]
+    },
+    {
+      "name": "Wizard Tower",
+      "quantity": 1,
+      "isBoss": false,
+      "lifeTotal": 70,
+      "borderColor": ["red"],
+      "turnOrder": [
+        "castSpell",
+        "castSpell",
+        "castSpell"
+      ],
+      "attacksWith": [],
+      "usesSpells": [
+        {
+          "name": "Lava Axe",
+          "targetsPlayer": true
+        },
+        {
+          "name": "Structural Collapse",
+          "targetsPlayer": true
+        }
+      ],
+      "rewards": [
+        {
+          "name": "Clue",
+          "quantityRange": [4,5]
+        }
+      ]
+    },
+    {
+      "name": "Mons' Fortress of Fire and Ruin",
+      "quantity": 1,
+      "isBoss": true,
+      "lifeTotal": 200,
+      "borderColor": ["red"],
+      "turnOrder": [
+        "castSpell",
+        "attack",
+        "attack"
+      ],
+      "attacksWith": [
+        {
+          "name": "Dragon",
+          "isToken": true,
+          "queryParameters": {
+            "color": "red",
+            "power": 4,
+            "toughness": 4
+          },
+          "quantityRange": [3,6]
+        },
+        {
+          "name": "Goblin",
+          "isToken": true,
+          "queryParameters": {
+            "color": "red",
+            "power": 1,
+            "toughness": 1
+          },
+          "quantityRange": [14,20]
+        }
+      ],
+      "usesSpells": [
+        {
+          "name": "Lava Axe",
+          "targetsPlayer": true
+        },
+        {
+          "name": "Destructive Force",
+          "targetsPlayer": false
+        }
+      ]
+    }
+  ]
+}
