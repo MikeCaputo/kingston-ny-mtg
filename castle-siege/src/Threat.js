@@ -60,7 +60,7 @@ const Threat = (props) => {
       const cardWithExactNameMatch = response.data?.data.find(card => card.name === cardName);
       // console.log(`cardWithExactNameMatch: ${cardWithExactNameMatch}`);
       setIsLoading(false);
-      console.log(`isLoading? ${isLoading}`)
+      // console.log(`isLoading? ${isLoading}`)
       return cardWithExactNameMatch;
       // handle some load state, etc
     } catch (error) {
@@ -84,7 +84,7 @@ const Threat = (props) => {
 
     // If the turn has ended, clear out this data so it will not display momentarily when a new turn begins.
     if(!hasAdditionalStepsInTurn) {
-      console.log('clearing out....')
+      // console.log('clearing out....')
       setCurrentCardToDisplay(null);
       setCardAreaText('');
     }

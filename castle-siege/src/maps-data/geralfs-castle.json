@@ -3,27 +3,88 @@
   "backgroundImage": "castle-locthwain.jpg",
   "enemyBases": [
     {
-      "name": "The Silent Fields",
+      "name": "The Fields of Shallow Graves",
       "quantity": 4,
       "isBoss": false,
       "lifeTotal": 20,
       "borderColor": ["black"],
       "turnOrder": [
+        "castSpell",
         "attack"
       ],
       "attacksWith": [
         {
           "name": "Zombie",
-          "isToken": true,
+          "isToken": false,
           "queryParameters": {
             "color": "black",
             "power": 2,
             "toughness": 2
           },
           "quantityRange": [1,2]
+        },
+        {
+          "name": "Reassembling Skeleton",
+          "isToken": false,
+          "queryParameters": {
+            "color": "black",
+            "power": 1,
+            "toughness": 1
+          },
+          "quantityRange": [2,4]
         }
       ],
-      "usesSpells": [],
+      "usesSpells": [
+        {
+          "name": "Cower in Fear",
+          "targetsPlayer": false
+        }
+      ],
+      "rewards": [
+        {
+          "name": "Treasure",
+          "quantityRange": [2,3]
+        }
+      ]
+    },
+    {
+      "name": "The Silent Moor",
+      "quantity": 1,
+      "isBoss": false,
+      "lifeTotal": 20,
+      "borderColor": ["black"],
+      "turnOrder": [
+        "castSpell",
+        "attack"
+      ],
+      "attacksWith": [
+        {
+          "name": "Relentless Dead",
+          "isToken": false,
+          "queryParameters": {
+            "color": "black",
+            "power": 2,
+            "toughness": 2
+          },
+          "quantityRange": [2,3]
+        },
+        {
+          "name": "Vengeful Dead",
+          "isToken": false,
+          "queryParameters": {
+            "color": "black",
+            "power": 3,
+            "toughness": 2
+          },
+          "quantityRange": [1,2]
+        }
+      ],
+      "usesSpells": [
+        {
+          "name": "Malicious Eclipse",
+          "targetsPlayer": false
+        }
+      ],
       "rewards": [
         {
           "name": "Clue",
@@ -51,23 +112,37 @@
             "power": 3,
             "toughness": 3
           },
-          "quantityRange": [3]
+          "quantityRange": [2,3]
+        },
+        {
+          "name": "Geralf's Messenger",
+          "isToken": false,
+          "queryParameters": {
+            "color": "black",
+            "power": 2,
+            "toughness": 2
+          },
+          "quantityRange": [3,5]
         }
       ],
       "usesSpells": [
         {
-          "name": "Diabolic Edict",
+          "name": "Dead Drop",
+          "targetsPlayer": true
+        },
+        {
+          "name": "Mind Rot",
           "targetsPlayer": true
         }
       ],
       "rewards": [
         {
           "name": "Clue",
-          "quantityRange": [1,2]
+          "quantityRange": [3,4]
         },
         {
           "name": "Blood",
-          "quantityRange": [1,2]
+          "quantityRange": [4,5]
         }
       ]
     },
@@ -116,8 +191,12 @@
       ],
       "usesSpells": [
         {
-          "name": "Damnation",
+          "name": "Languish",
           "targetsPlayer": false
+        },
+        {
+          "name": "Delirium Skeins",
+          "targetsPlayer": true
         }
       ]
     }
