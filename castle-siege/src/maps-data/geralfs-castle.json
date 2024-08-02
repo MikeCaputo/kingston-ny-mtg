@@ -1,0 +1,125 @@
+{
+  "name": "Geralf, the Mad Stitcher",
+  "backgroundImage": "castle-locthwain.jpg",
+  "enemyBases": [
+    {
+      "name": "The Silent Fields",
+      "quantity": 4,
+      "isBoss": false,
+      "lifeTotal": 20,
+      "borderColor": ["black"],
+      "turnOrder": [
+        "attack"
+      ],
+      "attacksWith": [
+        {
+          "name": "Zombie",
+          "isToken": true,
+          "queryParameters": {
+            "color": "black",
+            "power": 2,
+            "toughness": 2
+          },
+          "quantityRange": [1,2]
+        }
+      ],
+      "usesSpells": [],
+      "rewards": [
+        {
+          "name": "Clue",
+          "quantityRange": [1,2]
+        }
+      ]
+    },
+    {
+      "name": "The Laboratory",
+      "quantity": 1,
+      "isBoss": false,
+      "lifeTotal": 100,
+      "borderColor": ["blue", "black"],
+      "turnOrder": [
+        "castSpell",
+        "castSpell",
+        "attack"
+      ],
+      "attacksWith": [
+        {
+          "name": "Overcharged Amalgam",
+          "isToken": false,
+          "queryParameters": {
+            "color": "blue",
+            "power": 3,
+            "toughness": 3
+          },
+          "quantityRange": [3]
+        }
+      ],
+      "usesSpells": [
+        {
+          "name": "Diabolic Edict",
+          "targetsPlayer": true
+        }
+      ],
+      "rewards": [
+        {
+          "name": "Clue",
+          "quantityRange": [1,2]
+        },
+        {
+          "name": "Blood",
+          "quantityRange": [1,2]
+        }
+      ]
+    },
+    {
+      "name": "Schlossgeist, the Wailing Tower",
+      "quantity": 1,
+      "isBoss": true,
+      "lifeTotal": 200,
+      "borderColor": ["blue", "black"],
+      "turnOrder": [
+        "castSpell",
+        "attack",
+        "attack"
+      ],
+      "attacksWith": [
+        {
+          "name": "Geralf's Masterpiece",
+          "isToken": false,
+          "queryParameters": {
+            "color": "blue",
+            "power": 7,
+            "toughness": 7
+          },
+          "quantityRange": [3,4]
+        },
+        {
+          "name": "Skaab Goliath",
+          "isToken": false,
+          "queryParameters": {
+            "color": "blue",
+            "power": 6,
+            "toughness": 9
+          },
+          "quantityRange": [3,4]
+        },
+        {
+          "name": "Zombie",
+          "isToken": true,
+          "queryParameters": {
+            "color": "black",
+            "power": 2,
+            "toughness": 2
+          },
+          "quantityRange": [10,15]
+        }
+      ],
+      "usesSpells": [
+        {
+          "name": "Damnation",
+          "targetsPlayer": false
+        }
+      ]
+    }
+  ]
+}

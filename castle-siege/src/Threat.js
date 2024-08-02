@@ -142,7 +142,7 @@ const Threat = (props) => {
   const randomAttack = useCallback(async () => {
     const whichCreatureType = attacksWith[_.random(0, attacksWith.length - 1)];
     const howMany = _.random(whichCreatureType.quantityRange[0], whichCreatureType.quantityRange[1]);
-    const cardApiData = await fetchCard(whichCreatureType.name, true, whichCreatureType.queryParameters);
+    const cardApiData = await fetchCard(whichCreatureType.name, whichCreatureType.isToken, whichCreatureType.queryParameters);
     const thisText = `${props.name} attacks you with ${howMany} ${whichCreatureType.name}${howMany > 1 ? 's' : ''}!`;
     setCurrentCardToDisplay(cardApiData);
     setCardAreaText(thisText);
@@ -192,6 +192,7 @@ const Threat = (props) => {
   return (
     <div
       className={`Threat ${isThreatAlive ? '' : 'defeated'} ${isTurnUnderway? 'turn-underway' : ''}`}
+      style={props.style}
     >
 
       <h3>{props.name}</h3>
