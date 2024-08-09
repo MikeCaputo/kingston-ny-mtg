@@ -12,6 +12,9 @@ const Threat = (props) => {
   const [threatLifeTotal, setThreatLifeTotal] = useState(props.lifeTotal);
   const [isThreatAlive, setIsThreatAlive] = useState(true);
 
+  // Used for tracking misc notes: Monarch status, poison counters, etc.
+  const [notesOnThreat, setNotesOnThreat] = useState('');
+
   // Turn-specific display elements
   const [currentCardToDisplay, setCurrentCardToDisplay] = useState(null);
   const [currentTurnButtonText, setCurrentTurnButtonText] = useState('');
@@ -209,6 +212,16 @@ const Threat = (props) => {
             onFocus={(e) => e.target.select()}
           />
           <button onClick={dealDamangeToThreat}>Deal damage to this Threat</button>
+
+          <label>
+            <span>Notes:</span>
+            <input
+              type="text"
+              value={notesOnThreat}
+              onChange={e => setNotesOnThreat(e.target.value)}
+              onFocus={(e) => e.target.select()}
+            />
+          </label>
 
           {isTurnUnderway &&
             <>
