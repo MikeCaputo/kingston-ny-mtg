@@ -119,7 +119,7 @@
           "isToken": false,
           "queryParameters": {
             "color": "black",
-            "power": 2,
+            "power": 3,
             "toughness": 2
           },
           "quantityRange": [3,5]

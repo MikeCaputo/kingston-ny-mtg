@@ -3,6 +3,7 @@ import _, { random } from 'underscore';
 // import React, { useState, useEffect } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
+
 import mtgBack from './images/card-back.jpg'; // wip
 
 const Threat = (props) => {
@@ -29,6 +30,24 @@ const Threat = (props) => {
   const attacksWith = props.attacksWith;
   const usesSpells = props.usesSpells;
   const yieldsReward = props.rewards;
+  const threatName = props.name;
+  const generateGameSummary = props.generateGameSummary;
+  // Props for showing commander names. Ties into log system and AI-generated game summary.
+  const commandersArray = props.commandersArray;
+  const setCommandersArray = props.setCommandersArray;
+  const listOfCommanderNames = props.listOfCommanderNames;
+  const addToGameLog = props.addToGameLog;
+
+  // Handle checkboxes for which commanders are attacking. I'll want to update this so it can be reset as well.
+  const updateAttackingCommanders = (commanderIndex) => {
+    // Create a new array with updated isAttacking value
+    const updatedCommanders = commandersArray.map((commander, i) =>
+      i === commanderIndex ? { ...commander, isAttacking: !commander.isAttacking } : commander
+    );
+
+    // Update state
+    setCommandersArray(updatedCommanders)
+  };
 
   // Modal controls:
   const populateModal = props.populateModal;
@@ -136,7 +155,8 @@ const Threat = (props) => {
     // This will save on API hits...
     const randomSpell = usesSpells[_.random(0, usesSpells.length - 1)];
     const cardApiData = await fetchCard(randomSpell.name);
-    const thisText = `${props.name} casts ${randomSpell.name}${randomSpell.targetsPlayer ? ' on you' : ''}!`;
+    const thisText = `${threatName} casts ${randomSpell.name}${randomSpell.targetsPlayer ? ' on you' : ''}!`;
+    addToGameLog(thisText);
     setCurrentCardToDisplay(cardApiData);
     setCardAreaText(thisText);
   });
@@ -146,20 +166,21 @@ const Threat = (props) => {
     const whichCreatureType = attacksWith[_.random(0, attacksWith.length - 1)];
     const howMany = _.random(whichCreatureType.quantityRange[0], whichCreatureType.quantityRange[1]);
     const cardApiData = await fetchCard(whichCreatureType.name, whichCreatureType.isToken, whichCreatureType.queryParameters);
-    const thisText = `${props.name} attacks you with ${howMany} ${whichCreatureType.name}${howMany > 1 ? 's' : ''}!`;
+    const thisText = `${threatName} attacks with ${howMany} ${whichCreatureType.name}${howMany > 1 ? 's' : ''}!`;
+    addToGameLog(thisText);
     setCurrentCardToDisplay(cardApiData);
     setCardAreaText(thisText);
   });
 
-  const dealDamangeToThreat = () => {
+  const dealDamageToThreat = () => {
     const newLifeTotal = Math.max(0, threatLifeTotal - damageToDealToThreat);
     setThreatLifeTotal(newLifeTotal);
-    setDamageToDealToThreat(0); // Reset the input
-
     if(newLifeTotal === 0) {
       threatIsDefeated();
     }
+    addToGameLog(`${listOfCommanderNames(true)} deals ${damageToDealToThreat} damage to ${threatName}${newLifeTotal === 0 ? ', defeating it!' : '.'}`);
 
+    setDamageToDealToThreat(0); // Reset the input
   };
 
   const threatIsDefeated = async () => {
@@ -167,14 +188,21 @@ const Threat = (props) => {
     setIsThreatAlive(false);
 
     if(props.isBoss) {
+
+      // Quick loading state. Will implement better state management in the future: https://github.com/MikeCaputo/kingston-ny-mtg/issues/9
       populateModal(
         null,
-        `Hurrah, hurrah forever! ${props.name} has been defeated! Your team has vanquished this terrible foe. Now, only the fates know how long it will be until a new leader arises to take their place...`,
-        {text: 'A Well-Earned Victory', function: setIsModalOpen(false)}
+        `Loading summary...`,
+        {text: 'Loading...', function: setIsModalOpen(false)}
       );
 
-      // todo: would be fun to have a "game summary screen", showing which players are alive, who dealt or took the most damage, etc... fun stats for WAY later in this project, if ever.
-      // Could even do an AI-generated summary using all of that data, made narrative with the commander names... that would be really fun.
+      const aiGeneratedSummary = await generateGameSummary();
+
+      populateModal(
+        null,
+        `${threatName} has been defeated! Here is a summary of the game:\n\n${aiGeneratedSummary}`,
+        {text: 'A Well-Earned Victory', function: setIsModalOpen(false)}
+      );
 
     } else {
       const whichRewardType = yieldsReward[_.random(0, yieldsReward.length - 1)];
@@ -182,7 +210,7 @@ const Threat = (props) => {
       const howMany = [_.random(whichRewardType.quantityRange[0], whichRewardType.quantityRange[1])];
       populateModal(
         cardApiData,
-        `${props.name} has been defeated! You gain ${howMany} ${whichRewardType.name} Token${howMany > 1 ? 's' : ''}.`,
+        `${threatName} has been defeated! You gain ${howMany} ${whichRewardType.name} Token${howMany > 1 ? 's' : ''}.`,
         {text: 'Close', function: setIsModalOpen(false)}
       );
     }
@@ -198,20 +226,36 @@ const Threat = (props) => {
       style={props.style}
     >
 
-      <h3>{props.name}</h3>
+      <h3>{threatName}</h3>
 
       {/* Need a more elegant way to render a zero. It's falsey. But `.toString() mutates the data, which I don't want.... this is okay for now */}
       <h4>Life total: {threatLifeTotal > 0 ? threatLifeTotal : "0"}</h4>
 
       {isThreatAlive &&
         <>
-          <input
-            type="number"
-            value={damageToDealToThreat}
-            onChange={e => setDamageToDealToThreat(e.target.value)}
-            onFocus={(e) => e.target.select()}
-          />
-          <button onClick={dealDamangeToThreat}>Deal damage to this Threat</button>
+          <label>
+            <span>Deal damage to this threat:</span>
+            <input
+              type="number"
+              value={damageToDealToThreat}
+              onChange={e => setDamageToDealToThreat(e.target.value)}
+              onFocus={(e) => e.target.select()}
+            />
+          </label>
+          <p>Who is dealing damage?</p>
+          {commandersArray.map((commander, i) => {
+            return (
+              <label key={`${commander.commanderName}`}>
+                <input
+                  type="checkbox"
+                  value={commander.isAttacking}
+                  onChange={() => updateAttackingCommanders(i)}
+                />
+                <span>{commander.commanderName}</span>
+              </label>
+            )
+          })}
+          <button onClick={dealDamageToThreat}>Deal damage to this Threat</button>
 
           <label>
             <span>Notes:</span>
