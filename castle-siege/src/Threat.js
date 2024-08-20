@@ -1,10 +1,7 @@
 import './css/App.scss';
-import _, { random } from 'underscore';
-// import React, { useState, useEffect } from 'react';
+import _ from 'underscore';
 import React, { useCallback, useEffect, useState } from 'react';
-import axios from 'axios';
-
-import mtgBack from './images/card-back.jpg'; // wip
+import { listOfCommanderNames, queryScryfall } from './helper-methods';
 
 const Threat = (props) => {
 
@@ -32,10 +29,10 @@ const Threat = (props) => {
   const yieldsReward = props.rewards;
   const threatName = props.name;
   const generateGameSummary = props.generateGameSummary;
+  const setModalText = props.setModalText;
   // Props for showing commander names. Ties into log system and AI-generated game summary.
   const commandersArray = props.commandersArray;
   const setCommandersArray = props.setCommandersArray;
-  const listOfCommanderNames = props.listOfCommanderNames;
   const addToGameLog = props.addToGameLog;
 
   // Handle checkboxes for which commanders are attacking. I'll want to update this so it can be reset as well.
@@ -52,46 +49,6 @@ const Threat = (props) => {
   // Modal controls:
   const populateModal = props.populateModal;
   const setIsModalOpen = props.setIsModalOpen;
-
-  const fetchCard = async (cardName, isToken = false, queryParameters = {}) => {
-    // TODO: before hitting the API, we need to check if we've already fetched and stored it locally. That will save greatly on API hits.
-    // > For both exact and fuzzy, card names are case-insensitive and punctuation is optional (you can drop apostrophes and periods etc). For example: fIReBALL is the same as Fireball and smugglers copter is the same as Smuggler's Copter. - https://scryfall.com/docs/api/cards/named
-    try {
-      // setIsLoading(true);
-      // console.log(`isLoading? ${isLoading}`) // baby is crying, come back to this. I think it deals with the 1-second timeout
-      // const response = await axios.get(`https://api.scryfall.com/cards/named?fuzzy=${cardName}`);
-      //~ Second pass on this: using `/search` instead of `/named` gives me more parameters, specifically the ability to search for tokens. This seems to be the more robust way.
-      // Adding the `color` parameter, so we can specify to get the correct color creatures (red giant instead of green). In the future, this section would need to be more robust, but this is a good v1.
-  
-      //~ Discoveries: a query such as "Shock" will get ALL cards with the name `shock` in them. Then they will be returned alphabetically. So, searching for "Shock", just grabbing the first will result in "Aether Shockwave" which is not what we want.
-      //~ So, it looks like I'll need to locally do a `find` by the name to get the exact match.
-      //~ Very inefficient right now, pulling down all of that extra data. Hopefully I can get better queries in place eventually.
-      // TODO: I should be able to pass in `+oracle:' '` to have no rules text, but that isn't quite working yet.
-
-      // Start with the name, and whether or not it is a token. Then, loop through any additional queryParameters and append those to the query.
-      let scryfallQuery = `https://api.scryfall.com/cards/search?q=name:${cardName}${isToken ? '+layout:token' : ''}`;
-      for (const property in queryParameters) {
-        scryfallQuery = scryfallQuery.concat(`+${property}:${queryParameters[property]}`);
-      }
-
-      // Can also test queries using the normal Scryfall API: https://scryfall.com/search?q=layout%3Atoken+name%3Agiant+color%3Ar&unique=cards&as=grid&order=name
-  
-      // console.log(`scryfallQuery is: ${scryfallQuery}`)
-      const response = await axios.get(scryfallQuery);
-  
-      const cardWithExactNameMatch = response.data?.data.find(card => card.name === cardName);
-      // console.log(`cardWithExactNameMatch: ${cardWithExactNameMatch}`);
-      setIsLoading(false);
-      // console.log(`isLoading? ${isLoading}`)
-      return cardWithExactNameMatch;
-      // handle some load state, etc
-    } catch (error) {
-      // handle some load state, etc
-      console.error(error); // Log the error or handle it as needed
-      setIsLoading(false);
-      return null; // Return null or handle it appropriately
-    }
-  }
 
   // `currentActionIndex` controls the flow of a turn. The component reacts to its value.
   const [currentActionIndex, setCurrentActionIndex] = useState(-1);
@@ -147,14 +104,14 @@ const Threat = (props) => {
 
   }, [currentActionIndex]);
 
-  // const randomSpell = async () => {
   const randomSpell = useCallback(async () => {
     // TODO:
     // Once these are fetched for the first time, we should store the image in the object.
     // Subsequently it will be obtained locally.
     // This will save on API hits...
     const randomSpell = usesSpells[_.random(0, usesSpells.length - 1)];
-    const cardApiData = await fetchCard(randomSpell.name);
+    const cardApiData = await queryScryfall(randomSpell.name);
+    setIsLoading(false);
     const thisText = `${threatName} casts ${randomSpell.name}${randomSpell.targetsPlayer ? ' on you' : ''}!`;
     addToGameLog(thisText);
     setCurrentCardToDisplay(cardApiData);
@@ -165,7 +122,8 @@ const Threat = (props) => {
   const randomAttack = useCallback(async () => {
     const whichCreatureType = attacksWith[_.random(0, attacksWith.length - 1)];
     const howMany = _.random(whichCreatureType.quantityRange[0], whichCreatureType.quantityRange[1]);
-    const cardApiData = await fetchCard(whichCreatureType.name, whichCreatureType.isToken, whichCreatureType.queryParameters);
+    const cardApiData = await queryScryfall(whichCreatureType.name, whichCreatureType.isToken, whichCreatureType.queryParameters);
+    setIsLoading(false);
     const thisText = `${threatName} attacks with ${howMany} ${whichCreatureType.name}${howMany > 1 ? 's' : ''}!`;
     addToGameLog(thisText);
     setCurrentCardToDisplay(cardApiData);
@@ -178,7 +136,7 @@ const Threat = (props) => {
     if(newLifeTotal === 0) {
       threatIsDefeated();
     }
-    addToGameLog(`${listOfCommanderNames(true)} deals ${damageToDealToThreat} damage to ${threatName}${newLifeTotal === 0 ? ', defeating it!' : '.'}`);
+    addToGameLog(`${listOfCommanderNames(commandersArray, true)} deals ${damageToDealToThreat} damage to ${threatName}${newLifeTotal === 0 ? ', defeating it!' : '.'}`);
 
     setDamageToDealToThreat(0); // Reset the input
   };
@@ -192,21 +150,18 @@ const Threat = (props) => {
       // Quick loading state. Will implement better state management in the future: https://github.com/MikeCaputo/kingston-ny-mtg/issues/9
       populateModal(
         null,
-        `Loading summary...`,
-        {text: 'Loading...', function: setIsModalOpen(false)}
+        `${threatName} has been defeated! Loading game summary...`,
+        {text: 'A Well-Earned Victory', function: setIsModalOpen(false)}
       );
 
       const aiGeneratedSummary = await generateGameSummary();
 
-      populateModal(
-        null,
-        `${threatName} has been defeated! Here is a summary of the game:\n\n${aiGeneratedSummary}`,
-        {text: 'A Well-Earned Victory', function: setIsModalOpen(false)}
-      );
+      setModalText(`${threatName} has been defeated! Your game summary is:\n\n${aiGeneratedSummary}`);
 
     } else {
       const whichRewardType = yieldsReward[_.random(0, yieldsReward.length - 1)];
-      const cardApiData = await fetchCard(whichRewardType.name, true);
+      const cardApiData = await queryScryfall(whichRewardType.name, true);
+      setIsLoading(false);
       const howMany = [_.random(whichRewardType.quantityRange[0], whichRewardType.quantityRange[1])];
       populateModal(
         cardApiData,
@@ -221,7 +176,7 @@ const Threat = (props) => {
   }
 
   return (
-    <div
+    <section
       className={`Threat ${isThreatAlive ? '' : 'defeated'} ${isTurnUnderway? 'turn-underway' : ''}`}
       style={props.style}
     >
@@ -245,13 +200,13 @@ const Threat = (props) => {
           <p>Who is dealing damage?</p>
           {commandersArray.map((commander, i) => {
             return (
-              <label key={`${commander.commanderName}`}>
+              <label key={`${commander.scryfallCardData.name}`}>
                 <input
                   type="checkbox"
                   value={commander.isAttacking}
                   onChange={() => updateAttackingCommanders(i)}
                 />
-                <span>{commander.commanderName}</span>
+                <span>{commander.scryfallCardData.name}</span>
               </label>
             )
           })}
@@ -300,7 +255,7 @@ const Threat = (props) => {
         </>
       }
 
-    </div>
+    </section>
   );
 }
 
