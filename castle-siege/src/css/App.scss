@@ -73,6 +73,14 @@ button {
   &:hover, &:active{
     background: $dark-gray;
   }
+  &:disabled{
+    background-color: #cccccc;
+    color: #ffffff;
+    cursor: not-allowed;
+    &:hover, &:active{
+      background-color: #cccccc;
+    }
+  }
 }
 
 .modal-content {
@@ -122,5 +130,26 @@ button {
     h3 {
       text-decoration: line-through;
     }
+  }
+}
+
+.commander-selection-image {
+  border-radius: 15px;
+  cursor: pointer;
+  max-width: 200px;
+  max-height: 200px;
+  border: 1px solid transparent;
+  &:hover, &:active, &:focus {
+    border: 1px solid #ffffff;
+  }
+}
+
+.commander-selection-input {
+  border: 1px solid transparent;
+  &.validated{
+    border: 1px solid green;
+    // & + span::after{
+    //   content: ' validated ✓';
+    // }
   }
 }

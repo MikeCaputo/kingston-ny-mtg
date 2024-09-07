@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import './css/App.scss';
 import Threat from './Threat.js';
+import {
+  generateDescriptionForCommander,
+  generateDynamicsBetweenCommanders,
+  generateGamePrologue,
+  listOfCommanderNames,
+  openAiSettings
+} from './helper-methods';
 // OpenAI
 import OpenAI from 'openai';
+import CommanderPicker from './CommanderPicker.jsx';
 
 const App = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,22 +22,57 @@ const App = () => {
   const [modalButtonFunction, setModalButtonFunction] = useState(null); // wip
   const [shouldModalBeOpen, setShouldModalBeOpen] = useState(null); // wip
   const [selectedMap, setSelectedMap] = useState(null);
-  // const [backgroundImage, setBackgroundImage] = useState('/gray-patterned-bg.jpg');
   const [backgroundImage, setBackgroundImage] = useState(null);
   const [isGameStarted, setIsGameStarted] = useState(false);
 
   // Player / Commander data
-  const [commander1, setCommander1] = useState('');
-  const [commander2, setCommander2] = useState('');
-  const [commander3, setCommander3] = useState('');
-  const [commander4, setCommander4] = useState('');
+  const [commander1, setCommander1] = useState(null);
+  const [commander2, setCommander2] = useState(null);
+  const [commander3, setCommander3] = useState(null);
+  const [commander4, setCommander4] = useState(null);
   const [commandersArray, setCommandersArray] = useState([]);
+
+  // When a user selects a commander from the picker, reset the selector.
+  useEffect(() => {
+    // Sets the commanders array; only adds those with a value. The `filter` will exclude any non-nulls.
+    setCommandersArray([commander1, commander2, commander3, commander4].filter(commander => commander));
+    console.log('commander1 is: ', commander1);
+    console.log('commander2 is: ', commander2);
+    console.log('commander3 is: ', commander3);
+    console.log('commander4 is: ', commander4);
+    console.log('commandersArray is: ', commandersArray);
+    console.log('commandersArray.length is: ', commandersArray.length);
+  }, [commander1, commander2, commander3, commander4]);
+
+  // Can worry about drying this up later if needed.
+  const getCommanderByPlayerNumber = (playerNumber) => {
+    switch(playerNumber) {
+      case 1: return commander1; break;
+      case 2: return commander2; break;
+      case 3: return commander3; break;
+      case 4: return commander4; break;
+      default: return null; break;
+    }
+  }
+
+  // Could combine this with the above, probably.... it's okay for now.
+  const getCommanderSetterByPlayerNumber = (playerNumber) => {
+    switch(playerNumber) {
+      case 1: return setCommander1; break;
+      case 2: return setCommander2; break;
+      case 3: return setCommander3; break;
+      case 4: return setCommander4; break;
+      default: return null; break;
+    }
+  }
 
   // OpenAI. Will be handled differently once secrets management is set up.
   const [openai, setOpenai] = useState(null);
   
   // Game Log; plain text. Will be used to generate a summary at the end.
   const [gameLog, setGameLog] = useState('');
+  // We store the game prologue so that we can reference it later when generating the game's conclusion.
+  const [gamePrologue, setGamePrologue] = useState('');
 
   const addToGameLog = (additionalText) => {
     setGameLog(gameLog + additionalText);
@@ -39,21 +82,16 @@ const App = () => {
 
   const generateGameSummary = async () => {
 
-    // Just until secrets management is implemented.
-    if(!openai) {
-      return 'OpenAI not initialized.';
-    }
-
     // todo, idea: have the "quest or mystery" part displayed at the beginning, to give the players a primer.
     // todo, idea: use smaller, more numerous prompts to build up more internal intelligence: probably would be beneficial to first create text blocks describing each commander, their powers and personalities, etc. Also to create a description of their dynamics, and a description of the map settings. All for future state.
     // Other optional parameters to learn about and explore: `max_tokens`, `n`, `temperature`. https://platform.openai.com/tokenizer
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      ...openAiSettings(),
       messages: [
           { role: 'system', content: 'You are an expert at the game Magic the Gathering, and you will help to write short, dramatic stories drawing from user-provided content.' },
           {
               role: 'user',
-              content: `Please write a fun, engaging, and dramatic game summary based on the following game log. The player commanders are ${listOfCommanderNames(false)}, and they are cooperatively facing a series of enemy threats. Additionally, please create a mystery or quest which is thematic to the setting and commanders, and have that mystery or quest resolved at the game completion. The game log is: ${gameLog}`,
+              content: `Starting with this game prologue: ${gamePrologue}, incorporate the events that unfolded during the game, as follows: ${gameLog}. Please write a fun, engaging, and dramatic game conclusion, concluding the quest or mystery referenced during the gmae's prologue.`,
           },
       ],
     });
@@ -72,25 +110,18 @@ const App = () => {
     return completion.choices[0].message.content;
   }
 
-  const populateModal = (cardData, modalText, modalButtonOptions) => {
+  // wip: Making this more flexible by making parameters optional. That way we can update modals that are already open.
+  const populateModal = (cardData = null, modalText = null, modalButtonOptions = {}) => {
     setCardToDisplay(cardData);
-    setModalText(modalText);
-
-    // console.log(`modalButtonOptions is: ${JSON.stringify(modalButtonOptions)}`)
-    console.log(`cardData is: ${cardData}`)
-    console.log(`modalText is: ${modalText}`)
-    console.log(`modalButtonOptions is: ${modalButtonOptions}`)
-    console.log(`modalButtonOptions.text is: ${modalButtonOptions.text}`)
-    console.log(`modalButtonOptions.function is: ${modalButtonOptions.function}`)
+    if(modalText) {
+      setModalText(modalText);
+    }
 
     // Populate the modal button. This will allow the modal to control multiple attacks per threat.
-    // setModalButtonText('hard-coded CLOSE');
-    setModalButtonText(modalButtonOptions.text); // wip!
-    // setModalButtonFunction(closeModal); // wip!
-    setIsModalOpen(true); // hard-coded for now, need to get back to baseline.
-    // setModalButtonFunction(closeModal); // wip!
-    // setModalButtonFunction(modalButtonOptions.function); // THIS causes the modal to not work correctly. ** I think it's because: if it passes in `closeModal`, it is for some reason running immediately. Maybe because I'm passing it in without prefacing it with `() => function` ?? 
-
+    if(modalButtonOptions?.text) {
+      setModalButtonText(modalButtonOptions.text);
+    }
+    setIsModalOpen(true);
   }
 
   const closeModal = () => {
@@ -165,42 +196,74 @@ const App = () => {
 
   }
 
-  const startTheGame = () => {
-    const commandersArray = [commander1, commander2, commander3, commander4];
-    const thisGameCommanders = commandersArray
-      .filter(commander => commander)  // Filter out empty strings
-      .map(commander => ({
-        commanderName: commander,
-        isAttacking: false
-      }));
-    
-    setCommandersArray(thisGameCommanders);
+  const startTheGame = async() => {
+    // Start loading state here
+    populateModal(
+      null,
+      'Loading...',
+      {text: 'Loading...', function: setIsModalOpen(false)}
+    );
+
+    // 1. Generate AI descriptions for each commander, and assign that description to the commander object
+    // 2. React will ASYNC (batch) those updates to the normal `commandersArray` array.
+    // 3. But, so that we will have access to it here in its entirety, I'm storing `availableCommandersArray` so that we can use it immediately.
+    const availableCommandersArray = await Promise.all(
+      commandersArray.map(async (commander) => {
+        const descriptionForCommander = await generateDescriptionForCommander(openai, commander);
+        const whichSetterFunction = getCommanderSetterByPlayerNumber(commander.playerNumber);
+        whichSetterFunction(prevData => ({
+          ...prevData,
+          aiGeneratedDescription: descriptionForCommander,
+        }));
+        return {
+          ...commander,
+          aiGeneratedDescription: descriptionForCommander,
+        };
+      })
+    );
+
+    /*
+      Note:
+      This is not following React best practices, but it works for now. (following the mantra right now: documentation is more important than code quality)
+
+      1. I think it would be useful to separate each Commander out into its own component, so each one can be more independently reactive.
+      2. The bigger note here is that I need to change more pieces to be React-like. For example, if I had something like:
+
+        useEffect(() => {
+          // generateAiDescription
+        }, [commander1.scryFallData]);
+
+        And then, ugh, can't think need to take care of Luca now. But basically, keep making chain-reaction reactive functions,
+        so that as get all of the ai-generated info populated, we finally set a flag state of "everythingIsGenerated", and only then
+        would we update the modal with the populated info.
+
+    */
+
+    // Generate dynamics between the commanders, or single commander..
+    const commanderInfo = availableCommandersArray.length > 1
+      ? await generateDynamicsBetweenCommanders(openai, availableCommandersArray)
+      : availableCommandersArray[0].aiGeneratedDescription;
+    const thisGamePrologue = await generateGamePrologue(openai, commanderInfo, selectedMap);
+    setGamePrologue(thisGamePrologue);
+
+    populateModal(
+      null,
+      thisGamePrologue,
+      {text: 'Let the Siege Begin!', function: setIsModalOpen(false)}
+    );
+
     setIsGameStarted(true);
   }
 
-  const listOfCommanderNames = (includeOnlyAttackers = false) => {
-    // Needs refinement. I think I did this exact same code in VoD somewhere.... this is good enough for now.
-    let text = '';
-    for (let i = 0; i < (commandersArray.length); i++) {
-      if(!includeOnlyAttackers || (includeOnlyAttackers && commandersArray[i].isAttacking)) {
+  const [canStartTheGame, setCanStartTheGame] = useState(false);
 
-        if(i === commandersArray.length - 1) {
-          // text += '.';
-          text += ' and ';
-        }
-        if(commandersArray[i].commanderName) {
-          text += commandersArray[i].commanderName;
-        }
-        if(i < commandersArray.length - 1) {
-          text += ', ';
-        }
-      }
-    }
-    return text;
-  }
+  // Players can only start the game after the map has been selected, openai has been added, and the commander(s) have been selected.
+  useEffect(() => {
+    setCanStartTheGame(selectedMap && openai && commandersArray.length > 0);
+  }, [selectedMap, openai, commandersArray]);
 
   return (
-    <div className="App" style={{ backgroundImage: `url(/map-backgrounds/${backgroundImage})` }}>
+    <main className="App" style={{ backgroundImage: `url(/map-backgrounds/${backgroundImage})` }}>
 
       <h1>Castle Siege</h1>
 
@@ -217,29 +280,28 @@ const App = () => {
           <input type="file" accept=".txt" onChange={initializeOpenAi} />
 
           <p>3. Who are the Commander(s)?</p>
-          <input
-            type="text"
-            value={commander1}
-            onChange={e => setCommander1(e.target.value)}
-          /><br />
-          <input
-            type="text"
-            value={commander2}
-            onChange={e => setCommander2(e.target.value)}
-          /><br />
-          <input
-            type="text"
-            value={commander3}
-            onChange={e => setCommander3(e.target.value)}
-          /><br />
-          <input
-            type="text"
-            value={commander4}
-            onChange={e => setCommander4(e.target.value)}
-          /><br />
 
-          <button className="" onClick={startTheGame}>
-            Start the Game
+          {
+            [1,2,3,4].map((playerNumber) => (
+              // Once the player has selected their commander, display it. Until then, display a picker.
+              // Future UX: allow a player to cancel out and select a different commander if they made a mistake.
+              getCommanderByPlayerNumber(playerNumber)
+                ? <img
+                  key={playerNumber}
+                  src={getCommanderByPlayerNumber(playerNumber).scryfallCardData?.image_uris?.small}
+                  alt={getCommanderByPlayerNumber(playerNumber).scryfallCardData?.name}
+                  title={getCommanderByPlayerNumber(playerNumber).scryfallCardData?.name}
+                />
+                : <CommanderPicker
+                    key={playerNumber}
+                    playerNumber={playerNumber}
+                    setCommanderFunction={getCommanderSetterByPlayerNumber(playerNumber)}
+                  />
+            ))
+          }
+
+          <button className="" onClick={startTheGame} disabled={!canStartTheGame}>
+            {canStartTheGame ? 'Start the Game' : 'Please finish setting up'}
           </button>
         </>
       }
@@ -248,7 +310,7 @@ const App = () => {
         <div>
           <h2 className="map-header-name">Selected Map: {selectedMap?.name}</h2>
 
-          <h4>They are facing the combined forces of {listOfCommanderNames()}.</h4>
+          <h4>They are facing the combined forces of {listOfCommanderNames(commandersArray)}.</h4>
 
           {selectedMap?.enemyBases.map((enemyBase) => {
 
@@ -269,15 +331,16 @@ const App = () => {
                   populateModal={populateModal}
                   closeModal={closeModal}
                   setIsModalOpen={setIsModalOpen}
+                  setModalText={setModalText}
                   turnOrder={enemyBase.turnOrder}
                   attacksWith={enemyBase.attacksWith}
                   usesSpells={enemyBase.usesSpells}
                   rewards={enemyBase.rewards}
                   commandersArray={commandersArray}
                   setCommandersArray={setCommandersArray}
-                  listOfCommanderNames={listOfCommanderNames}
                   addToGameLog={addToGameLog}
                   generateGameSummary={generateGameSummary}
+                  openai={openai}
                 />
               );
             }
@@ -308,7 +371,7 @@ const App = () => {
         </div>
       )}
 
-    </div>
+    </main>
   );
 }
 

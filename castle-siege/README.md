@@ -54,6 +54,7 @@ When the enemy attacks, the players not only have shared blockers, but they also
 ## Technical Notes
 
 1. Uses Scryfall API to fetch card data: https://scryfall.com/docs/api
+2. **For this project, documentation is more important than code quality.** Writing this on Aug 28: now that I'm working full time, plus taking care of Luca, I have very little time for this project. So, it's more important that I write good PR descriptions and BDD tests so that I can quickly get back into context. Code quality, especially optimizations, is not the top priority because this is being used by a _very_ tiny audience right now. 
 
 ## Copyright
 
