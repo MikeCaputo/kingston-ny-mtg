@@ -15,7 +15,7 @@
       "attacksWith": [
         {
           "name": "Zombie",
-          "isToken": false,
+          "isToken": true,
           "queryParameters": {
             "color": "black",
             "power": 2,
@@ -36,8 +36,12 @@
       ],
       "usesSpells": [
         {
-          "name": "Cower in Fear",
+          "name": "Malicious Eclipse",
           "targetsPlayer": false
+        },
+        {
+          "name": "Mind Rot",
+          "targetsPlayer": true
         }
       ],
       "rewards": [
@@ -48,8 +52,67 @@
       ]
     },
     {
-      "name": "The Silent Moor",
+      "name": "The Accursed Shore",
       "quantity": 1,
+      "isBoss": false,
+      "lifeTotal": 50,
+      "borderColor": ["blue"],
+      "turnOrder": [
+        "castSpell",
+        "attack"
+      ],
+      "attacksWith": [
+        {
+          "name": "Drownyard Amalgam",
+          "isToken": false,
+          "queryParameters": {
+            "color": "blue",
+            "power": 3,
+            "toughness": 6
+          },
+          "quantityRange": [3,4]
+        },
+        {
+          "name": "Stitched Drake",
+          "isToken": false,
+          "queryParameters": {
+            "color": "blue",
+            "power": 3,
+            "toughness":  4
+          },
+          "quantityRange": [2,3]
+        },
+        {
+          "name": "Diver Skaab",
+          "isToken": false,
+          "queryParameters": {
+            "color": "blue",
+            "power": 3,
+            "toughness":  5
+          },
+          "quantityRange": [3,5]
+        }
+      ],
+      "usesSpells": [
+        {
+          "name": "Mind Rot",
+          "targetsPlayer": true
+        },
+        {
+          "name": "Devastation Tide",
+          "targetsPlayer": false
+        }
+      ],
+      "rewards": [
+        {
+          "name": "Clue",
+          "quantityRange": [3,4]
+        }
+      ]
+    },
+    {
+      "name": "The Silent Moor",
+      "quantity": 2,
       "isBoss": false,
       "lifeTotal": 20,
       "borderColor": ["black"],
@@ -66,7 +129,7 @@
             "power": 2,
             "toughness": 2
           },
-          "quantityRange": [2,3]
+          "quantityRange": [8,9]
         },
         {
           "name": "Vengeful Dead",
@@ -76,19 +139,72 @@
             "power": 3,
             "toughness": 2
           },
-          "quantityRange": [1,2]
+          "quantityRange": [6,8]
         }
       ],
       "usesSpells": [
         {
-          "name": "Malicious Eclipse",
+          "name": "Languish",
           "targetsPlayer": false
         }
       ],
       "rewards": [
         {
           "name": "Clue",
-          "quantityRange": [1,2]
+          "quantityRange": [3,4]
+        }
+      ]
+    },
+    {
+      "name": "The Castle Gate",
+      "quantity": 1,
+      "isBoss": false,
+      "lifeTotal": 50,
+      "borderColor": ["blue", "black"],
+      "turnOrder": [
+        "castSpell",
+        "attack"
+      ],
+      "attacksWith": [
+        {
+          "name": "Grave Titan",
+          "isToken": false,
+          "queryParameters": {
+            "color": "black",
+            "power": 6,
+            "toughness": 6
+          },
+          "quantityRange": [2,3]
+        },
+        {
+          "name": "Overcharged Amalgam",
+          "isToken": false,
+          "queryParameters": {
+            "color": "blue",
+            "power": 3,
+            "toughness": 3
+          },
+          "quantityRange": [3,4]
+        }
+      ],
+      "usesSpells": [
+        {
+          "name": "Pox",
+          "targetsPlayer": false
+        },
+        {
+          "name": "Languish",
+          "targetsPlayer": false
+        }
+      ],
+      "rewards": [
+        {
+          "name": "Clue",
+          "quantityRange": [3,4]
+        },
+        {
+          "name": "Blood",
+          "quantityRange": [4,5]
         }
       ]
     },
@@ -112,7 +228,7 @@
             "power": 3,
             "toughness": 3
           },
-          "quantityRange": [2,3]
+          "quantityRange": [3,4]
         },
         {
           "name": "Geralf's Messenger",
@@ -122,7 +238,7 @@
             "power": 3,
             "toughness": 2
           },
-          "quantityRange": [3,5]
+          "quantityRange": [5,10]
         }
       ],
       "usesSpells": [
@@ -131,18 +247,14 @@
           "targetsPlayer": true
         },
         {
-          "name": "Mind Rot",
+          "name": "Delirium Skeins",
           "targetsPlayer": true
         }
       ],
       "rewards": [
         {
-          "name": "Clue",
-          "quantityRange": [3,4]
-        },
-        {
-          "name": "Blood",
-          "quantityRange": [4,5]
+          "name": "Selfless Spirit",
+          "quantityRange": [4,4]
         }
       ]
     },
@@ -191,12 +303,8 @@
       ],
       "usesSpells": [
         {
-          "name": "Languish",
+          "name": "Damnation",
           "targetsPlayer": false
-        },
-        {
-          "name": "Delirium Skeins",
-          "targetsPlayer": true
         }
       ]
     }

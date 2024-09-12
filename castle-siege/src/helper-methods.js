@@ -21,7 +21,7 @@ export const queryScryfall = async (cardName, isToken = false, queryParameters =
 
     // Can also test queries using the normal Scryfall API: https://scryfall.com/search?q=layout%3Atoken+name%3Agiant+color%3Ar&unique=cards&as=grid&order=name
 
-    // console.log(`scryfallQuery is: ${scryfallQuery}`)
+    // console.log('scryfallQuery is: ', scryfallQuery)
     const response = await axios.get(scryfallQuery);
     const scryfallData = response.data; // This `data` is from Axios.
     const scryfallCardList = scryfallData.data;  // This `data` is from Scryfall. `scryfallData` is a few scraps of metadata that we don't need.
@@ -162,7 +162,9 @@ export const generateGamePrologue = async (openai, commanderInfo, selectedMap) =
     }
   });
 
-  const aiInstructionPrompt = `A group of MtG commander(s) are cooperatively allied in a great battle against a powerful enemy. A description of the commander(s) is: ${commanderInfo}. Please write a prologue of their great battle against ${selectedMap.name}, which will take place in the places of ${enemyBaseNames}, and will include a mystery or quest which is thematic to the commanders and setting. Please only include a portion of this mystery or quest; it will be concluded at a later time.`;
+  const maxWordCount = 500; // And unaltered test was 693, too long. I tried 400 and was nice and snappy! I'll try 500 to see if I get a _little_ more description. But I think this is a good way to control the length.
+
+  const aiInstructionPrompt = `A group of MtG commander(s) are cooperatively allied in a great battle against a powerful enemy. A description of the commander(s) is: ${commanderInfo}. Please write a prologue of their great battle against ${selectedMap.name}, which will take place in the places of ${enemyBaseNames}, and will include a mystery or quest which is thematic to the commanders and setting. Please only include a portion of this mystery or quest; it will be concluded at a later time. Please limit the response to no more than ${maxWordCount} words.`;
   console.log(`aiInstructionPrompt is: ${aiInstructionPrompt}`);
   const completion = await openai.chat.completions.create({
     ...openAiSettings(),
