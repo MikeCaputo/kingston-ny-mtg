@@ -165,7 +165,7 @@ const Threat = (props) => {
       const howMany = [_.random(whichRewardType.quantityRange[0], whichRewardType.quantityRange[1])];
       populateModal(
         cardApiData,
-        `${threatName} has been defeated! You gain ${howMany} ${whichRewardType.name} Token${howMany > 1 ? 's' : ''}.`,
+        `${threatName} has been defeated! Each player at this base gains ${howMany} ${whichRewardType.name} Token${howMany > 1 ? 's' : ''}.`,
         {text: 'Close', function: setIsModalOpen(false)}
       );
     }
@@ -189,7 +189,7 @@ const Threat = (props) => {
       {isThreatAlive &&
         <>
           <label>
-            <span>Deal damage to this threat:</span>
+            <span>Deal damage to this Enemy Base:</span>
             <input
               type="number"
               value={damageToDealToThreat}
@@ -210,7 +210,7 @@ const Threat = (props) => {
               </label>
             )
           })}
-          <button onClick={dealDamageToThreat}>Deal damage to this Threat</button>
+          <button onClick={dealDamageToThreat}>Deal damage to this Enemy Base</button>
 
           <label>
             <span>Notes:</span>
