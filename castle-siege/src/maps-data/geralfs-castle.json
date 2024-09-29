@@ -36,11 +36,19 @@
       ],
       "usesSpells": [
         {
-          "name": "Malicious Eclipse",
+          "name": "Cower in Fear",
           "targetsPlayer": false
         },
         {
-          "name": "Mind Rot",
+          "name": "Raven's Crime",
+          "targetsPlayer": true
+        },
+        {
+          "name": "Unseal the Necropolis",
+          "targetsPlayer": true
+        },
+        {
+          "name": "Horrifying Revelation",
           "targetsPlayer": true
         }
       ],
@@ -56,7 +64,7 @@
       "quantity": 1,
       "isBoss": false,
       "lifeTotal": 50,
-      "borderColor": ["blue"],
+      "borderColor": ["blue, black"],
       "turnOrder": [
         "castSpell",
         "attack"
@@ -99,7 +107,7 @@
           "targetsPlayer": true
         },
         {
-          "name": "Devastation Tide",
+          "name": "Malicious Eclipse",
           "targetsPlayer": false
         }
       ],
