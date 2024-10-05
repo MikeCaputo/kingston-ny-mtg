@@ -272,8 +272,6 @@ const App = () => {
 
       <hr />
 
-      <HexGrid />
-
       {!isGameStarted &&
         <>
           <p>1. Choose the map</p>
@@ -314,6 +312,8 @@ const App = () => {
           <h2 className="map-header-name">Selected Map: {selectedMap?.name}</h2>
 
           <h4>They are facing the combined forces of {listOfCommanderNames(commandersArray)}.</h4>
+
+          <HexGrid />
 
           {selectedMap?.enemyBases.map((enemyBase) => {
 

@@ -41,7 +41,9 @@ const Hex = ({ x, y, size, id, onClick }) => {
       <polygon
         points={points}
         // fill={isHovered ? "#f1c40f" : "none"} // Change fill on hover
-        fill="none"
+        // fill="none"
+        // fill="rgba(0, 50, 200, .5)"
+        fill={isHovered ? "rgba(0, 50, 150, .4)" : "rgba(0, 50, 200, .1)"} // Change fill on hover
         stroke={isHovered ? "#f1c40f" : "#2980b9"} // Change stroke on hover
         strokeWidth={2}
       />

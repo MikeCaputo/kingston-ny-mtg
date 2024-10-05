@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Hex from './Hex.jsx';
 
 const HexGrid = () => {
-  const hexSize = 30;
+  const hexSize = 75;
   const [hexArray, setHexArray] = useState([]);
 
   useEffect(() => {
