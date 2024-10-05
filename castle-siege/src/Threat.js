@@ -34,6 +34,7 @@ const Threat = (props) => {
   const commandersArray = props.commandersArray;
   const setCommandersArray = props.setCommandersArray;
   const addToGameLog = props.addToGameLog;
+  const setDisplayEnemyBase = props.setDisplayEnemyBase;
 
   // Handle checkboxes for which commanders are attacking. I'll want to update this so it can be reset as well.
   const updateAttackingCommanders = (commanderIndex) => {
@@ -254,6 +255,8 @@ const Threat = (props) => {
           </button> */}
         </>
       }
+
+      <button onClick={() => setDisplayEnemyBase(false)}><em>Close Enemy Base</em></button>
 
     </section>
   );

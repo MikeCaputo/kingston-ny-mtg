@@ -79,20 +79,42 @@ AND it will contain an AI-generated game prologue
 AND that prologue will draw from the selected commander(s) and the map setting
 AND I will see a button reads "Let the Siege Begin!"
 
-### Scenario: I start the game, and see a prologue modal
+### Scenario: I close the prologue modal and I can now interact with the game
 GIVEN I am a player
 AND I can see an AI-generated game prologue in a modal
 AND I see a button reads "Let the Siege Begin!"
 WHEN I select that button
 THEN the modal will close
-AND I will see a series of threat nodes / enemy bases
-AND each enemy base will show its name
-AND each enemy base will have a life total
-AND each enemy base will have a field allowing the player(s) to damage that base
-AND each enemy base will have checkboxes, used for indicating which commander(s) are performing an attack
-AND each enemy base will have a button allowing the player(s) to perform an attack
-AND each enemy base will have a Notes section
-AND each enemy base will have a button allowing the enemy base to take its turn
+AND I will see a hex grid
+AND the grid will have map-specific enemy bases, represented by castle icons
+AND the grid will have map-specific connecting paths, represented by stone path icons
+
+## Hex Grid
+
+### Scenario: I can open an enemy base
+GIVEN I am a player
+AND I have started the game
+AND I see a hex grid
+AND I see at least one enemy base, represented by a castle
+WHEN I click on the castle
+THEN the enemy base will be displayed
+AND the enemy base will show its name
+AND the enemy base will have a life total
+AND the enemy base will have a field allowing the player(s) to damage that base
+AND the enemy base will have checkboxes, used for indicating which commander(s) are performing an attack
+AND the enemy base will have a button allowing the player(s) to perform an attack
+AND the enemy base will have a Notes section
+AND the enemy base will have a button allowing the enemy base to take its turn
+AND the enemy base will have a button allowing the player to close the enemy base
+
+### Scenario: I can close an enemy base
+GIVEN I am a player
+AND I have started the game
+AND I see a hex grid
+AND I see at least one enemy base, represented by a castle
+AND that enemy base is open
+WHEN I click on the castle
+THEN the enemy base will close
 
 ## Enemy Bases
 
