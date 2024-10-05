@@ -11,6 +11,7 @@ import {
 // OpenAI
 import OpenAI from 'openai';
 import CommanderPicker from './CommanderPicker.jsx';
+import HexGrid from './HexGrid.jsx';
 
 const App = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -270,6 +271,8 @@ const App = () => {
       <h4>A new format of Magic the Gathering, being developed by Mike Caputo of Calamity Bay Games</h4>
 
       <hr />
+
+      <HexGrid />
 
       {!isGameStarted &&
         <>

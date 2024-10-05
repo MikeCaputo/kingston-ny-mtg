@@ -109,6 +109,10 @@
         {
           "name": "Malicious Eclipse",
           "targetsPlayer": false
+        },
+        {
+          "name": "Vicious Rumors",
+          "targetsPlayer": true
         }
       ],
       "rewards": [
