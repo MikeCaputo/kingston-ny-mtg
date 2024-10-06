@@ -1,10 +1,18 @@
 {
   "name": "Geralf, the Mad Stitcher",
   "backgroundImage": "castle-locthwain.jpg",
+  "hexGridWidth": 8,
+  "hexGridHeight": 8,
   "enemyBases": [
     {
       "name": "The Fields of Shallow Graves",
       "quantity": 4,
+      "hexGridLocations": [
+        [0,2],
+        [0,4],
+        [0,6],
+        [0,8]
+      ],
       "isBoss": false,
       "lifeTotal": 20,
       "borderColor": ["black"],
@@ -62,6 +70,9 @@
     {
       "name": "The Accursed Shore",
       "quantity": 1,
+      "hexGridLocations": [
+        [2,5]
+      ],
       "isBoss": false,
       "lifeTotal": 50,
       "borderColor": ["blue, black"],
@@ -125,6 +136,10 @@
     {
       "name": "The Silent Moor",
       "quantity": 2,
+      "hexGridLocations": [
+        [4,2],
+        [4,4]
+      ],
       "isBoss": false,
       "lifeTotal": 20,
       "borderColor": ["black"],
@@ -170,6 +185,9 @@
     {
       "name": "The Castle Gate",
       "quantity": 1,
+      "hexGridLocations": [
+        [6,4]
+      ],
       "isBoss": false,
       "lifeTotal": 50,
       "borderColor": ["blue", "black"],
@@ -223,6 +241,9 @@
     {
       "name": "The Laboratory",
       "quantity": 1,
+      "hexGridLocations": [
+        [8,4]
+      ],
       "isBoss": false,
       "lifeTotal": 100,
       "borderColor": ["blue", "black"],
@@ -273,6 +294,9 @@
     {
       "name": "Schlossgeist, the Wailing Tower",
       "quantity": 1,
+      "hexGridLocations": [
+        [8,4]
+      ],
       "isBoss": true,
       "lifeTotal": 200,
       "borderColor": ["blue", "black"],

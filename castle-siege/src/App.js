@@ -129,6 +129,16 @@ const App = () => {
     setIsModalOpen(false);
   };
 
+  // MC wip: I'm thinking how to represent the Enemy Bases vis-a-vis the Hex Grid.
+  // Storing everything statically in the JSON file feels clumsy (ex, storing 90 empty points and 10 enemy bases. That's 90 lines of empty noise.)
+  // But changing it to be a `js` file would make it more complex and more difficult to build a map editor at some point.
+  // Okay, I'm getting ideas:
+  // 1. Store the hexGridWidth and hexGridHeight in the JSON; so like, 10x10
+  //    That way, all of the empty ones can be programmatically generated
+  // 2. Then, the enemy basescan simply draw out where appropriate. This will add a _little_ complexity in the application but I don't think it will be much.
+  // 3. Then even for the base quantity (when there are multiples) -- instead of just a number (quantity: 4), I can expand this just a bit, and have hex location(s). That way, I can place one or more on the map.
+  // Okay, that all sounds very doable. Just need to expand and adjust the schema. Onward!! MC 10.6.2024 
+
   const handleMapFileUpload = (event) => {
     // TODO: need to validate map selection
     const file = event.target.files[0];
@@ -288,11 +298,11 @@ const App = () => {
               // Future UX: allow a player to cancel out and select a different commander if they made a mistake.
               getCommanderByPlayerNumber(playerNumber)
                 ? <img
-                  key={playerNumber}
-                  src={getCommanderByPlayerNumber(playerNumber).scryfallCardData?.image_uris?.small}
-                  alt={getCommanderByPlayerNumber(playerNumber).scryfallCardData?.name}
-                  title={getCommanderByPlayerNumber(playerNumber).scryfallCardData?.name}
-                />
+                    key={playerNumber}
+                    src={getCommanderByPlayerNumber(playerNumber).scryfallCardData?.image_uris?.small}
+                    alt={getCommanderByPlayerNumber(playerNumber).scryfallCardData?.name}
+                    title={getCommanderByPlayerNumber(playerNumber).scryfallCardData?.name}
+                  />
                 : <CommanderPicker
                     key={playerNumber}
                     playerNumber={playerNumber}
@@ -313,7 +323,18 @@ const App = () => {
 
           <h4>They are facing the combined forces of {listOfCommanderNames(commandersArray)}.</h4>
 
-          <HexGrid />
+          <HexGrid
+            selectedMap={selectedMap}
+            populateModal={populateModal}
+            closeModal={closeModal}
+            setIsModalOpen={setIsModalOpen}
+            setModalText={setModalText}
+            commandersArray={commandersArray}
+            setCommandersArray={setCommandersArray}
+            addToGameLog={addToGameLog}
+            generateGameSummary={generateGameSummary}
+            openai={openai}
+          />
 
           {selectedMap?.enemyBases.map((enemyBase) => {
 

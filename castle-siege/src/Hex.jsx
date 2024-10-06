@@ -1,10 +1,14 @@
 import { useState } from 'react';
+import Threat from './Threat.js';
 
-const Hex = ({ x, y, size, id, onClick }) => {
+const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, populateModal, closeModal, setIsModalOpen, setModalText, commandersArray, setCommandersArray, addToGameLog, generateGameSummary, openai }) => {
   const hexWidth = size * 2;
   const hexHeight = Math.sqrt(3) * size;
 
   const [isHovered, setIsHovered] = useState(false); // Track hover state
+  const [displayEnemyBase, setDisplayEnemyBase] = useState(false); // Track enemy base display.
+
+  // const enemyBaseAtThisHex = props.enemyBaseAtThisHex;
 
   const points = [
     [size * Math.cos(0), size * Math.sin(0)],
@@ -24,30 +28,69 @@ const Hex = ({ x, y, size, id, onClick }) => {
     setIsHovered(false);
   };
 
+  // todo: maybe don't even initialize an onClick if there is no base here?
+  const onClick = () => {
+    // setIsHovered(false);
+    console.log('clicked a hex! row is: ', row, ' and col is: ', col)
+    console.log('does it have an enemyBase? ', enemyBaseAtThisHex)
+    if(enemyBaseAtThisHex) {
+      setDisplayEnemyBase(!displayEnemyBase);
+    }
+  };
+
+  const baseFillColor = enemyBaseAtThisHex ? "rgba(0, 50, 150, .3)" : "none";
+  const baseHoverColor = enemyBaseAtThisHex ? "rgba(0, 50, 200, .8)" : "none";
+
   return (
-    <svg
-      onClick={() => onClick(id)}
-      width={hexWidth}
-      height={hexHeight}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        position: "absolute",
-        left: x,
-        top: y,
-        cursor: "pointer",
-      }}
-    >
-      <polygon
-        points={points}
-        // fill={isHovered ? "#f1c40f" : "none"} // Change fill on hover
-        // fill="none"
-        // fill="rgba(0, 50, 200, .5)"
-        fill={isHovered ? "rgba(0, 50, 150, .4)" : "rgba(0, 50, 200, .1)"} // Change fill on hover
-        stroke={isHovered ? "#f1c40f" : "#2980b9"} // Change stroke on hover
-        strokeWidth={2}
+    <>
+      <svg
+        onClick={() => onClick()}
+        width={hexWidth}
+        height={hexHeight}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          position: "absolute",
+          left: x,
+          top: y,
+          cursor: enemyBaseAtThisHex ? "pointer" : "default",
+        }}
+      >
+        <polygon
+          points={points}
+          // fill={isHovered ? "#f1c40f" : "none"} // Change fill on hover
+          // fill="none"
+          // fill="rgba(0, 50, 200, .5)"
+          fill={isHovered ? baseHoverColor : baseFillColor} // Change fill on hover
+          stroke={isHovered ? "#f1c40f" : "#2980b9"} // Change stroke on hover
+          strokeWidth={2}
       />
-    </svg>
+      </svg>
+      <displayEnemyBase && Threat
+        style={
+          {
+            backgroundImage: `linear-gradient(white, white), linear-gradient(45deg, ${generateBorderColors(enemyBase)})`
+          }
+        }
+        name={`${enemyBaseAtThisHex.name}`}
+        key={`${enemyBaseAtThisHex.name}-${id}`} // Ensure unique keys for each instance (okay to give it the id of the hexGrid?)
+        isBoss={enemyBaseAtThisHex.isBoss}
+        lifeTotal={enemyBaseAtThisHex.lifeTotal}
+        populateModal={populateModal}
+        closeModal={closeModal}
+        setIsModalOpen={setIsModalOpen}
+        setModalText={setModalText}
+        turnOrder={enemyBaseAtThisHex.turnOrder}
+        attacksWith={enemyBaseAtThisHex.attacksWith}
+        usesSpells={enemyBaseAtThisHex.usesSpells}
+        rewards={enemyBaseAtThisHex.rewards}
+        commandersArray={commandersArray}
+        setCommandersArray={setCommandersArray}
+        addToGameLog={addToGameLog}
+        generateGameSummary={generateGameSummary}
+        openai={openai}
+      />
+    </>
   );
 };
 

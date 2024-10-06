@@ -98,7 +98,9 @@ button {
   width: 600px;
   height: 600px;
   display: block;
-  margin: 0 auto 0 auto;
+  // margin: 0 auto 0 auto;
+
+  
 }
 
 /* Future: threats will have their MtG color(s) as props, and will get an appropriate (multi)colored background like this: https://blog.prototypr.io/css-only-multi-color-backgrounds-4d96a5569a20 */
