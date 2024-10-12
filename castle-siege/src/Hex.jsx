@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Threat from './Threat.js';
+import castleIcon from './images/castle-icon.png';
 
 import {
   generateBorderColors,
@@ -41,8 +42,8 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, populateModal, clos
     }
   };
 
-  const baseFillColor = enemyBaseAtThisHex ? "rgba(0, 50, 150, .3)" : "none";
-  const baseHoverColor = enemyBaseAtThisHex ? "rgba(0, 50, 200, .8)" : "none";
+  const baseFillColor = enemyBaseAtThisHex ? 'rgba(0, 50, 150, .3)' : 'none';
+  const baseHoverColor = enemyBaseAtThisHex ? 'rgba(0, 50, 200, .8)' : 'none';
 
   return (
     <>
@@ -53,19 +54,19 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, populateModal, clos
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         style={{
-          position: "absolute",
           left: x,
           top: y,
-          cursor: enemyBaseAtThisHex ? "pointer" : "default",
+          cursor: enemyBaseAtThisHex ? 'pointer' : 'default',
+          backgroundImage: enemyBaseAtThisHex ? `url(${castleIcon})` : 'none'
         }}
       >
         <polygon
           points={points}
-          // fill={isHovered ? "#f1c40f" : "none"} // Change fill on hover
-          // fill="none"
-          // fill="rgba(0, 50, 200, .5)"
+          // fill={isHovered ? '#f1c40f' : 'none'} // Change fill on hover
+          // fill='none'
+          // fill='rgba(0, 50, 200, .5)'
           fill={isHovered ? baseHoverColor : baseFillColor} // Change fill on hover
-          stroke={isHovered ? "#f1c40f" : "#2980b9"} // Change stroke on hover
+          stroke={isHovered ? '#f1c40f' : '#2980b9'} // Change stroke on hover
           strokeWidth={2}
       />
       </svg>

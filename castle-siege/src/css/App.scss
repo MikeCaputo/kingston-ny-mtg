@@ -100,10 +100,15 @@ button {
   width: 600px;
   height: 600px;
   display: block;
-  // margin: 0 auto 0 auto;
-
-  
+  svg {
+    position: absolute;
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+  }
 }
+
 
 /* Future: threats will have their MtG color(s) as props, and will get an appropriate (multi)colored background like this: https://blog.prototypr.io/css-only-multi-color-backgrounds-4d96a5569a20 */
 .Threat {
