@@ -105,21 +105,21 @@ button {
 
 /* Future: threats will have their MtG color(s) as props, and will get an appropriate (multi)colored background like this: https://blog.prototypr.io/css-only-multi-color-backgrounds-4d96a5569a20 */
 .Threat {
+  position: absolute;
+  z-index: 100;
   color: $dark-gray;
-  // background-color: #efefef;
   background-color: rgba(255,255,255,.85);
   border-radius: 15px;
   display: block;
-  width: 50%;
-  max-width: 700px;
-  min-height: 220px;
-  height: auto;
-  // height: 220px;
+  width: 350px;
+  // max-width: 700px;
+  // min-height: 220px;
+  // height: auto;
   transition: min-height 1s linear; // wip
-  // padding: 30px;
   padding: 5px; // lowering this to handle the new curved-border, with the gradient color.
-  margin: 20px auto 20px auto;
+  // margin: 20px auto 20px auto;
   border: 5px solid transparent;
+  box-shadow: #dddddd 10px 10px 10px;
   &.card-display{
     // todo: have this fade in, and work well with the height transition.
   }
@@ -128,7 +128,7 @@ button {
       // Note: background color gradient is a parameter passed into the Threat as a prop. It is added as an inline style.
       background-origin: border-box;
       background-clip: content-box, border-box;
-      box-shadow: #cccccc 10px 10px 10px;
+      // box-shadow: #cccccc 10px 10px 10px;
     }
   }
   &.turn-underway{

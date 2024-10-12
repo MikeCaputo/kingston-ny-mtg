@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import Threat from './Threat.js';
 
+import {
+  generateBorderColors,
+} from './helper-methods';
+
 const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, populateModal, closeModal, setIsModalOpen, setModalText, commandersArray, setCommandersArray, addToGameLog, generateGameSummary, openai }) => {
   const hexWidth = size * 2;
   const hexHeight = Math.sqrt(3) * size;
 
   const [isHovered, setIsHovered] = useState(false); // Track hover state
   const [displayEnemyBase, setDisplayEnemyBase] = useState(false); // Track enemy base display.
-
-  // const enemyBaseAtThisHex = props.enemyBaseAtThisHex;
 
   const points = [
     [size * Math.cos(0), size * Math.sin(0)],
@@ -32,6 +34,7 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, populateModal, clos
   const onClick = () => {
     // setIsHovered(false);
     console.log('clicked a hex! row is: ', row, ' and col is: ', col)
+    console.log('clicked a hex! x is: ', x, ' and y is: ', y)
     console.log('does it have an enemyBase? ', enemyBaseAtThisHex)
     if(enemyBaseAtThisHex) {
       setDisplayEnemyBase(!displayEnemyBase);
@@ -66,30 +69,37 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, populateModal, clos
           strokeWidth={2}
       />
       </svg>
-      <displayEnemyBase && Threat
-        style={
-          {
-            backgroundImage: `linear-gradient(white, white), linear-gradient(45deg, ${generateBorderColors(enemyBase)})`
-          }
-        }
-        name={`${enemyBaseAtThisHex.name}`}
-        key={`${enemyBaseAtThisHex.name}-${id}`} // Ensure unique keys for each instance (okay to give it the id of the hexGrid?)
-        isBoss={enemyBaseAtThisHex.isBoss}
-        lifeTotal={enemyBaseAtThisHex.lifeTotal}
-        populateModal={populateModal}
-        closeModal={closeModal}
-        setIsModalOpen={setIsModalOpen}
-        setModalText={setModalText}
-        turnOrder={enemyBaseAtThisHex.turnOrder}
-        attacksWith={enemyBaseAtThisHex.attacksWith}
-        usesSpells={enemyBaseAtThisHex.usesSpells}
-        rewards={enemyBaseAtThisHex.rewards}
-        commandersArray={commandersArray}
-        setCommandersArray={setCommandersArray}
-        addToGameLog={addToGameLog}
-        generateGameSummary={generateGameSummary}
-        openai={openai}
-      />
+
+      {
+        displayEnemyBase &&
+          <Threat
+            style={
+              {
+                backgroundImage: `linear-gradient(white, white), linear-gradient(45deg, ${generateBorderColors(enemyBaseAtThisHex)})`,
+                left: x + hexWidth,
+                top: y - hexHeight
+              }
+            }
+            name={`${enemyBaseAtThisHex.name}`}
+            key={`${enemyBaseAtThisHex.name}-${id}`} // Ensure unique keys for each instance (okay to give it the id of the hexGrid?)
+            isBoss={enemyBaseAtThisHex.isBoss}
+            lifeTotal={enemyBaseAtThisHex.lifeTotal}
+            populateModal={populateModal}
+            closeModal={closeModal}
+            setIsModalOpen={setIsModalOpen}
+            setModalText={setModalText}
+            turnOrder={enemyBaseAtThisHex.turnOrder}
+            attacksWith={enemyBaseAtThisHex.attacksWith}
+            usesSpells={enemyBaseAtThisHex.usesSpells}
+            rewards={enemyBaseAtThisHex.rewards}
+            commandersArray={commandersArray}
+            setCommandersArray={setCommandersArray}
+            addToGameLog={addToGameLog}
+            generateGameSummary={generateGameSummary}
+            openai={openai}
+          />
+      }
+
     </>
   );
 };

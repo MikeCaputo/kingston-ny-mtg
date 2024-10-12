@@ -48,6 +48,36 @@ export const queryScryfall = async (cardName, isToken = false, queryParameters =
   }
 }
 
+export const generateBorderColors = (enemyBase) => {
+  // Generate border color. Could maybe use refactoring but its okay for now.
+  let borderColors = '';
+  if(enemyBase.borderColor.length === 1) {
+    // ex, "red" is turned into "red red". The parameter needs at least two.
+    borderColors = `${enemyBase.borderColor[0]}, ${enemyBase.borderColor[0]}`
+  } else {
+    for (let i = 0; i < (enemyBase.borderColor.length); i++) {
+      const addCommaOrNot = i + 1 === enemyBase.borderColor.length ? '' : ',';
+      borderColors += `${enemyBase.borderColor[i]}${addCommaOrNot}`;
+    }
+  }
+
+  // Match colors. TODO: need to get colors from a more global source, like a shared exported data source. But this is fine for now.
+  // Starting with this random reddit link here: https://imgur.com/dMjPOq0
+  // white: 249, 250, 244 // f9fff4
+  // green: 0, 115, 62 // 00733e
+  // blue: 14, 104, 171 // 0e68ab
+  // red: 211, 32, 42 // d3202a
+  // black: 21, 11, 0 // #150b00
+  borderColors = borderColors.replaceAll('white', '#f9fff4');
+  borderColors = borderColors.replaceAll('green', '#00733e');
+  borderColors = borderColors.replaceAll('blue', '#0e68ab');
+  borderColors = borderColors.replaceAll('red', '#d3202a');
+  borderColors = borderColors.replaceAll('black', '#150b00');
+
+  return borderColors;
+
+}
+
 export const colorTranslate = (colorInitial) => {
   switch(colorInitial) {
     case 'W': return 'white'; break;
