@@ -24,6 +24,7 @@ h1{
   padding: 30px 0 30px 0;
   // background: url('../images/mountain-piotr-dura.jpg'); // Future: can parameterize this by using a Scryfall query and using the art-only option.
   background-size: 100% auto;
+  min-height: 2000px; // Need more elegant solution here.
 }
 
 @keyframes App-logo-spin {
@@ -39,6 +40,7 @@ h1{
 
 .modal-overlay {
   position: fixed;
+  z-index: 200;
   top: 0;
   left: 0;
   width: 100%;
@@ -111,7 +113,7 @@ button {
   background-color: rgba(255,255,255,.85);
   border-radius: 15px;
   display: block;
-  width: 350px;
+  width: 550px;
   // max-width: 700px;
   // min-height: 220px;
   // height: auto;

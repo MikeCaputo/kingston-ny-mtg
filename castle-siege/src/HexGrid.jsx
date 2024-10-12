@@ -8,8 +8,8 @@ const HexGrid = (props) => {
 
   // Map data
   const selectedMap = props.selectedMap;
-  const commandersArray = props.commandersArray;
-  const setCommandersArray = props.setCommandersArray;
+  // const commandersArray = props.commandersArray;
+  // const setCommandersArray = props.setCommandersArray;
 
   useEffect(() => {
     // Generate a grid of hexagons on initialization
@@ -84,8 +84,13 @@ const HexGrid = (props) => {
           row={hex.row}
           size={hex.size}
           enemyBaseAtThisHex={hex.enemyBaseAtThisHex}
-          commandersArray={commandersArray}
-          setCommandersArray={setCommandersArray}
+          commandersArray={props.commandersArray}
+          setCommandersArray={props.setCommandersArray}
+          addToGameLog={props.addToGameLog}
+          generateGameSummary={props.generateGameSummary}
+          openai={props.openai}
+          setIsModalOpen={props.setIsModalOpen}
+          populateModal={props.populateModal}
         />
       ))}
       {/* <button onClick={createHexGrid}>Create Hex Grid</button> */}

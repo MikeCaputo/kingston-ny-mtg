@@ -19,7 +19,7 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, populateModal, clos
     [size * Math.cos(Math.PI), size * Math.sin(Math.PI)],
     [size * Math.cos(4 * Math.PI / 3), size * Math.sin(4 * Math.PI / 3)],
     [size * Math.cos(5 * Math.PI / 3), size * Math.sin(5 * Math.PI / 3)],
-  ].map(([px, py]) => `${px + hexWidth / 2},${py + hexHeight / 2}`).join(" ");
+  ].map(([px, py]) => `${px + hexWidth / 2},${py + hexHeight / 2}`).join(' ');
 
   // Event handlers to track hover state
   const handleMouseEnter = () => {
@@ -71,13 +71,14 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, populateModal, clos
       </svg>
 
       {
-        displayEnemyBase &&
+        enemyBaseAtThisHex &&
           <Threat
             style={
               {
                 backgroundImage: `linear-gradient(white, white), linear-gradient(45deg, ${generateBorderColors(enemyBaseAtThisHex)})`,
                 left: x + hexWidth,
-                top: y - hexHeight
+                top: y - hexHeight,
+                display: displayEnemyBase ? 'block' : 'none'
               }
             }
             name={`${enemyBaseAtThisHex.name}`}
