@@ -26,19 +26,23 @@ const HexGrid = (props) => {
     const cols = selectedMap.hexGridWidth;
     const rows = selectedMap.hexGridHeight;
 
-    console.log('map cols; should be width: ', cols)
-    console.log('map rows; should be height: ', rows)
+    // console.log('map cols; should be width: ', cols)
+    // console.log('map rows; should be height: ', rows)
 
-    // MC note: ChatGPT started me with this. Then I nudged the numbers around until I got what I wanted.
-    // ugh, some of the row nad col geometry is flipped here. I'll fix that later; not a blocker atm. . -- next.
+    // Hex grid variables; still a little fuzzy, but better than pure "magic numbers"
+    const staggerFactor = 1.55;       // Controls the stagger between adjacent rows (xOffset)
+    const columnSpacingFactor = 3.10; // Controls the horizontal spacing between columns
+    const rowSpacingFactor = 0.85;    // Controls the vertical spacing between rows
+
     for (let col = 0; col < cols; col++) {
       for (let row = 0; row < rows; row++) {
-        const xOffset = (row % 2) * hexSize * 1.55;
-        const x = col * hexSize * 3.10 + xOffset;
-        const y = row * hexSize * 0.85;
+        const xOffset = (row % 2) * hexSize * staggerFactor;
+        const x = col * hexSize * columnSpacingFactor + xOffset;
+        const y = row * hexSize * rowSpacingFactor;
 
         // here....need to see if there is a base here.
-        // might be able to refactor this into a "deep search". . -- then next, make sure as much of this is moved to the map schema.
+        // might be able to refactor this into a "deep search". . --
+        // NEXT, make sure as much of this is moved to the map schema. This is a critical one; what I have here is 100% prototype.
         let enemyBaseAtThisHex = null;
         for(let baseIndex = 0; baseIndex < selectedMap.enemyBases.length; baseIndex++){
           const thisEnemyBase = selectedMap.enemyBases[baseIndex];

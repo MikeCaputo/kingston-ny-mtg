@@ -33,9 +33,7 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, populateModal, clos
 
   // todo: maybe don't even initialize an onClick if there is no base here?
   const onClick = () => {
-    // setIsHovered(false);
     console.log('clicked a hex! row is: ', row, ' and col is: ', col)
-    console.log('clicked a hex! x is: ', x, ' and y is: ', y)
     console.log('does it have an enemyBase? ', enemyBaseAtThisHex)
     if(enemyBaseAtThisHex) {
       setDisplayEnemyBase(!displayEnemyBase);
@@ -99,6 +97,7 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, populateModal, clos
             addToGameLog={addToGameLog}
             generateGameSummary={generateGameSummary}
             openai={openai}
+            setDisplayEnemyBase={setDisplayEnemyBase}
           />
       }
 
