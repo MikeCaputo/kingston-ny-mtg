@@ -2,7 +2,7 @@
   "name": "Geralf, the Mad Stitcher",
   "backgroundImage": "castle-locthwain.jpg",
   "hexGridWidth": 8,
-  "hexGridHeight": 8,
+  "hexGridHeight": 16,
   "enemyBases": [
     {
       "name": "The Fields of Shallow Graves",
