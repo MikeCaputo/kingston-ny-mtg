@@ -48,6 +48,36 @@ export const queryScryfall = async (cardName, isToken = false, queryParameters =
   }
 }
 
+export const generateBorderColors = (enemyBase) => {
+  // Generate border color. Could maybe use refactoring but its okay for now.
+  let borderColors = '';
+  if(enemyBase.borderColor.length === 1) {
+    // ex, "red" is turned into "red red". The parameter needs at least two.
+    borderColors = `${enemyBase.borderColor[0]}, ${enemyBase.borderColor[0]}`
+  } else {
+    for (let i = 0; i < (enemyBase.borderColor.length); i++) {
+      const addCommaOrNot = i + 1 === enemyBase.borderColor.length ? '' : ',';
+      borderColors += `${enemyBase.borderColor[i]}${addCommaOrNot}`;
+    }
+  }
+
+  // Match colors. TODO: need to get colors from a more global source, like a shared exported data source. But this is fine for now.
+  // Starting with this random reddit link here: https://imgur.com/dMjPOq0
+  // white: 249, 250, 244 // f9fff4
+  // green: 0, 115, 62 // 00733e
+  // blue: 14, 104, 171 // 0e68ab
+  // red: 211, 32, 42 // d3202a
+  // black: 21, 11, 0 // #150b00
+  borderColors = borderColors.replaceAll('white', '#f9fff4');
+  borderColors = borderColors.replaceAll('green', '#00733e');
+  borderColors = borderColors.replaceAll('blue', '#0e68ab');
+  borderColors = borderColors.replaceAll('red', '#d3202a');
+  borderColors = borderColors.replaceAll('black', '#150b00');
+
+  return borderColors;
+
+}
+
 export const colorTranslate = (colorInitial) => {
   switch(colorInitial) {
     case 'W': return 'white'; break;
@@ -81,7 +111,6 @@ export const listOfCommanderNames = (whichCommandersArray, includeOnlyAttackers 
 }
 
 // AI functions
-
 
 // Setting this here so this is set in a central place.
 export const openAiSettings = () => {
@@ -162,9 +191,9 @@ export const generateGamePrologue = async (openai, commanderInfo, selectedMap) =
     }
   });
 
-  const maxWordCount = 450; // And unaltered test was 693, too long. I tried 400 and was nice and snappy! I'll try 500 to see if I get a _little_ more description. But I think this is a good way to control the length. update: nudging this down to 450.
+  const maxWordCount = 425; // And unaltered test was 693, too long. I tried 400 and was nice and snappy! I'll try 500 to see if I get a _little_ more description. But I think this is a good way to control the length. update: nudging this down to 425.
 
-  const aiInstructionPrompt = `A group of MtG commander(s) are cooperatively allied in a great battle against a powerful enemy. A description of the commander(s) is: ${commanderInfo}. Please write a prologue of their great battle against ${selectedMap.name}, which will take place in the places of ${enemyBaseNames}, and will include a mystery or quest which is thematic to the commanders and setting. Please only include a portion of this mystery or quest; it will be concluded at a later time. Please limit the response to no more than ${maxWordCount} words.`;
+  const aiInstructionPrompt = `A group of MtG commander(s) are cooperatively allied in a great battle against a powerful enemy. A description of the commander(s) is here in triple brackets: [[[${commanderInfo}]]]. Please write a prologue of their great battle against ${selectedMap.name}, which will take place in the places of ${enemyBaseNames}, and will include a mystery or quest which is thematic to the commanders and setting. Please only include a portion of this mystery or quest; it will be concluded at a later time. Please limit the response to no more than ${maxWordCount} words.`;
   console.log(`aiInstructionPrompt is: ${aiInstructionPrompt}`);
   const completion = await openai.chat.completions.create({
     ...openAiSettings(),

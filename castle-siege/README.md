@@ -14,7 +14,7 @@ The players will use stanard MtG Commander decks for this game variant; and the 
 
 The game ends when the boss is defeated, or when all players are defeated.
 
-### Gamme Rules
+### Game Rules
 - Players will be represented by some simple game piece on the map
 - Each node represents a threat to deal with. The players cannot advance until they have removed the threat. The threat will function similarly to an AI magic player, but for simplicity will not have a "board state"
 - Each turn, the player will play as normal.

@@ -2,15 +2,17 @@ import React, { useEffect, useState } from 'react';
 import './css/App.scss';
 import Threat from './Threat.js';
 import {
+  generateBorderColors,
   generateDescriptionForCommander,
   generateDynamicsBetweenCommanders,
   generateGamePrologue,
   listOfCommanderNames,
-  openAiSettings
+  openAiSettings,
 } from './helper-methods';
 // OpenAI
 import OpenAI from 'openai';
 import CommanderPicker from './CommanderPicker.jsx';
+import HexGrid from './HexGrid.jsx';
 
 const App = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -166,36 +168,6 @@ const App = () => {
     }
   }
 
-  const generateBorderColors = (enemyBase) => {
-    // Generate border color. Could maybe use refactoring but its okay for now.
-    let borderColors = '';
-    if(enemyBase.borderColor.length === 1) {
-      // ex, "red" is turned into "red red". The parameter needs at least two.
-      borderColors = `${enemyBase.borderColor[0]}, ${enemyBase.borderColor[0]}`
-    } else {
-      for (let i = 0; i < (enemyBase.borderColor.length); i++) {
-        const addCommaOrNot = i + 1 === enemyBase.borderColor.length ? '' : ',';
-        borderColors += `${enemyBase.borderColor[i]}${addCommaOrNot}`;
-      }
-    }
-
-    // Match colors. TODO: need to get colors from a more global source, like a shared exported data source. But this is fine for now.
-    // Starting with this random reddit link here: https://imgur.com/dMjPOq0
-    // white: 249, 250, 244 // f9fff4
-    // green: 0, 115, 62 // 00733e
-    // blue: 14, 104, 171 // 0e68ab
-    // red: 211, 32, 42 // d3202a
-    // black: 21, 11, 0 // #150b00
-    borderColors = borderColors.replaceAll('white', '#f9fff4');
-    borderColors = borderColors.replaceAll('green', '#00733e');
-    borderColors = borderColors.replaceAll('blue', '#0e68ab');
-    borderColors = borderColors.replaceAll('red', '#d3202a');
-    borderColors = borderColors.replaceAll('black', '#150b00');
-
-    return borderColors;
-
-  }
-
   const startTheGame = async() => {
     // Start loading state here
     populateModal(
@@ -287,11 +259,11 @@ const App = () => {
               // Future UX: allow a player to cancel out and select a different commander if they made a mistake.
               getCommanderByPlayerNumber(playerNumber)
                 ? <img
-                  key={playerNumber}
-                  src={getCommanderByPlayerNumber(playerNumber).scryfallCardData?.image_uris?.small}
-                  alt={getCommanderByPlayerNumber(playerNumber).scryfallCardData?.name}
-                  title={getCommanderByPlayerNumber(playerNumber).scryfallCardData?.name}
-                />
+                    key={playerNumber}
+                    src={getCommanderByPlayerNumber(playerNumber).scryfallCardData?.image_uris?.small}
+                    alt={getCommanderByPlayerNumber(playerNumber).scryfallCardData?.name}
+                    title={getCommanderByPlayerNumber(playerNumber).scryfallCardData?.name}
+                  />
                 : <CommanderPicker
                     key={playerNumber}
                     playerNumber={playerNumber}
@@ -312,40 +284,18 @@ const App = () => {
 
           <h4>They are facing the combined forces of {listOfCommanderNames(commandersArray)}.</h4>
 
-          {selectedMap?.enemyBases.map((enemyBase) => {
-
-            // Handle the ability to have multiple quantity of each Threat.
-            const threats = [];
-            for (let i = 0; i < (enemyBase.quantity); i++) {
-              threats.push(
-                <Threat
-                  style={
-                    {
-                      backgroundImage: `linear-gradient(white, white), linear-gradient(45deg, ${generateBorderColors(enemyBase)})`
-                    }
-                  }
-                  name={`${enemyBase.name} ${enemyBase.quantity > 1 ? i + 1 : ''}`}
-                  key={`${enemyBase.name}-${i}`} // Ensure unique keys for each instance
-                  isBoss={enemyBase.isBoss}
-                  lifeTotal={enemyBase.lifeTotal}
-                  populateModal={populateModal}
-                  closeModal={closeModal}
-                  setIsModalOpen={setIsModalOpen}
-                  setModalText={setModalText}
-                  turnOrder={enemyBase.turnOrder}
-                  attacksWith={enemyBase.attacksWith}
-                  usesSpells={enemyBase.usesSpells}
-                  rewards={enemyBase.rewards}
-                  commandersArray={commandersArray}
-                  setCommandersArray={setCommandersArray}
-                  addToGameLog={addToGameLog}
-                  generateGameSummary={generateGameSummary}
-                  openai={openai}
-                />
-              );
-            }
-            return threats;
-          })}
+          <HexGrid
+            selectedMap={selectedMap}
+            populateModal={populateModal}
+            closeModal={closeModal}
+            setIsModalOpen={setIsModalOpen}
+            setModalText={setModalText}
+            commandersArray={commandersArray}
+            setCommandersArray={setCommandersArray}
+            addToGameLog={addToGameLog}
+            generateGameSummary={generateGameSummary}
+            openai={openai}
+          />
 
         </div>
       )}

@@ -24,6 +24,7 @@ h1{
   padding: 30px 0 30px 0;
   // background: url('../images/mountain-piotr-dura.jpg'); // Future: can parameterize this by using a Scryfall query and using the art-only option.
   background-size: 100% auto;
+  min-height: 2000px; // Need more elegant solution here.
 }
 
 @keyframes App-logo-spin {
@@ -39,6 +40,7 @@ h1{
 
 .modal-overlay {
   position: fixed;
+  z-index: 200;
   top: 0;
   left: 0;
   width: 100%;
@@ -93,23 +95,36 @@ button {
   text-shadow: 0px 0px 20px #333333;
 }
 
+.hex-grid {
+  position: relative;
+  display: block;
+  .hex-grid-inner{
+    position: relative;
+    display: block;
+    margin: 0 auto 0 auto;
+    min-height: 1500px;
+    svg {
+      position: absolute;
+      background-repeat: no-repeat;
+      background-position-x: center;
+      background-position-y: center;
+    }
+  }
+}
+
 /* Future: threats will have their MtG color(s) as props, and will get an appropriate (multi)colored background like this: https://blog.prototypr.io/css-only-multi-color-backgrounds-4d96a5569a20 */
 .Threat {
+  position: absolute;
+  z-index: 100;
   color: $dark-gray;
-  // background-color: #efefef;
   background-color: rgba(255,255,255,.85);
   border-radius: 15px;
   display: block;
-  width: 50%;
-  max-width: 700px;
-  min-height: 220px;
-  height: auto;
-  // height: 220px;
-  transition: min-height 1s linear; // wip
-  // padding: 30px;
+  width: 550px;
+  transition: min-height 1s linear;
   padding: 5px; // lowering this to handle the new curved-border, with the gradient color.
-  margin: 20px auto 20px auto;
   border: 5px solid transparent;
+  box-shadow: #dddddd 10px 10px 10px;
   &.card-display{
     // todo: have this fade in, and work well with the height transition.
   }
@@ -118,14 +133,13 @@ button {
       // Note: background color gradient is a parameter passed into the Threat as a prop. It is added as an inline style.
       background-origin: border-box;
       background-clip: content-box, border-box;
-      box-shadow: #cccccc 10px 10px 10px;
+      // box-shadow: #cccccc 10px 10px 10px;
     }
   }
   &.turn-underway{
     min-height: 800px;
   }
   &.defeated {
-    // background-color: #cccccc;
     min-height: unset;
     h3 {
       text-decoration: line-through;
@@ -148,8 +162,5 @@ button {
   border: 1px solid transparent;
   &.validated{
     border: 1px solid green;
-    // & + span::after{
-    //   content: ' validated ✓';
-    // }
   }
 }
