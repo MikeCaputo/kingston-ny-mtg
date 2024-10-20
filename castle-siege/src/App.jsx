@@ -6,7 +6,7 @@ import {
   generateGamePrologue,
   listOfCommanderNames,
   openAiSettings,
-} from './helper-methods';
+} from './helper-methods.js';
 // OpenAI
 import OpenAI from 'openai';
 import CommanderDisplay from './CommanderDisplay.jsx';
