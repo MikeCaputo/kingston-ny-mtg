@@ -164,3 +164,15 @@ button {
     border: 1px solid green;
   }
 }
+
+.commander-display{
+  padding: 20px;
+  border-radius: 15px;
+  background: #ffffff;
+  color: #000000;
+  width: auto;
+  display: inline-block;
+  p {
+    margin: 5px 0 5px 0;
+  }
+}

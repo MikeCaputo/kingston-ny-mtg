@@ -87,6 +87,7 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisH
 
       {
         enemyBaseAtThisHex &&
+        // TODO: what the heck? why am I slicing up the parameters like this? just pass in `enemyBaseAtThisHex` and the rest should be done internally....sheesh. ALSO, rename this to `EnemyBase`. deprecate the terminology of "Threat".
           <Threat
             style={
               {

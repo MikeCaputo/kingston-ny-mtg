@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './css/App.scss';
-import Threat from './Threat.js';
 import {
-  generateBorderColors,
   generateDescriptionForCommander,
   generateDynamicsBetweenCommanders,
   generateGamePrologue,
@@ -11,6 +9,7 @@ import {
 } from './helper-methods';
 // OpenAI
 import OpenAI from 'openai';
+import CommanderDisplay from './CommanderDisplay.jsx';
 import CommanderPicker from './CommanderPicker.jsx';
 import HexGrid from './HexGrid.jsx';
 
@@ -42,8 +41,8 @@ const App = () => {
     console.log('commander2 is: ', commander2);
     console.log('commander3 is: ', commander3);
     console.log('commander4 is: ', commander4);
-    console.log('commandersArray is: ', commandersArray);
-    console.log('commandersArray.length is: ', commandersArray.length);
+    // console.log('commandersArray is: ', commandersArray);
+    // console.log('commandersArray.length is: ', commandersArray.length);
   }, [commander1, commander2, commander3, commander4]);
 
   // Can worry about drying this up later if needed.
@@ -272,7 +271,7 @@ const App = () => {
             ))
           }
 
-          <button className="" onClick={startTheGame} disabled={!canStartTheGame}>
+          <button onClick={startTheGame} disabled={!canStartTheGame}>
             {canStartTheGame ? 'Start the Game' : 'Please finish setting up'}
           </button>
         </>
@@ -283,6 +282,12 @@ const App = () => {
           <h2 className="map-header-name">Selected Map: {selectedMap?.name}</h2>
 
           <h4>They are facing the combined forces of {listOfCommanderNames(commandersArray)}.</h4>
+
+          {commandersArray.map((commander) => (
+            <CommanderDisplay
+              commander={commander}
+            />
+          ))}
 
           <HexGrid
             selectedMap={selectedMap}
@@ -299,8 +304,6 @@ const App = () => {
 
         </div>
       )}
-
-      {/* <hr /> */}
 
       {/* July 9: thinking about trimming this down, no longer using it for Threat-specific purposes. */}
       {isModalOpen && (
