@@ -30,7 +30,7 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisH
   };
 
   const onClick = () => {
-    console.log('clicked a hex! col is: ', col, ' and row is: ', row)
+    console.log(`clicked a hex: column and row is  is: [${col},${row}]`)
     if(enemyBaseAtThisHex) {
       setDisplayEnemyBase(!displayEnemyBase);
     }

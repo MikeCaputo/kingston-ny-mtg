@@ -116,6 +116,15 @@ AND that enemy base is open
 WHEN I click on the castle
 THEN the enemy base will close
 
+### Scenario: I can click on any hex grids to see its coordinates in the console log
+GIVEN I am Castle Siege developer
+AND I have started the game
+AND I see a hex grid
+AND I have browser developer tools open
+WHEN I click on any hex
+THEN I will see the column and row numbers for that hex
+AND I can use that information to debug and/or edit map information
+
 ## Enemy Bases
 
 ### Scenario: I initiate an enemy base turn
