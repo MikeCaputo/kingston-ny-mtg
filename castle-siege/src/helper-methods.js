@@ -89,6 +89,9 @@ export const colorTranslate = (colorInitial) => {
   }
 }
 
+// TODO: I'm changing this `includeOnlyAttackers` functionality. Be aware of how that's changing.
+// It will just be determined by which commander(s) are AT the location.
+// Will also need to update BDD tests.
 export const listOfCommanderNames = (whichCommandersArray, includeOnlyAttackers = false) => {
   // Needs refinement. I think I did this exact same code in VoD somewhere.... this is good enough for now.
   let text = '';

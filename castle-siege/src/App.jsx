@@ -283,11 +283,11 @@ const App = () => {
 
           <h4>They are facing the combined forces of {listOfCommanderNames(commandersArray)}.</h4>
 
-          {commandersArray.map((commander) => (
+          {/* {commandersArray.map((commander) => (
             <CommanderDisplay
               commander={commander}
             />
-          ))}
+          ))} */}
 
           <HexGrid
             selectedMap={selectedMap}
@@ -296,7 +296,9 @@ const App = () => {
             setIsModalOpen={setIsModalOpen}
             setModalText={setModalText}
             commandersArray={commandersArray}
-            setCommandersArray={setCommandersArray}
+            // setCommandersArray={setCommandersArray}
+            // wip.... I think this system should be refactored big time. I'll have ChatGPT to help me clean it up later. I think each `commander` in in the commanderArray should have its own setter methods!!!
+            setCommander1={setCommander1}
             addToGameLog={addToGameLog}
             generateGameSummary={generateGameSummary}
             openai={openai}

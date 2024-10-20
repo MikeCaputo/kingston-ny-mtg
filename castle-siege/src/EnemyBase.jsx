@@ -2,6 +2,7 @@ import './css/App.scss';
 import _ from 'underscore';
 import React, { useCallback, useEffect, useState } from 'react';
 import { listOfCommanderNames, queryScryfall } from './helper-methods';
+import CommandersAtThisLocation from './CommandersAtThisLocation';
 
 const EnemyBase = (props) => {
 
@@ -34,20 +35,20 @@ const EnemyBase = (props) => {
   const setModalText = props.setModalText;
   // Props for showing commander names. Ties into log system and AI-generated game summary.
   const commandersArray = props.commandersArray;
-  const setCommandersArray = props.setCommandersArray;
+  // const setCommandersArray = props.setCommandersArray;
   const addToGameLog = props.addToGameLog;
   const setDisplayEnemyBase = props.setDisplayEnemyBase;
 
   // Handle checkboxes for which commanders are attacking. I'll want to update this so it can be reset as well.
-  const updateAttackingCommanders = (commanderIndex) => {
-    // Create a new array with updated isAttacking value
-    const updatedCommanders = commandersArray.map((commander, i) =>
-      i === commanderIndex ? { ...commander, isAttacking: !commander.isAttacking } : commander
-    );
+  // const updateAttackingCommanders = (commanderIndex) => {
+  //   // Create a new array with updated isAttacking value
+  //   const updatedCommanders = commandersArray.map((commander, i) =>
+  //     i === commanderIndex ? { ...commander, isAttacking: !commander.isAttacking } : commander
+  //   );
 
-    // Update state
-    setCommandersArray(updatedCommanders)
-  };
+  //   // Update state
+  //   setCommandersArray(updatedCommanders)
+  // };
 
   // Modal controls:
   const populateModal = props.populateModal;
@@ -184,6 +185,15 @@ const EnemyBase = (props) => {
       style={props.style}
     >
 
+      <CommandersAtThisLocation
+        commandersArray={commandersArray}
+        setCommander1={props.setCommander1}
+        hexCol={props.hexCol}
+        hexRow={props.hexRow}
+      />
+
+      <hr />
+
       <h3>{enemyBaseName}</h3>
 
       {/* Need a more elegant way to render a zero. It's falsey. But `.toString() mutates the data, which I don't want.... this is okay for now */}
@@ -200,7 +210,8 @@ const EnemyBase = (props) => {
               onFocus={(e) => e.target.select()}
             />
           </label>
-          <p>Who is dealing damage?</p>
+          {/* UPDATE: I think I'll make this more abstract. Rather than caring specifically which commanders are attacking, I'll just rely on what Commanders are at the location, which is information I would need anyway.... */}
+          {/* <p>Who is dealing damage?</p>
           {commandersArray.map((commander, i) => {
             return (
               <label key={`${commander.scryfallCardData.name}`}>
@@ -212,7 +223,7 @@ const EnemyBase = (props) => {
                 <span>{commander.scryfallCardData.name}</span>
               </label>
             )
-          })}
+          })} */}
           <button onClick={dealDamageToEnemyBase}>Deal damage to this Enemy Base</button>
 
           <label>

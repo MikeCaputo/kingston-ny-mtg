@@ -87,7 +87,8 @@ const HexGrid = (props) => {
             enemyBaseAtThisHex={hex.enemyBaseAtThisHex}
             isThereAPathAtThisHex={hex.isThereAPathAtThisHex}
             commandersArray={props.commandersArray}
-            setCommandersArray={props.setCommandersArray}
+            // setCommandersArray={props.setCommandersArray}
+            setCommander1={props.setCommander1}
             addToGameLog={props.addToGameLog}
             generateGameSummary={props.generateGameSummary}
             openai={props.openai}

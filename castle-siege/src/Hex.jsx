@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import EnemyBase from './EnemyBase.jsx';
 import castleIcon from './images/castle-icon.png';
 import pathIcon from './images/path-icon.png';
 import { generateBorderColors} from './helper-methods';
 
-const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisHex, populateModal, closeModal, setIsModalOpen, setModalText, commandersArray, setCommandersArray, addToGameLog, generateGameSummary, openai }) => {
+// const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisHex, populateModal, closeModal, setIsModalOpen, setModalText, commandersArray, setCommandersArray, addToGameLog, generateGameSummary, openai }) => {
+const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisHex, populateModal, closeModal, setIsModalOpen, setModalText, commandersArray, setCommander1, addToGameLog, generateGameSummary, openai }) => {
   const hexWidth = size * 2;
   const hexHeight = Math.sqrt(3) * size;
 
@@ -47,10 +48,17 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisH
   const baseFillColor = enemyBaseAtThisHex ? 'rgba(0, 50, 150, .3)' : 'none';
   const baseHoverColor = enemyBaseAtThisHex ? 'rgba(0, 50, 200, .8)' : 'none';
 
+  // WIP:
+  // listen for changes in the commander array.
+  // If a commander is at this location, it must be represented here
+  useEffect(() => {
+    console.log('in the Hex component; need to update commander location. commandersArray is: ', commandersArray)
+  }, [commandersArray]);
+
   return (
     <>
       <span
-        // for debugging! set to display: none when not needed.
+        // TODO: I might want to repurpose this to depict which commanders are here? Could use this same visual treatment. Just a simple red integer for player number or something similiar.
         style = {{
           display: 'none',
           position: 'absolute',
@@ -103,7 +111,10 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisH
             setIsModalOpen={setIsModalOpen}
             setModalText={setModalText}
             commandersArray={commandersArray}
-            setCommandersArray={setCommandersArray}
+            // setCommandersArray={setCommandersArray}
+            hexCol={col}
+            hexRow={row}
+            setCommander1={setCommander1}
             addToGameLog={addToGameLog}
             generateGameSummary={generateGameSummary}
             openai={openai}
