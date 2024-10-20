@@ -118,7 +118,7 @@ const App = () => {
       setModalText(modalText);
     }
 
-    // Populate the modal button. This will allow the modal to control multiple attacks per threat.
+    // Populate the modal button. This will allow the modal to control multiple attacks per enemy base.
     if(modalButtonOptions?.text) {
       setModalButtonText(modalButtonOptions.text);
     }
@@ -305,7 +305,7 @@ const App = () => {
         </div>
       )}
 
-      {/* July 9: thinking about trimming this down, no longer using it for Threat-specific purposes. */}
+      {/* July 9: thinking about trimming this down, no longer using it for enemy base-specific purposes. */}
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal">

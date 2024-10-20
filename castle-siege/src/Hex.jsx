@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Threat from './Threat.js';
+import EnemyBase from './EnemyBase.jsx';
 import castleIcon from './images/castle-icon.png';
 import pathIcon from './images/path-icon.png';
 import { generateBorderColors} from './helper-methods';
@@ -87,8 +87,7 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisH
 
       {
         enemyBaseAtThisHex &&
-        // TODO: what the heck? why am I slicing up the parameters like this? just pass in `enemyBaseAtThisHex` and the rest should be done internally....sheesh. ALSO, rename this to `EnemyBase`. deprecate the terminology of "Threat".
-          <Threat
+          <EnemyBase
             style={
               {
                 backgroundImage: `linear-gradient(white, white), linear-gradient(45deg, ${generateBorderColors(enemyBaseAtThisHex)})`,
@@ -97,18 +96,12 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisH
                 display: displayEnemyBase ? 'block' : 'none'
               }
             }
-            name={`${enemyBaseAtThisHex.name}`}
             key={`${enemyBaseAtThisHex.name}-${id}`} // Ensure unique keys for each instance (okay to give it the id of the hexGrid?)
-            isBoss={enemyBaseAtThisHex.isBoss}
-            lifeTotal={enemyBaseAtThisHex.lifeTotal}
+            enemyBaseAtThisHex={enemyBaseAtThisHex}
             populateModal={populateModal}
             closeModal={closeModal}
             setIsModalOpen={setIsModalOpen}
             setModalText={setModalText}
-            turnOrder={enemyBaseAtThisHex.turnOrder}
-            attacksWith={enemyBaseAtThisHex.attacksWith}
-            usesSpells={enemyBaseAtThisHex.usesSpells}
-            rewards={enemyBaseAtThisHex.rewards}
             commandersArray={commandersArray}
             setCommandersArray={setCommandersArray}
             addToGameLog={addToGameLog}

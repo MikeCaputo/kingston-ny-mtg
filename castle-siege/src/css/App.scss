@@ -112,8 +112,8 @@ button {
   }
 }
 
-/* Future: threats will have their MtG color(s) as props, and will get an appropriate (multi)colored background like this: https://blog.prototypr.io/css-only-multi-color-backgrounds-4d96a5569a20 */
-.Threat {
+/* Future: enemy bases will have their MtG color(s) as props, and will get an appropriate (multi)colored background like this: https://blog.prototypr.io/css-only-multi-color-backgrounds-4d96a5569a20 */
+.EnemyBase {
   position: absolute;
   z-index: 100;
   color: $dark-gray;
@@ -130,7 +130,7 @@ button {
   }
   &:hover, &:focus, &:active{
     &:not(.defeated) {
-      // Note: background color gradient is a parameter passed into the Threat as a prop. It is added as an inline style.
+      // Note: background color gradient is a parameter passed into the EnemyBase as a prop. It is added as an inline style.
       background-origin: border-box;
       background-clip: content-box, border-box;
       // box-shadow: #cccccc 10px 10px 10px;
