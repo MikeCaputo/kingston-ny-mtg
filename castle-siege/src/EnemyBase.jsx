@@ -2,16 +2,17 @@ import './css/App.scss';
 import _ from 'underscore';
 import React, { useCallback, useEffect, useState } from 'react';
 import { listOfCommanderNames, queryScryfall } from './helper-methods';
+import CommandersAtThisLocation from './CommandersAtThisLocation';
 
-const Threat = (props) => {
+const EnemyBase = (props) => {
 
   // Damage / life total
-  const [damageToDealToThreat, setDamageToDealToThreat] = useState(0);
-  const [threatLifeTotal, setThreatLifeTotal] = useState(props.lifeTotal);
-  const [isThreatAlive, setIsThreatAlive] = useState(true);
+  const [damageToDealToEnemyBase, setDamageToDealToEnemyBase] = useState(0);
+  const [enemyBaseLifeTotal, setEnemyBaseLifeTotal] = useState(props.enemyBaseAtThisHex.lifeTotal);
+  const [isEnemyBaseAlive, setIsEnemyBaseAlive] = useState(true);
 
   // Used for tracking misc notes: Monarch status, poison counters, etc.
-  const [notesOnThreat, setNotesOnThreat] = useState('');
+  const [notesOnEnemyBase, setNotesOnEnemyBase] = useState('');
 
   // Turn-specific display elements
   const [currentCardToDisplay, setCurrentCardToDisplay] = useState(null);
@@ -23,29 +24,19 @@ const Threat = (props) => {
   const [isTurnUnderway, setIsTurnUnderway] = useState(false);
 
   // Passed props
-  const turnOrder = props.turnOrder;
-  const attacksWith = props.attacksWith;
-  const usesSpells = props.usesSpells;
-  const yieldsReward = props.rewards;
-  const threatName = props.name;
+  const enemyBaseName = props.enemyBaseAtThisHex.name;
+  const isBoss = props.enemyBaseAtThisHex.isBoss;
+  const turnOrder = props.enemyBaseAtThisHex.turnOrder;
+  const attacksWith = props.enemyBaseAtThisHex.attacksWith;
+  const usesSpells = props.enemyBaseAtThisHex.usesSpells;
+  const yieldsReward = props.enemyBaseAtThisHex.rewards;
+
   const generateGameSummary = props.generateGameSummary;
   const setModalText = props.setModalText;
   // Props for showing commander names. Ties into log system and AI-generated game summary.
   const commandersArray = props.commandersArray;
-  const setCommandersArray = props.setCommandersArray;
   const addToGameLog = props.addToGameLog;
   const setDisplayEnemyBase = props.setDisplayEnemyBase;
-
-  // Handle checkboxes for which commanders are attacking. I'll want to update this so it can be reset as well.
-  const updateAttackingCommanders = (commanderIndex) => {
-    // Create a new array with updated isAttacking value
-    const updatedCommanders = commandersArray.map((commander, i) =>
-      i === commanderIndex ? { ...commander, isAttacking: !commander.isAttacking } : commander
-    );
-
-    // Update state
-    setCommandersArray(updatedCommanders)
-  };
 
   // Modal controls:
   const populateModal = props.populateModal;
@@ -82,14 +73,16 @@ const Threat = (props) => {
             switch(turnOrder[currentActionIndex]) {
               case 'castSpell':
                 // console.log(`should be casting a spell`)
-                // await randomSpell();
                 randomSpell();
                 break;
 
               case 'attack':
                 // console.log(`should be performing an attack`)
-                // await randomAttack();
                 randomAttack();
+                break;
+
+              default:
+                console.error('Error: turn is not configured correctly. Did not find a matching case for ', turnOrder[currentActionIndex]);
                 break;
             }
           }, 1000);
@@ -113,7 +106,7 @@ const Threat = (props) => {
     const randomSpell = usesSpells[_.random(0, usesSpells.length - 1)];
     const cardApiData = await queryScryfall(randomSpell.name);
     setIsLoading(false);
-    const thisText = `${threatName} casts ${randomSpell.name}${randomSpell.targetsPlayer ? ' on you' : ''}!`;
+    const thisText = `${enemyBaseName} casts ${randomSpell.name}${randomSpell.targetsPlayer ? ' on you' : ''}!`;
     addToGameLog(thisText);
     setCurrentCardToDisplay(cardApiData);
     setCardAreaText(thisText);
@@ -125,39 +118,40 @@ const Threat = (props) => {
     const howMany = _.random(whichCreatureType.quantityRange[0], whichCreatureType.quantityRange[1]);
     const cardApiData = await queryScryfall(whichCreatureType.name, whichCreatureType.isToken, whichCreatureType.queryParameters);
     setIsLoading(false);
-    const thisText = `${threatName} attacks with ${howMany} ${whichCreatureType.name}${howMany > 1 ? 's' : ''}!`;
+    const thisText = `${enemyBaseName} attacks with ${howMany} ${whichCreatureType.name}${howMany > 1 ? 's' : ''}!`;
     addToGameLog(thisText);
     setCurrentCardToDisplay(cardApiData);
     setCardAreaText(thisText);
   });
 
-  const dealDamageToThreat = () => {
-    const newLifeTotal = Math.max(0, threatLifeTotal - damageToDealToThreat);
-    setThreatLifeTotal(newLifeTotal);
+  const dealDamageToEnemyBase = () => {
+    const newLifeTotal = Math.max(0, enemyBaseLifeTotal - damageToDealToEnemyBase);
+    setEnemyBaseLifeTotal(newLifeTotal);
     if(newLifeTotal === 0) {
-      threatIsDefeated();
+      enemyBaseIsDefeated();
     }
-    addToGameLog(`${listOfCommanderNames(commandersArray, true)} deals ${damageToDealToThreat} damage to ${threatName}${newLifeTotal === 0 ? ', defeating it!' : '.'}`);
 
-    setDamageToDealToThreat(0); // Reset the input
+    addToGameLog(`${listOfCommanderNames(commandersArray, true, [props.hexCol, props.hexRow])} deals ${damageToDealToEnemyBase} damage to ${enemyBaseName}${newLifeTotal === 0 ? ', defeating it!' : '.'}`);
+
+    setDamageToDealToEnemyBase(0); // Reset the input
   };
 
-  const threatIsDefeated = async () => {
+  const enemyBaseIsDefeated = async () => {
 
-    setIsThreatAlive(false);
+    setIsEnemyBaseAlive(false);
 
-    if(props.isBoss) {
+    if(isBoss) {
 
       // Quick loading state. Will implement better state management in the future: https://github.com/MikeCaputo/kingston-ny-mtg/issues/9
       populateModal(
         null,
-        `${threatName} has been defeated! Loading game summary...`,
+        `${enemyBaseName} has been defeated! Loading game summary...`,
         {text: 'A Well-Earned Victory', function: setIsModalOpen(false)}
       );
 
       const aiGeneratedSummary = await generateGameSummary();
 
-      setModalText(`${threatName} has been defeated! Your game summary is:\n\n${aiGeneratedSummary}`);
+      setModalText(`${enemyBaseName} has been defeated! Your game summary is:\n\n${aiGeneratedSummary}`);
 
     } else {
       const whichRewardType = yieldsReward[_.random(0, yieldsReward.length - 1)];
@@ -166,7 +160,7 @@ const Threat = (props) => {
       const howMany = [_.random(whichRewardType.quantityRange[0], whichRewardType.quantityRange[1])];
       populateModal(
         cardApiData,
-        `${threatName} has been defeated! Each player at this base gains ${howMany} ${whichRewardType.name} Token${howMany > 1 ? 's' : ''}.`,
+        `${enemyBaseName} has been defeated! Each player at this base gains ${howMany} ${whichRewardType.name} Token${howMany > 1 ? 's' : ''}.`,
         {text: 'Close', function: setIsModalOpen(false)}
       );
     }
@@ -178,47 +172,42 @@ const Threat = (props) => {
 
   return (
     <section
-      className={`Threat ${isThreatAlive ? '' : 'defeated'} ${isTurnUnderway? 'turn-underway' : ''}`}
+      className={`EnemyBase ${isEnemyBaseAlive ? '' : 'defeated'} ${isTurnUnderway? 'turn-underway' : ''}`}
       style={props.style}
     >
 
-      <h3>{threatName}</h3>
+      <CommandersAtThisLocation
+        commandersArray={commandersArray}
+        hexCol={props.hexCol}
+        hexRow={props.hexRow}
+      />
+
+      <hr />
+
+      <h3>{enemyBaseName}</h3>
 
       {/* Need a more elegant way to render a zero. It's falsey. But `.toString() mutates the data, which I don't want.... this is okay for now */}
-      <h4>Life total: {threatLifeTotal > 0 ? threatLifeTotal : "0"}</h4>
+      <h4>Life total: {enemyBaseLifeTotal > 0 ? enemyBaseLifeTotal : "0"}</h4>
 
-      {isThreatAlive &&
+      {isEnemyBaseAlive &&
         <>
           <label>
             <span>Deal damage to this Enemy Base:</span>
             <input
               type="number"
-              value={damageToDealToThreat}
-              onChange={e => setDamageToDealToThreat(e.target.value)}
+              value={damageToDealToEnemyBase}
+              onChange={e => setDamageToDealToEnemyBase(e.target.value)}
               onFocus={(e) => e.target.select()}
             />
           </label>
-          <p>Who is dealing damage?</p>
-          {commandersArray.map((commander, i) => {
-            return (
-              <label key={`${commander.scryfallCardData.name}`}>
-                <input
-                  type="checkbox"
-                  value={commander.isAttacking}
-                  onChange={() => updateAttackingCommanders(i)}
-                />
-                <span>{commander.scryfallCardData.name}</span>
-              </label>
-            )
-          })}
-          <button onClick={dealDamageToThreat}>Deal damage to this Enemy Base</button>
+          <button onClick={dealDamageToEnemyBase}>Deal damage to this Enemy Base</button>
 
           <label>
             <span>Notes:</span>
             <input
               type="text"
-              value={notesOnThreat}
-              onChange={e => setNotesOnThreat(e.target.value)}
+              value={notesOnEnemyBase}
+              onChange={e => setNotesOnEnemyBase(e.target.value)}
               onFocus={(e) => e.target.select()}
             />
           </label>
@@ -262,4 +251,4 @@ const Threat = (props) => {
   );
 }
 
-export default Threat;
+export default EnemyBase;

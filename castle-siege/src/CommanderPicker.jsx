@@ -28,12 +28,13 @@ const CommanderPicker = (props) => {
   }
 
   const chooseCommander = (selectedCard) => {
+
     setCommanderFunction(({
-      isAttacking: false,
+      hexLocation: null,
       lifeTotal: 40,
       playerNumber: playerNumber,
-      scryfallCardData: selectedCard // Set the card in the collection (from App.jsx)
-      // TBD: should I attach the `setCommanderFunction` function to the commander, so it will always have that context available? So you can say, "whatever commander I have here, run this function and update yourself"...? I should see if this is an antipattern, too clever for React's intended use.
+      scryfallCardData: selectedCard, // Set the card in the collection (from App.jsx)
+      selfUpdate: setCommanderFunction
     }))
   }
 

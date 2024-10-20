@@ -88,6 +88,7 @@ THEN the modal will close
 AND I will see a hex grid
 AND the grid will have map-specific enemy bases, represented by castle icons
 AND the grid will have map-specific connecting paths, represented by stone path icons
+AND the grid will display where the commanders are, in plain text
 
 ## Hex Grid
 
@@ -98,6 +99,7 @@ AND I see a hex grid
 AND I see at least one enemy base, represented by a castle
 WHEN I click on the castle
 THEN the enemy base will be displayed
+AND I will see button(s) which would allow me to move commander(s) to this location
 AND the enemy base will show its name
 AND the enemy base will have a life total
 AND the enemy base will have a field allowing the player(s) to damage that base
@@ -116,12 +118,32 @@ AND that enemy base is open
 WHEN I click on the castle
 THEN the enemy base will close
 
+### Scenario: I can click on any hex grids to see its coordinates in the console log
+GIVEN I am Castle Siege developer
+AND I have started the game
+AND I see a hex grid
+AND I have browser developer tools open
+WHEN I click on any hex
+THEN I will see the column and row numbers for that hex
+AND I can use that information to debug and/or edit map information
+
 ## Enemy Bases
+
+### Scenario: I can move a commander to an enemy base
+GIVEN I am a player
+AND I have started the game
+AND there is an opened enemy base
+AND I see button(s) which would allow me to move commander(s) to this location
+WHEN I click one to move the desired commander to that location
+THEN I will see that commander's card image
+AND I will see that commander's life total
+AND I will no longer have the ability to move that commander to that location
+AND that commander will no longer be displayed at any other location
 
 ### Scenario: I initiate an enemy base turn
 GIVEN I am a player
 AND I have started the game
-AND there is an enemy base
+AND there is an opened enemy base
 AND that enemy base has more than 0 life total
 WHEN I begin their turn
 THEN the enemy base UI will expand to display a card
@@ -130,7 +152,7 @@ AND they will cast a spell or perform an attack
 ### Scenario: An enemy base takes an additional action
 GIVEN I am a player
 AND I have started the game
-AND there is an enemy base
+AND there is an opened enemy base
 AND that enemy base has more than 0 life total
 AND that enemy has started their turn
 AND they have an additional action
@@ -140,7 +162,7 @@ THEN they will cast a spell or perform an attack
 ### Scenario: An enemy base finishes their turn
 GIVEN I am a player
 AND I have started the game
-AND there is an enemy base
+AND there is an opened enemy base
 AND that enemy base has more than 0 life total
 AND that enemy has started their turn
 AND they have no additional actions
@@ -150,9 +172,9 @@ THEN the enemy base UI will partially collapse
 ### Scenario: One or more players deals damage to an enemy base
 GIVEN I am a player
 AND I have started the game
-AND there is an enemy base
+AND there is an opened enemy base
 AND that enemy base has more than 0 life total
-AND one or more players are attacking that base
+AND one or more players are located at that base
 AND a damage amount has been populated
 WHEN I deal damage to the enemy base
 AND that will not cause the enemy life total to drop to 0 or below 0
@@ -161,9 +183,9 @@ THEN the enemy base life total will decrease by that amount
 ### Scenario: A non-boss enemy base is defeated
 GIVEN I am a player
 AND I have started the game
-AND there is an enemy base
+AND there is an opened enemy base
 AND that enemy base has more than 0 life total
-AND one or more players are attacking that base
+AND one or more players are located at that base
 WHEN I deal damage to the enemy base
 AND that causes the enemy life total to drop to 0 or below 0
 AND that enemy is not a boss
@@ -183,9 +205,9 @@ AND that enemy base will no longer have a hover state
 ### Scenario: The boss enemy base is defeated
 GIVEN I am a player
 AND I have started the game
-AND there is an enemy base
+AND there is an opened enemy base
 AND that enemy base has more than 0 life total
-AND one or more players are attacking that base
+AND one or more players are located at that base
 WHEN I deal damage to the enemy base
 AND that causes the enemy life total to drop to 0 or below 0
 AND that enemy is a boss

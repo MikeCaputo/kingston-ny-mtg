@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import Threat from './Threat.js';
+import EnemyBase from './EnemyBase.jsx';
 import castleIcon from './images/castle-icon.png';
 import pathIcon from './images/path-icon.png';
-import { generateBorderColors} from './helper-methods';
+import { generateBorderColors, listOfCommanderNames } from './helper-methods';
 
-const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisHex, populateModal, closeModal, setIsModalOpen, setModalText, commandersArray, setCommandersArray, addToGameLog, generateGameSummary, openai }) => {
+const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisHex, populateModal, closeModal, setIsModalOpen, setModalText, commandersArray, addToGameLog, generateGameSummary, openai }) => {
   const hexWidth = size * 2;
   const hexHeight = Math.sqrt(3) * size;
 
@@ -30,7 +30,7 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisH
   };
 
   const onClick = () => {
-    console.log('clicked a hex! col is: ', col, ' and row is: ', row)
+    // console.log(`clicked a hex: column and row is  is: [${col},${row}]`)
     if(enemyBaseAtThisHex) {
       setDisplayEnemyBase(!displayEnemyBase);
     }
@@ -50,7 +50,7 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisH
   return (
     <>
       <span
-        // for debugging! set to display: none when not needed.
+        // Display hex coords. Can be used for debugging.
         style = {{
           display: 'none',
           position: 'absolute',
@@ -59,7 +59,17 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisH
           color: '#ff0000'
         }}
       >
-          {col}, {row}
+        {col}, {row}
+      </span>
+      <span
+        // In small text, display which commanders are at this location.
+        className='hex-commander-name-display'
+        style = {{
+          left: x + 30,
+          top: y,
+        }}
+      >
+        {listOfCommanderNames(commandersArray, true, [col, row])}
       </span>
       <svg
         onClick={() => onClick()}
@@ -82,12 +92,12 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisH
           fill={isHovered || displayEnemyBase ? baseHoverColor : baseFillColor} // Change fill on hover
           stroke={isHovered || displayEnemyBase ? '#f1c40f' : '#2980b9'} // Change stroke on hover
           strokeWidth={2}
-      />
+        />
       </svg>
 
       {
         enemyBaseAtThisHex &&
-          <Threat
+          <EnemyBase
             style={
               {
                 backgroundImage: `linear-gradient(white, white), linear-gradient(45deg, ${generateBorderColors(enemyBaseAtThisHex)})`,
@@ -96,20 +106,15 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisH
                 display: displayEnemyBase ? 'block' : 'none'
               }
             }
-            name={`${enemyBaseAtThisHex.name}`}
             key={`${enemyBaseAtThisHex.name}-${id}`} // Ensure unique keys for each instance (okay to give it the id of the hexGrid?)
-            isBoss={enemyBaseAtThisHex.isBoss}
-            lifeTotal={enemyBaseAtThisHex.lifeTotal}
+            enemyBaseAtThisHex={enemyBaseAtThisHex}
             populateModal={populateModal}
             closeModal={closeModal}
             setIsModalOpen={setIsModalOpen}
             setModalText={setModalText}
-            turnOrder={enemyBaseAtThisHex.turnOrder}
-            attacksWith={enemyBaseAtThisHex.attacksWith}
-            usesSpells={enemyBaseAtThisHex.usesSpells}
-            rewards={enemyBaseAtThisHex.rewards}
             commandersArray={commandersArray}
-            setCommandersArray={setCommandersArray}
+            hexCol={col}
+            hexRow={row}
             addToGameLog={addToGameLog}
             generateGameSummary={generateGameSummary}
             openai={openai}

@@ -80,33 +80,38 @@ export const generateBorderColors = (enemyBase) => {
 
 export const colorTranslate = (colorInitial) => {
   switch(colorInitial) {
-    case 'W': return 'white'; break;
-    case 'G': return 'green'; break;
-    case 'U': return 'blue'; break;
-    case 'R': return 'red'; break;
-    case 'B': return 'black'; break;
-    default: return null; break;
+    case 'W': return 'white';
+    case 'G': return 'green';
+    case 'U': return 'blue';
+    case 'R': return 'red';
+    case 'B': return 'black';
+    default: return null;
   }
 }
 
-export const listOfCommanderNames = (whichCommandersArray, includeOnlyAttackers = false) => {
-  // Needs refinement. I think I did this exact same code in VoD somewhere.... this is good enough for now.
+// The `includeOnlyThoseAtTheProvidedHexLocation` parameter, along with `hexLocation`, will allow to include only the commanders at a particular hex location.
+export const listOfCommanderNames = (whichCommandersArray, includeOnlyThoseAtTheProvidedHexLocation = false, hexLocation = []) => {
   let text = '';
-  for (let i = 0; i < (whichCommandersArray.length); i++) {
-    if(!includeOnlyAttackers || (includeOnlyAttackers && whichCommandersArray[i].isAttacking)) {
 
-      if(whichCommandersArray.length > 1 && i === whichCommandersArray.length - 1) {
-        // text += '.';
-        text += ' and ';
-      }
-      if(whichCommandersArray[i].scryfallCardData.name) {
-        text += whichCommandersArray[i].scryfallCardData.name;
-      }
-      if(i < whichCommandersArray.length - 1) {
-        text += ', ';
-      }
-    }
+  // Filter commanders based on hex location if the flag is set
+  if(includeOnlyThoseAtTheProvidedHexLocation) {
+    whichCommandersArray = whichCommandersArray.filter((commander) =>
+      commander.hexLocation && commander.hexLocation[0] === hexLocation[0] && commander.hexLocation[1] === hexLocation[1]
+    );
   }
+
+  // Iterate over filtered commanders and build the text string
+  whichCommandersArray.forEach((commander, i) => {
+    if(i === whichCommandersArray.length - 1 && whichCommandersArray.length > 1) {
+      text += ' and ';
+    }
+    text += commander.scryfallCardData.name;
+
+    if(i < whichCommandersArray.length - 1) {
+      text += ', '; // Add comma for all but the last item
+    }
+  });
+
   return text;
 }
 
@@ -132,12 +137,12 @@ export const generateDescriptionForCommander = async (openai, commander) => {
 
   const translateColorsToString = (colorsArray, i) => {
     let colorsString = '';
-    colorsArray.map(colorInitial => {
+    colorsArray.forEach((colorInitial, index) => {
       colorsString += colorTranslate(colorInitial);
-      if(colorsArray.length > 1 && i === colorsArray.length - 1) {
+      if(colorsArray.length > 1 && index === colorsArray.length - 1) {
         colorsString += ' and ';
       }
-    })
+    });
     return colorsString;
   }
 
