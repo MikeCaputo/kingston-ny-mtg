@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './css/App.scss';
-import Threat from './Threat.js';
 import {
-  generateBorderColors,
   generateDescriptionForCommander,
   generateDynamicsBetweenCommanders,
   generateGamePrologue,
   listOfCommanderNames,
   openAiSettings,
-} from './helper-methods';
+} from './helper-methods.js';
 // OpenAI
 import OpenAI from 'openai';
 import CommanderPicker from './CommanderPicker.jsx';
@@ -21,8 +19,8 @@ const App = () => {
   const [modalText, setModalText] = useState(null);
 
   const [modalButtonText, setModalButtonText] = useState('');
-  const [modalButtonFunction, setModalButtonFunction] = useState(null); // wip
-  const [shouldModalBeOpen, setShouldModalBeOpen] = useState(null); // wip
+  // const [modalButtonFunction, setModalButtonFunction] = useState(null); // wip
+  // const [shouldModalBeOpen, setShouldModalBeOpen] = useState(null); // wip
   const [selectedMap, setSelectedMap] = useState(null);
   const [backgroundImage, setBackgroundImage] = useState(null);
   const [isGameStarted, setIsGameStarted] = useState(false);
@@ -38,33 +36,27 @@ const App = () => {
   useEffect(() => {
     // Sets the commanders array; only adds those with a value. The `filter` will exclude any non-nulls.
     setCommandersArray([commander1, commander2, commander3, commander4].filter(commander => commander));
-    console.log('commander1 is: ', commander1);
-    console.log('commander2 is: ', commander2);
-    console.log('commander3 is: ', commander3);
-    console.log('commander4 is: ', commander4);
-    console.log('commandersArray is: ', commandersArray);
-    console.log('commandersArray.length is: ', commandersArray.length);
   }, [commander1, commander2, commander3, commander4]);
 
   // Can worry about drying this up later if needed.
   const getCommanderByPlayerNumber = (playerNumber) => {
     switch(playerNumber) {
-      case 1: return commander1; break;
-      case 2: return commander2; break;
-      case 3: return commander3; break;
-      case 4: return commander4; break;
-      default: return null; break;
+      case 1: return commander1;
+      case 2: return commander2;
+      case 3: return commander3;
+      case 4: return commander4;
+      default: return null;
     }
   }
 
   // Could combine this with the above, probably.... it's okay for now.
   const getCommanderSetterByPlayerNumber = (playerNumber) => {
     switch(playerNumber) {
-      case 1: return setCommander1; break;
-      case 2: return setCommander2; break;
-      case 3: return setCommander3; break;
-      case 4: return setCommander4; break;
-      default: return null; break;
+      case 1: return setCommander1;
+      case 2: return setCommander2;
+      case 3: return setCommander3;
+      case 4: return setCommander4;
+      default: return null;
     }
   }
 
@@ -119,7 +111,7 @@ const App = () => {
       setModalText(modalText);
     }
 
-    // Populate the modal button. This will allow the modal to control multiple attacks per threat.
+    // Populate the modal button. This will allow the modal to control multiple attacks per enemy base.
     if(modalButtonOptions?.text) {
       setModalButtonText(modalButtonOptions.text);
     }
@@ -272,7 +264,7 @@ const App = () => {
             ))
           }
 
-          <button className="" onClick={startTheGame} disabled={!canStartTheGame}>
+          <button onClick={startTheGame} disabled={!canStartTheGame}>
             {canStartTheGame ? 'Start the Game' : 'Please finish setting up'}
           </button>
         </>
@@ -291,7 +283,6 @@ const App = () => {
             setIsModalOpen={setIsModalOpen}
             setModalText={setModalText}
             commandersArray={commandersArray}
-            setCommandersArray={setCommandersArray}
             addToGameLog={addToGameLog}
             generateGameSummary={generateGameSummary}
             openai={openai}
@@ -300,9 +291,7 @@ const App = () => {
         </div>
       )}
 
-      {/* <hr /> */}
-
-      {/* July 9: thinking about trimming this down, no longer using it for Threat-specific purposes. */}
+      {/* July 9: thinking about trimming this down, no longer using it for enemy base-specific purposes. */}
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal">
