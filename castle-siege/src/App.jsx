@@ -32,6 +32,9 @@ const App = () => {
   const [commander4, setCommander4] = useState(null);
   const [commandersArray, setCommandersArray] = useState([]);
 
+  // Skip AI generation. Will speed up development and will not incur API costs.
+  const [skipAi, setSkipAi] = useState(false);
+
   // When a user selects a commander from the picker, reset the selector.
   useEffect(() => {
     // Sets the commanders array; only adds those with a value. The `filter` will exclude any non-nulls.
@@ -75,6 +78,10 @@ const App = () => {
   }
 
   const generateGameSummary = async () => {
+
+    if(skipAi) {
+      return 'Skipping AI generation. Game summary would go here.';
+    }
 
     // todo, idea: have the "quest or mystery" part displayed at the beginning, to give the players a primer.
     // todo, idea: use smaller, more numerous prompts to build up more internal intelligence: probably would be beneficial to first create text blocks describing each commander, their powers and personalities, etc. Also to create a description of their dynamics, and a description of the map settings. All for future state.
@@ -173,7 +180,7 @@ const App = () => {
     // 3. But, so that we will have access to it here in its entirety, I'm storing `availableCommandersArray` so that we can use it immediately.
     const availableCommandersArray = await Promise.all(
       commandersArray.map(async (commander) => {
-        const descriptionForCommander = await generateDescriptionForCommander(openai, commander);
+        const descriptionForCommander = skipAi ? 'Skipping AI generation. Commander description would go here.' : await generateDescriptionForCommander(openai, commander);
         const whichSetterFunction = getCommanderSetterByPlayerNumber(commander.playerNumber);
         whichSetterFunction(prevData => ({
           ...prevData,
@@ -203,11 +210,14 @@ const App = () => {
 
     */
 
-    // Generate dynamics between the commanders, or single commander..
-    const commanderInfo = availableCommandersArray.length > 1
-      ? await generateDynamicsBetweenCommanders(openai, availableCommandersArray)
-      : availableCommandersArray[0].aiGeneratedDescription;
-    const thisGamePrologue = await generateGamePrologue(openai, commanderInfo, selectedMap);
+    // Generate dynamics between the commanders, or single commander.
+    let thisGamePrologue = 'Skipping AI generation. Game prologue would go here.';
+    if(!skipAi) {
+      const commanderInfo = availableCommandersArray.length > 1
+        ? await generateDynamicsBetweenCommanders(openai, availableCommandersArray)
+        : availableCommandersArray[0].aiGeneratedDescription;
+      thisGamePrologue = await generateGamePrologue(openai, commanderInfo, selectedMap);
+    }
     setGamePrologue(thisGamePrologue);
 
     populateModal(
@@ -267,6 +277,15 @@ const App = () => {
           <button onClick={startTheGame} disabled={!canStartTheGame}>
             {canStartTheGame ? 'Start the Game' : 'Please finish setting up'}
           </button>
+
+          <label>
+            <input
+              type="checkbox"
+              checked={skipAi}
+              onChange={(event) => setSkipAi(event.target.checked)}
+            />
+            Skip AI generation (for development)
+          </label>
         </>
       }
 
@@ -285,7 +304,6 @@ const App = () => {
             commandersArray={commandersArray}
             addToGameLog={addToGameLog}
             generateGameSummary={generateGameSummary}
-            openai={openai}
           />
 
         </div>

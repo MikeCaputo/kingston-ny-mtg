@@ -89,8 +89,8 @@ const HexGrid = (props) => {
             commandersArray={props.commandersArray}
             addToGameLog={props.addToGameLog}
             generateGameSummary={props.generateGameSummary}
-            openai={props.openai}
             setIsModalOpen={props.setIsModalOpen}
+            setModalText={props.setModalText}
             populateModal={props.populateModal}
           />
         ))}

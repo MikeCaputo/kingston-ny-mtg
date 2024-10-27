@@ -4,7 +4,7 @@ import castleIcon from './images/castle-icon.png';
 import pathIcon from './images/path-icon.png';
 import { generateBorderColors, listOfCommanderNames } from './helper-methods';
 
-const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisHex, populateModal, closeModal, setIsModalOpen, setModalText, commandersArray, addToGameLog, generateGameSummary, openai }) => {
+const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisHex, populateModal, closeModal, setIsModalOpen, setModalText, commandersArray, addToGameLog, generateGameSummary }) => {
   const hexWidth = size * 2;
   const hexHeight = Math.sqrt(3) * size;
 
@@ -117,7 +117,6 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisH
             hexRow={row}
             addToGameLog={addToGameLog}
             generateGameSummary={generateGameSummary}
-            openai={openai}
             setDisplayEnemyBase={setDisplayEnemyBase}
           />
       }
