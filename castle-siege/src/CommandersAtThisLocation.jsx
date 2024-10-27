@@ -5,6 +5,7 @@ const CommandersAtThisLocation = (props) => {
 
   // Passed props
   const commandersArray = props.commandersArray;
+  const isEnemyBaseAlive = props.isEnemyBaseAlive;
 
   const updateCommanderLocation = (commander) => {
     commander.selfUpdate({...commander, hexLocation: [props.hexCol, props.hexRow]});
@@ -18,25 +19,33 @@ const CommandersAtThisLocation = (props) => {
     <section className="commanders-at-this-location">
       {
         commandersArray.map((commander, index) => (
-          isCommanderAtThisLocation(commander) ? (
-            <CommanderDisplay
-              key={index}
-              commander={commander}
-            />
-          ) : (
-            <button
-              key={index}
-              onClick={() => updateCommanderLocation(commander)}
-              className="move-commander-here-button"
-            >
-              Move {commander.scryfallCardData.name} here
-            </button>
-          )
+          <>
+            {commander.isDefeated && (
+              <p className="commander-has-been-defeated-text">Alas, {commander.scryfallCardData.name} is defeated!</p>
+            )}
+  
+            {!commander.isDefeated && (
+              isCommanderAtThisLocation(commander) ? (
+                <CommanderDisplay
+                  key={index}
+                  commander={commander}
+                  canChangeLifeTotal={isEnemyBaseAlive}
+                />
+              ) : (
+                <button
+                  onClick={() => updateCommanderLocation(commander)}
+                  className="move-commander-here-button"
+                >
+                  Move {commander.scryfallCardData.name} here
+                </button>
+              )
+            )}
+          </>
         ))
       }
     </section>
-
   );
+
 }
 
 export default CommandersAtThisLocation;

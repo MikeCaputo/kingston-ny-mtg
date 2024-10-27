@@ -90,8 +90,13 @@ export const colorTranslate = (colorInitial) => {
 }
 
 // The `includeOnlyThoseAtTheProvidedHexLocation` parameter, along with `hexLocation`, will allow to include only the commanders at a particular hex location.
-export const listOfCommanderNames = (whichCommandersArray, includeOnlyThoseAtTheProvidedHexLocation = false, hexLocation = []) => {
+export const listOfCommanderNames = (whichCommandersArray, includeDefeatedCommanders = false, includeOnlyThoseAtTheProvidedHexLocation = false, hexLocation = []) => {
   let text = '';
+
+  // Filter out defeated commanders, if the flag is set
+  if(!includeDefeatedCommanders) {
+    whichCommandersArray = whichCommandersArray.filter((commander) => !commander.isDefeated);
+  }
 
   // Filter commanders based on hex location if the flag is set
   if(includeOnlyThoseAtTheProvidedHexLocation) {
@@ -166,7 +171,7 @@ export const generateDescriptionForCommander = async (openai, commander) => {
 
 export const generateDynamicsBetweenCommanders = async (openai, whichCommandersArray) => {
 
-  const aiInstructionPrompt = `The MtG commanders ${listOfCommanderNames(whichCommandersArray, false)} are cooperatively allied in a great battle against a powerful enemy. Please write a rich description of the dynamics and interactions between these commanders, taking into account their overall character attributes.`;
+  const aiInstructionPrompt = `The MtG commanders ${listOfCommanderNames(whichCommandersArray, false, false)} are cooperatively allied in a great battle against a powerful enemy. Please write a rich description of the dynamics and interactions between these commanders, taking into account their overall character attributes.`;
   console.log(`aiInstructionPrompt is: ${aiInstructionPrompt}`);
   const completion = await openai.chat.completions.create({
     ...openAiSettings(),

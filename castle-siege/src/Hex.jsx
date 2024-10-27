@@ -69,7 +69,7 @@ const Hex = ({ x, y, col, row, size, id, enemyBaseAtThisHex, isThereAPathAtThisH
           top: y,
         }}
       >
-        {listOfCommanderNames(commandersArray, true, [col, row])}
+        {listOfCommanderNames(commandersArray, false, true, [col, row])}
       </span>
       <svg
         onClick={() => onClick()}

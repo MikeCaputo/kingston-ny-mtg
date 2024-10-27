@@ -38,7 +38,30 @@ const App = () => {
   // When a user selects a commander from the picker, reset the selector.
   useEffect(() => {
     // Sets the commanders array; only adds those with a value. The `filter` will exclude any non-nulls.
-    setCommandersArray([commander1, commander2, commander3, commander4].filter(commander => commander));
+    const commandersToCheck = [commander1, commander2, commander3, commander4].filter(commander => commander);
+
+    // Check if any commander's lifeTotal is zero or below; will be used to handle if a commander is defeated.
+    let potentiallyDefeatedCommander = null;
+    commandersToCheck.forEach(commander => {
+      if(commander.lifeTotal <= 0 && !commander.isDefeated) {
+        potentiallyDefeatedCommander = commander;
+      }
+    });
+
+    // If any commander is defeated, prompt the user
+    if(potentiallyDefeatedCommander) {
+      const confirmDefeat = window.confirm(`Alas! Has ${potentiallyDefeatedCommander.scryfallCardData.name} truly been defeated?`);
+      // If defeated, mark them as truly being defeated, and remove their hex location to simplify logic elsewhere. They are no longer "anywhere". If not defeated, set them at 1 life total.
+      const valueToUpdate = confirmDefeat ? { isDefeated: true, hexLocation: null } : { lifeTotal: 1 };
+      potentiallyDefeatedCommander.selfUpdate({ ...potentiallyDefeatedCommander, ...valueToUpdate });
+      if(confirmDefeat) {
+        addToGameLog(`Alas, ${potentiallyDefeatedCommander.scryfallCardData.name} has been defeated!`);
+      }
+      return; // Fast-exit here, so we don't get an infinite loop of confirm prompts.
+    }
+
+    // If confirmed or no defeated commander, update the commanders array
+    setCommandersArray(commandersToCheck);
   }, [commander1, commander2, commander3, commander4]);
 
   // Can worry about drying this up later if needed.
