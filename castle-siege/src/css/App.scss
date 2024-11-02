@@ -127,7 +127,7 @@ button {
   background-color: rgba(255,255,255,.85);
   border-radius: 15px;
   display: block;
-  width: 550px;
+  min-width: 550px;
   transition: min-height 1s linear;
   padding: 5px; // lowering this to handle the new curved-border, with the gradient color.
   border: 5px solid transparent;
@@ -152,6 +152,16 @@ button {
       text-decoration: line-through;
     }
   }
+  button.close-enemy-base {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    min-width: revert;
+    min-height: revert;
+    width: 40px;
+    height: 40px;
+    border-radius: 100px;
+  }
 }
 
 .commander-selection-image {
@@ -174,7 +184,7 @@ button {
 
 .commanders-at-this-location {
 
-  .commander-display, .move-commander-here-button {
+  .commander-display, .move-commander-here-button, .commander-has-been-defeated-text {
     margin: 10px;
     border-radius: 15px;
     background: #ffffff;
@@ -185,12 +195,30 @@ button {
     // Width / height are derived from the "small" image size of Scryfall.
     width: 146px;
     min-height: 204px;
+    input[type=number] {
+      display: inline-block;
+      width: 40px;
+      border-radius: 5px;
+      padding: 5px;
+      margin-left: 5px;
+    }
   }
 
   .commander-display{
     p {
       margin: 5px 0 5px 0;
     }
+    &.defeated {
+      color: #cccccc;
+      img {
+        opacity: .5;
+      }
+    }
+  }
+
+  .commander-has-been-defeated-text {
+    background: #eeeeee;
+    color: #999999;
   }
 
   .move-commander-here-button {

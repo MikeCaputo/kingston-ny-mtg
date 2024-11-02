@@ -61,6 +61,18 @@ const EnemyBase = (props) => {
     }
   };
 
+  // Only enable button functionalities if there are living commanders at the enemy base location.
+  const [areThereLivingCommandersAtThisBase, setAreThereLivingCommandersAtThisBase] = useState(false);
+  useEffect(() => {
+    const howManyLivingCommandersHere = commandersArray.filter((commander) =>
+      !commander.isDefeated &&
+      commander.hexLocation &&
+      commander.hexLocation[0] === props.hexCol &&
+      commander.hexLocation[1] === props.hexRow
+    ).length;
+    setAreThereLivingCommandersAtThisBase(howManyLivingCommandersHere > 0);
+  }, [commandersArray]);
+
   // This reacts to `currentActionIndex`, determining the rendering of the turn order.
   useEffect(() => {
     // console.log(`in the useEffect; currentActionIndex is ${currentActionIndex}`)
@@ -131,7 +143,7 @@ const EnemyBase = (props) => {
       enemyBaseIsDefeated();
     }
 
-    addToGameLog(`${listOfCommanderNames(commandersArray, true, [props.hexCol, props.hexRow])} deals ${damageToDealToEnemyBase} damage to ${enemyBaseName}${newLifeTotal === 0 ? ', defeating it!' : '.'}`);
+    addToGameLog(`${listOfCommanderNames(commandersArray, false, true, [props.hexCol, props.hexRow])} deals ${damageToDealToEnemyBase} damage to ${enemyBaseName}${newLifeTotal === 0 ? ', defeating it!' : '.'}`);
 
     setDamageToDealToEnemyBase(0); // Reset the input
   };
@@ -176,10 +188,13 @@ const EnemyBase = (props) => {
       style={props.style}
     >
 
+      <button className="close-enemy-base" onClick={() => setDisplayEnemyBase(false)}>X</button>
+
       <CommandersAtThisLocation
         commandersArray={commandersArray}
         hexCol={props.hexCol}
         hexRow={props.hexRow}
+        isEnemyBaseAlive={isEnemyBaseAlive}
       />
 
       <hr />
@@ -198,9 +213,12 @@ const EnemyBase = (props) => {
               value={damageToDealToEnemyBase}
               onChange={e => setDamageToDealToEnemyBase(e.target.value)}
               onFocus={(e) => e.target.select()}
+              disabled={!areThereLivingCommandersAtThisBase}
             />
           </label>
-          <button onClick={dealDamageToEnemyBase}>Deal damage to this Enemy Base</button>
+          <button onClick={dealDamageToEnemyBase} disabled={!areThereLivingCommandersAtThisBase}>
+            Deal damage to this Enemy Base
+          </button>
 
           <label>
             <span>Notes:</span>
@@ -233,7 +251,7 @@ const EnemyBase = (props) => {
             </>
           }
           {!isTurnUnderway &&
-            <button onClick={rotateThroughTurn}>
+            <button onClick={rotateThroughTurn} disabled={!areThereLivingCommandersAtThisBase}>
               {'Begin Turn'}
             </button>
           }
@@ -244,8 +262,6 @@ const EnemyBase = (props) => {
           </button> */}
         </>
       }
-
-      <button onClick={() => setDisplayEnemyBase(false)}><em>Close Enemy Base</em></button>
 
     </section>
   );

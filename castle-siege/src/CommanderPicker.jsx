@@ -32,6 +32,7 @@ const CommanderPicker = (props) => {
     setCommanderFunction(({
       hexLocation: null,
       lifeTotal: 40,
+      isDefeated: false,
       playerNumber: playerNumber,
       scryfallCardData: selectedCard, // Set the card in the collection (from App.jsx)
       selfUpdate: setCommanderFunction
