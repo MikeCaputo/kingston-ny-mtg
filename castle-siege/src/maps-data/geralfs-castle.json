@@ -1,6 +1,6 @@
 {
   "name": "Geralf, the Mad Stitcher",
-  "backgroundImage": "castle-locthwain.jpg",
+  "backgroundImageScryfallCardId": "19336e3a-2242-4a30-a563-32f2e4fc18e9",
   "hexGridWidth": 8,
   "hexGridHeight": 16,
   "enemyBases": [

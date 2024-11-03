@@ -54,7 +54,16 @@ When the enemy attacks, the players not only have shared blockers, but they also
 ## Technical Notes
 
 1. Uses Scryfall API to fetch card data: https://scryfall.com/docs/api
-2. **For this project, documentation is more important than code quality.** Writing this on Aug 28: now that I'm working full time, plus taking care of Luca, I have very little time for this project. So, it's more important that I write good PR descriptions and BDD tests so that I can quickly get back into context. Code quality, especially optimizations, is not the top priority because this is being used by a _very_ tiny audience right now. 
+2. **For this project, documentation is more important than code quality.** Writing this on Aug 28: now that I'm working full time, plus taking care of Luca, I have very little time for this project. So, it's more important that I write good PR descriptions and BDD tests so that I can quickly get back into context. Code quality, especially optimizations, is not the top priority because this is being used by a _very_ tiny audience right now.
+
+## Map Creation Notes
+
+1. Hex setup: to help get the hex coordinates, un-comment `console.log(`clicked a hex: column and row is  is: [${col},${row}]`)` in Hex.jsx. Then, you can click on all of the hexes you want, and they will populate into the console. You can then grab this data to edit or create maps.
+2. Background image:
+  - Start at https://scryfall.com/
+  - Search for the card image you want. If you are looking at a card list, you can browse and navigate to the print you want. If you are looking at an individual card, look for the link "View all prints" so you can view all prints.
+  - Once you have the image you want, right-click and open the card image in a ne wtab. Example url: `https://cards.scryfall.io/large/front/2/7/279df7e2-2a3b-464a-a7df-e91da28e3a8c.jpg?1730489639`.
+  - Then you can grab the uuid from that value (in this case, `279df7e2-2a3b-464a-a7df-e91da28e3a8c`), and use that to populate the map's `backgroundImageScryfallCardId` value.
 
 ## Copyright
 

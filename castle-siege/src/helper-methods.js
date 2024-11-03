@@ -48,6 +48,21 @@ export const queryScryfall = async (cardName, isToken = false, queryParameters =
   }
 }
 
+// When building a map: first, query Scryfall with the the following query so that it will show all reprints and variations, so you can pick the desired artwork: https://api.scryfall.com/cards/search?q=%21"Hallowed+Fountain"+include:extras&unique=prints
+// Then, inspect the respond and grab the `data.id` and populate the map information with that.
+export const scryfallGetByCardById = async (cardId) => {
+  try {
+    // Start with the name, and whether or not it is a token. Then, loop through any additional queryParameters and append those to the query.
+    let scryfallQuery = `https://api.scryfall.com/cards/${cardId}`;
+    const response = await axios.get(scryfallQuery);
+    const scryfallCardInfo = response.data; // This `data` is from Axios.
+    return scryfallCardInfo;
+  } catch (error) {
+    console.error(error); // Log the error or handle it as needed
+    return null; // Return null or handle it appropriately
+  }
+}
+
 export const generateBorderColors = (enemyBase) => {
   // Generate border color. Could maybe use refactoring but its okay for now.
   let borderColors = '';

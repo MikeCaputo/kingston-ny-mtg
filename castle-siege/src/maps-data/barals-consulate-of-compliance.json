@@ -1,0 +1,142 @@
+{
+  "name": "Baral's Consulate of Compliance",
+  "backgroundImageScryfallCardId": "f97a6d34-03ab-49f1-b02e-405b733f8843",
+  "hexGridWidth": 8,
+  "hexGridHeight": 16,
+  "enemyBases": [
+    {
+      "name": "The Outer Hall",
+      "hexGridLocations": [
+        [1,15],
+        [2,15],
+        [3,15],
+        [4,15]
+      ],
+      "isBoss": false,
+      "lifeTotal": 20,
+      "borderColor": ["blue"],
+      "turnOrder": [
+        "castSpell",
+        "attack"
+      ],
+      "attacksWith": [
+        {
+          "name": "Eternal of Harsh Truths",
+          "isToken": false,
+          "queryParameters": {
+            "color": "blue",
+            "power": 1,
+            "toughness": 3
+          },
+          "quantityRange": [1,1]
+        }
+      ],
+      "usesSpells": [
+        {
+          "name": "Mana Short",
+          "targetsPlayer": true
+        }
+      ],
+      "rewards": [
+        {
+          "name": "Clue",
+          "quantityRange": [1,2]
+        }
+      ]
+    },
+    {
+      "name": "Interview with the Undersecretary",
+      "hexGridLocations": [
+        [1,11],
+        [2,11],
+        [3,11],
+        [4,11]
+      ],
+      "isBoss": false,
+      "lifeTotal": 40,
+      "borderColor": ["blue"],
+      "turnOrder": [
+        "attack",
+        "castSpell"
+      ],
+      "attacksWith": [
+        {
+          "name": "Vedalken Ghoul",
+          "isToken": false,
+          "queryParameters": {
+            "color": "blue",
+            "power": 1,
+            "toughness": 1
+          },
+          "quantityRange": [2,3]
+        }
+      ],
+      "usesSpells": [
+        {
+          "name": "Sleep",
+          "targetsPlayer": true
+        }
+      ],
+      "rewards": [
+        {
+          "name": "Treasure",
+          "quantityRange": [2,3]
+        },
+        {
+          "name": "Clue",
+          "quantityRange": [1,2]
+        }
+      ]
+    },
+    {
+      "name": "Audience with the Chief",
+      "hexGridLocations": [
+        [3,8]
+      ],
+      "isBoss": true,
+      "lifeTotal": 100,
+      "borderColor": ["blue"],
+      "turnOrder": [
+        "castSpell",
+        "attack"
+      ],
+      "attacksWith": [
+        {
+          "name": "Cyberman Patrol",
+          "isToken": false,
+          "queryParameters": {
+            "color": "colorless",
+            "power": 2,
+            "toughness": 2
+          },
+          "quantityRange": [4,6]
+        }
+      ],
+      "usesSpells": [
+        {
+          "name": "Sleep",
+          "targetsPlayer": true
+        },
+        {
+          "name": "Consuming Tide",
+          "targetsPlayer": false
+        },
+        {
+          "name": "Urza's Guilt",
+          "targetsPlayer": false
+        }
+      ],
+      "rewards": []
+    }
+  ],
+  "pathLocations": [
+    [1,13],
+    [2,13],
+    [3,13],
+    [4,13],
+    [2,10],
+    [4,10],
+    [2,9],
+    [3,9]
+  ]
+}
