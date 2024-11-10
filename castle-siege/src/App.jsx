@@ -8,6 +8,7 @@ import {
   openAiSettings,
   scryfallGetByCardById
 } from './helper-methods.js';
+import { gameRules } from './game-rules';
 // OpenAI
 import OpenAI from 'openai';
 import CommanderPicker from './CommanderPicker.jsx';
@@ -135,7 +136,7 @@ const App = () => {
     return completion.choices[0].message.content;
   }
 
-  // wip: Making this more flexible by making parameters optional. That way we can update modals that are already open.
+  // Modal can currently be used to display cards and/or custom text. Modals that are already opened can be updates.
   const populateModal = (cardData = null, modalText = null, modalButtonOptions = {}) => {
     setCardToDisplay(cardData);
     if(modalText) {
@@ -151,6 +152,10 @@ const App = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const toggleGameInstructions = () => {
+    populateModal(null, gameRules, {text: 'Close', function: setIsModalOpen(false)});
   };
 
   const handleMapFileUpload = (event) => {
@@ -269,6 +274,8 @@ const App = () => {
       <h1>Castle Siege</h1>
 
       <h4>A new format of Magic the Gathering, being developed by Mike Caputo of Calamity Bay Games</h4>
+
+      <button onClick={() => toggleGameInstructions()}>Game Instructions</button>
 
       <hr />
 

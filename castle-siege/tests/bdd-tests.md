@@ -267,3 +267,5 @@ AND the commander is no longer shown at this enemy base
 AND the commander can no longer be moved to any enemy base
 AND the commander's name no longer appears on the hex grid
 AND the commander's name no longer appears in the list of commander names below the selected map name
+
+# todo: don't forget BDD tests for game instructions
