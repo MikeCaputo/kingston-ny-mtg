@@ -184,6 +184,10 @@ button {
 
 .commanders-at-this-location {
 
+  & > div {
+    display: inline-block;
+  }
+
   .commander-display, .move-commander-here-button, .commander-has-been-defeated-text {
     margin: 10px;
     border-radius: 15px;
