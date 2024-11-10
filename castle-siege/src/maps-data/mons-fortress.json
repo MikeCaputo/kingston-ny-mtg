@@ -1,6 +1,6 @@
 {
   "name": "Mons, the Tyrant King",
-  "backgroundImage": "mountain-piotr-dura.jpg",
+  "backgroundImageScryfallCardId": "279df7e2-2a3b-464a-a7df-e91da28e3a8c",
   "hexGridWidth": 8,
   "hexGridHeight": 16,
   "enemyBases": [

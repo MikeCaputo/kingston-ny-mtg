@@ -6,6 +6,7 @@ import {
   generateGamePrologue,
   listOfCommanderNames,
   openAiSettings,
+  scryfallGetByCardById
 } from './helper-methods.js';
 // OpenAI
 import OpenAI from 'openai';
@@ -157,11 +158,14 @@ const App = () => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = async (e) => {
         try {
           const mapData = JSON.parse(e.target.result);
           setSelectedMap(mapData);
-          setBackgroundImage(mapData.backgroundImage);
+          const scryfallCard = await scryfallGetByCardById(mapData.backgroundImageScryfallCardId);
+          if(scryfallCard.image_uris?.art_crop) {
+            setBackgroundImage(scryfallCard.image_uris?.art_crop);
+          }
         } catch (error) {
           console.error("Error parsing JSON:", error);
         }
@@ -260,7 +264,7 @@ const App = () => {
   }, [selectedMap, openai, commandersArray]);
 
   return (
-    <main className="App" style={{ backgroundImage: `url(/map-backgrounds/${backgroundImage})` }}>
+    <main className="App" style={{ backgroundImage: `url(${backgroundImage})` }}>
 
       <h1>Castle Siege</h1>
 

@@ -19,7 +19,7 @@ const CommandersAtThisLocation = (props) => {
     <section className="commanders-at-this-location">
       {
         commandersArray.map((commander, index) => (
-          <>
+          <div key={commander.playerNumber}>
             {commander.isDefeated && (
               <p className="commander-has-been-defeated-text">Alas, {commander.scryfallCardData.name} is defeated!</p>
             )}
@@ -40,7 +40,7 @@ const CommandersAtThisLocation = (props) => {
                 </button>
               )
             )}
-          </>
+          </div>
         ))
       }
     </section>
